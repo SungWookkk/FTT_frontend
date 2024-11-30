@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          리액트 파일 수정 후 localhost:8080으로 접속입니다.
+          CI/CD 테스트입니다.
         </a>
       </header>
     </div>
