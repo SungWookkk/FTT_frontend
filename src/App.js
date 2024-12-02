@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import MainNavigation from "./MainNavigation";
+import Signup from "./Auth/Signup";
+import Login from "./Auth/Login";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          CI/CD 테스트입니다.
-        </a>
-      </header>
-    </div>
+      <Router>
+        <MainNavigation />
+        <main>
+          <Routes>
+            <Route path="/" element={<h1>Welcome to the App</h1>} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </main>
+      </Router>
   );
-}
+};
 
 export default App;
