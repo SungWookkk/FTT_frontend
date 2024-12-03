@@ -15,9 +15,9 @@ export const signup = async (userInfo) => {
 };
 
 // 로그인 API
-export const login = async (userInfo) => {
+export const login = async (userId, password) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/login`, userInfo);
+        const response = await axios.post(`${API_BASE_URL}/login`, { userId, password });
         const { token } = response.data;
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // JWT 토큰 설정
         return token; // 토큰 반환

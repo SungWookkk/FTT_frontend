@@ -1,0 +1,190 @@
+/* 전체 페이지 스타일 */
+.login-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Open Sans', sans-serif;
+    overflow: hidden; /* 초과 영역 제거 */
+}
+
+/* 왼쪽 컨텐츠 스타일 */
+.left-content {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 250px;
+    color: white;
+    text-align: center;
+    background: linear-gradient(
+            rgba(0, 0, 0, 0.6), /* 어두운 오버레이 */
+            rgba(0, 0, 0, 0.6)
+    ),
+    url("./img/image.jpg") no-repeat center center; /* 배경 이미지 경로 */
+    background-size: cover;
+    border-radius: 0 80px 80px 0; /* 오른쪽 상단 및 하단 둥글게 */
+    position: relative; /* 위치 설정 */
+    z-index: 2; /* 우선 순위 설정 */
+}
+
+.left-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.left-content p {
+    font-size: 1.2rem;
+    margin-bottom: 70px; /* 문단의 하단 간격 */
+    line-height: 1.4; /* 줄 간격을 줄임 */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 오른쪽 컨텐츠 스타일 */
+.right-content {
+    flex: 1.1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    box-shadow: -100px 0 40px rgba(0, 0, 0, 0.2);
+    padding: 80px;
+    border-radius: 80px 0 0 80px; /* 왼쪽 상단 및 하단 둥글게 */
+    z-index: 1; /* 왼쪽 컨텐츠보다 뒤로 배치 */
+}
+
+/* 로그인 폼 스타일 */
+.form-wrapper {
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-wrapper h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    font-size: 1rem;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #6a82fb;
+    outline: none;
+}
+
+.login-button {
+    width: 108%;
+    padding: 12px;
+    background: linear-gradient(to right, #5b78aa, #7688b0); /* 부드러운 블루 톤 */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+
+.login-button:hover {
+    background: linear-gradient(to right, #7688b0, #5b78aa); /* 반전 효과 */
+    transform: scale(1.05);
+}
+
+/* 링크 스타일 */
+.links {
+    margin-top: 20px;
+}
+
+.links a {
+    display: inline-block;
+    margin: 5px 10px;
+    color: #6a82fb;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: #fc5c7d;
+    text-decoration: underline;
+}
+.social-login-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.social-login-container p {
+    font-style: normal;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+}
+
+.social-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    transition: transform 0.2s ease-in-out;
+}
+
+.social-button img {
+    width: 70px; /* 이미지 크기 조정 */
+    height: 70px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.social-button:hover img {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transform: scale(1.1);
+}
+
+/* 메인 페이지 링크 스타일 */
+.main-page-link {
+    margin-top: 30px; /* 위 요소와 간격 추가 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.main-page-link a {
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold; /* 텍스트 굵기 */
+    text-decoration: underline; /* 밑줄 유지 */
+    color: #5b78aa; /* 기본 텍스트 색상 */
+    transition: color 0.3s ease-in-out; /* 색상 변화 애니메이션 */
+}
+
+.main-page-link a:hover {
+    color: #7688b0; /* 호버 시 텍스트 색상 변화 */
+    text-decoration: underline; /* 밑줄 유지 */
+    cursor: pointer; /* 포인터 표시 */
+}
