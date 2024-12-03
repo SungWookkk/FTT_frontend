@@ -22,6 +22,7 @@ const Login = () => {
         try {
             await login(formData);
             setMessage("로그인 성공!");
+            history.push("/main-page"); // 로그인 성공 시 메인 페이지로 이동
         } catch (error) {
             setMessage("로그인 실패: " + error.message);
         }
