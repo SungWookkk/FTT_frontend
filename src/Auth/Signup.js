@@ -25,6 +25,7 @@ const Signup = () => {
         try {
             await signup(formData);
             setMessage("회원가입 성공! 로그인 해주세요.");
+            alert("회원가입 성공! 로그인 해주세요.");
             history.push("/login"); // "/login"으로 이동
         } catch (error) {
             setMessage("회원가입 실패: " + error.message);

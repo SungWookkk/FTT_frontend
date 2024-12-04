@@ -6,39 +6,43 @@
     overflow: hidden; /* 초과 영역 제거 */
 }
 
-/* 왼쪽 컨텐츠 스타일 */
-.left-content {
+/* 공통 스타일 조정 */
+.left-content,
+.left-content-text {
     flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 250px;
+    padding: 200px; /* 로그인, 회원가입 통일 */
     color: white;
     text-align: center;
     background: linear-gradient(
-            rgba(0, 0, 0, 0.6), /* 어두운 오버레이 */
+            rgba(0, 0, 0, 0.6),
             rgba(0, 0, 0, 0.6)
     ),
-    url("./img/image.jpg") no-repeat center center; /* 배경 이미지 경로 */
+    url("./img/image.jpg") no-repeat center center;
     background-size: cover;
-    border-radius: 0 80px 80px 0; /* 오른쪽 상단 및 하단 둥글게 */
-    position: relative; /* 위치 설정 */
-    z-index: 2; /* 우선 순위 설정 */
+    border-radius: 0 80px 80px 0;
+    position: relative;
+    z-index: 2;
 }
 
-.left-content h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
+.left-content h1,
+.left-content-text h1 {
+    font-size: 2.8rem; /* 사이즈 통일 */
+    margin-bottom: 15px; /* 헤더와 텍스트 간격 조정 */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
-.left-content p {
+.left-content p,
+.left-content-text p {
     font-size: 1.2rem;
-    margin-bottom: 70px; /* 문단의 하단 간격 */
-    line-height: 1.4; /* 줄 간격을 줄임 */
+    margin-bottom: 30px; /* 문단 간격 통일 */
+    line-height: 1.5; /* 줄 간격 조정 */
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
+
 
 /* 오른쪽 컨텐츠 스타일 */
 .right-content {

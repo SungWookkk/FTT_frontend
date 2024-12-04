@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import "./css/Login.css";
-import {login} from "../api/api";
-import {Link, useHistory} from "react-router-dom";
-
+import { Link, useHistory } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 
 const Login = () => {
     const history = useHistory();
-    const [formData, setFormData] = useState({
-        userId: "",
-        password: "",
-    });
+    const { login } = useContext(AuthContext);
+    const [formData, setFormData] = useState({ userId: "", password: "" });
     const [message, setMessage] = useState("");
 
     const handleChange = (e) => {
@@ -20,9 +17,9 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(formData);
+            await login(formData.userId, formData.password);
             setMessage("로그인 성공!");
-            history.push("/main-page"); // 로그인 성공 시 메인 페이지로 이동
+            history.push("/"); // 메인 페이지로 이동
         } catch (error) {
             setMessage("로그인 실패: " + error.message);
         }
@@ -35,8 +32,7 @@ const Login = () => {
                 <p>
                     AI와 함께 더 나은 하루를 계획하고 실천하세요.
                     당신의 목표 달성을 도와줄
-                    <p> 스마트 To-Do 리스트 서비스를 제공합니다.</p>
-
+                    <p>스마트 To-Do 리스트 서비스를 제공합니다.</p>
                 </p>
             </div>
             <div className="right-content">
@@ -69,20 +65,20 @@ const Login = () => {
                     </form>
                     {message && <p className="message">{message}</p>}
                     <div className="links">
-                        <a href="/forgot-password">비밀번호를 잊으셨나요?</a>
-                        <a href="/signup">계정 생성하기</a>
+                        <Link to="/forgot-password">비밀번호를 잊으셨나요?</Link>
+                        <Link to="/signup">계정 생성하기</Link>
                     </div>
                     <div className="social-login-container">
                         <p>소셜 계정으로 로그인</p>
                         <div className="social-login-buttons">
                             <button className="social-button">
-                                <img src={require('./css/img/google-btn.png')} alt="Google Login"/>
+                                <img src={require('./css/img/google-btn.png')} alt="Google Login" />
                             </button>
                             <button className="social-button">
-                                <img src={require('./css/img/naver-btn.png')} alt="Naver Login"/>
+                                <img src={require('./css/img/naver-btn.png')} alt="Naver Login" />
                             </button>
                             <button className="social-button">
-                                <img src={require('./css/img/kakao-btn.png')} alt="Kakao Login"/>
+                                <img src={require('./css/img/kakao-btn.png')} alt="Kakao Login" />
                             </button>
                         </div>
                     </div>
