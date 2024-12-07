@@ -11,18 +11,19 @@ const AuthProvider = ({ children }) => {
     const login = async (userId, password) => {
         try {
             const token = await apiLogin(userId, password);
-            setIsLoggedIn(true); // 로그인 상태를 true로 변경
-            return token; // 토큰 반환
+            setIsLoggedIn(true); // 로그인 상태 업데이트
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Axios 헤더 설정
+            return token;
         } catch (error) {
-            console.error("로그인 중 오류:", error);
+            console.error("로그인 중 오류:", error.message);
             throw error;
         }
     };
 
     // 로그아웃 함수
     const logout = () => {
-        setIsLoggedIn(false); // 로그인 상태를 false로 변경
-        delete axios.defaults.headers.common["Authorization"]; // 헤더에서 토큰 제거
+        setIsLoggedIn(false);
+        delete axios.defaults.headers.common["Authorization"]; // Axios 헤더에서 토큰 제거
     };
 
     return (

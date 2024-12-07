@@ -1,53 +1,49 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import AuthProvider, { AuthContext } from "./Auth/AuthContext";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
-import AuthProvider, { AuthContext } from "./Auth/AuthContext";
+import Dashboard from "./components/dashboard/Dashboard";
+import MainNavigation from "./MainNavigation";
 
 const App = () => {
     return (
         <AuthProvider>
             <Router>
                 <header>
-                    <NavBar />
+                    <MainNavigation />
                 </header>
                 <Switch>
-                    <Route path="/" exact component={Home} />
+                    <Route exact path="/">
+                        <HomeRedirect />
+                    </Route>
                     <Route path="/login" component={Login} />
                     <Route path="/signup" component={Signup} />
+                    <PrivateRoute path="/dashboard">
+                        <Dashboard />
+                    </PrivateRoute>
                 </Switch>
             </Router>
         </AuthProvider>
     );
 };
 
-const Home = () => <h1>Home</h1>;
+// 로그인 상태에 따라 홈 경로 리다이렉트
+const HomeRedirect = () => {
+    const { isLoggedIn } = React.useContext(AuthContext);
+    return <Redirect to={isLoggedIn ? "/dashboard" : "/login"} />;
+};
 
-const NavBar = () => {
-    const { isLoggedIn, logout } = useContext(AuthContext); // 로그인 상태 및 로그아웃 함수 가져오기
-
+// 보호된 경로 설정
+const PrivateRoute = ({ children, ...rest }) => {
+    const { isLoggedIn } = React.useContext(AuthContext);
     return (
-        <nav>
-            <ul>
-                <li>
-                    <Link to="/">메인</Link>
-                </li>
-                {isLoggedIn ? (
-                    <li>
-                        <button onClick={logout}>로그아웃</button>
-                    </li>
-                ) : (
-                    <>
-                        <li>
-                            <Link to="/signup">회원가입</Link>
-                        </li>
-                        <li>
-                            <Link to="/login">로그인</Link>
-                        </li>
-                    </>
-                )}
-            </ul>
-        </nav>
+        <Route
+            {...rest}
+            render={() =>
+                isLoggedIn ? children : <Redirect to="/login" />
+            }
+        />
     );
 };
 

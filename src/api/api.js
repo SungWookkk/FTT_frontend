@@ -11,19 +11,18 @@ export const login = async (userId, password) => {
             { userId, password },
             {
                 headers: {
-                    "Content-Type": "application/json", // JSON 형식으로 데이터 전송
+                    "Content-Type": "application/json",
                 },
             }
         );
-        const { token } = response.data;
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // JWT 토큰 설정
-        return token; // 토큰 반환
+        const { token } = response.data; // 응답에서 token 추출
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Axios 헤더에 토큰 설정
+        return token;
     } catch (error) {
         console.error("로그인 실패:", error);
-        throw error.response?.data || "로그인 중 문제가 발생했습니다.";
+        throw new Error(error.response?.data || "로그인 중 문제가 발생했습니다.");
     }
 };
-
 
 // 회원가입 API
 export const signup = async (userInfo) => {

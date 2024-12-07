@@ -23,9 +23,14 @@ const MainNavigation = () => {
                     </>
                 )}
                 {isLoggedIn && (
-                    <li>
-                        <Logout />
-                    </li>
+                    <>
+                        <li>
+                            <Link to="/dashboard">대시보드</Link>
+                        </li>
+                        <li>
+                            <Logout />
+                        </li>
+                    </>
                 )}
             </ul>
         </nav>
