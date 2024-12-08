@@ -1,18 +1,15 @@
-import React, {useContext} from "react";
+import React from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
 import DashboardContent from "./DashboardContent";
-
+import { useAuth } from "../../Auth/AuthContext"; // Context 가져오기
 import "../css/Dashboard.css";
 import {Redirect} from "react-router-dom";
-import {AuthContext} from "../../Auth/AuthContext";
 
 const Dashboard = () => {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { auth } = useAuth();
 
-    if (!isLoggedIn) {
-        console.error("로그인되지 않은 사용자가 대시보드에 접근했습니다.");
+    if (!auth || !auth.token) {
         return <Redirect to="/login" />;
     }
 
@@ -22,7 +19,6 @@ const Dashboard = () => {
             <div className="main-content">
                 <Navbar />
                 <DashboardContent />
-                <Footer />
             </div>
         </div>
     );

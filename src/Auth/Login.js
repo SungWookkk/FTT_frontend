@@ -1,11 +1,11 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import "./css/Login.css";
 import { Link, useHistory } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
+import AuthContext from "./AuthContext";
 
 const Login = () => {
     const history = useHistory();
-    const { login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext); // login 함수 가져오기
     const [formData, setFormData] = useState({ userId: "", password: "" });
     const [message, setMessage] = useState("");
 
@@ -19,11 +19,12 @@ const Login = () => {
         try {
             await login(formData.userId, formData.password);
             setMessage("로그인 성공!");
-            history.push("/"); // 메인 페이지로 이동
+            history.push("/dashboard");
         } catch (error) {
             setMessage("로그인 실패: " + error.message);
         }
     };
+
 
     return (
         <div className="login-container">
@@ -31,8 +32,7 @@ const Login = () => {
                 <h1>환영합니다!</h1>
                 <p>
                     AI와 함께 더 나은 하루를 계획하고 실천하세요.
-                    당신의 목표 달성을 도와줄
-                    <p>스마트 To-Do 리스트 서비스를 제공합니다.</p>
+                    스마트 To-Do 리스트 서비스를 제공합니다.
                 </p>
             </div>
             <div className="right-content">

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./css/Login.css";
-import { signup } from "../api/api";
 import { useHistory } from "react-router-dom";
 
 const Signup = () => {
@@ -23,10 +22,23 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await signup(formData);
-            setMessage("회원가입 성공! 로그인 해주세요.");
-            alert("회원가입 성공! 로그인 해주세요.");
-            history.push("/login"); // "/login"으로 이동
+            // 서버로 POST 요청
+            const response = await fetch("http://localhost:8080/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData), // 폼 데이터를 JSON으로 변환
+            });
+
+            if (response.ok) {
+                setMessage("회원가입 성공! 로그인 해주세요.");
+                alert("회원가입 성공! 로그인 해주세요.");
+                history.push("/login"); // 로그인 페이지로 이동
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "회원가입 실패");
+            }
         } catch (error) {
             setMessage("회원가입 실패: " + error.message);
         }

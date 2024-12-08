@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "./Auth/AuthContext";
-import Logout from "./Auth/Logout";
+import { useAuth } from "./Auth/AuthContext";
 
 const MainNavigation = () => {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { auth, logout } = useAuth();
 
     return (
         <nav>
@@ -12,7 +11,7 @@ const MainNavigation = () => {
                 <li>
                     <Link to="/">메인</Link>
                 </li>
-                {!isLoggedIn && (
+                {!auth?.token && (
                     <>
                         <li>
                             <Link to="/signup">회원가입</Link>
@@ -22,13 +21,13 @@ const MainNavigation = () => {
                         </li>
                     </>
                 )}
-                {isLoggedIn && (
+                {auth?.token && (
                     <>
                         <li>
                             <Link to="/dashboard">대시보드</Link>
                         </li>
                         <li>
-                            <Logout />
+                            <button onClick={logout}>로그아웃</button>
                         </li>
                     </>
                 )}
