@@ -1,6 +1,24 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(87deg, #11cdef 0%, #1171ef 100%);
-  font-family: 'Open Sans', sans-serif;
+/* 전체 앱 레이아웃 */
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 255px;
+  background-color: #f7f8f9;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+header {
+  height: 60px;
+  background-color: #49485e;
+  color: white;
 }

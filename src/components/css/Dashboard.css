@@ -1,0 +1,148 @@
+/* 전체 레이아웃 */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 헤더를 최상단에 고정 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #49485e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    z-index: 1000; /* 다른 요소 위에 배치 */
+}
+
+.header .logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.header input {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+}
+
+.header button {
+    background-color: #7f77f1;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+/* 사이드바 고정 */
+.sidebar {
+    position: fixed;
+    top: 60px; /* 헤더 높이만큼 아래로 배치 */
+    left: 0;
+    width: 260px;
+    height: calc(100vh - 60px); /* 헤더 제외한 전체 높이 */
+    background-color: #f7f8f9;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px;
+    display: block;
+    border-radius: 6px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #e5e4fc;
+    color: #544dc9;
+}
+
+/* 메인 컨텐츠 영역 */
+.main-content {
+    display: flex;
+    margin-top: 60px; /* 헤더 높이만큼 위쪽 여백 */
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 20px 40px;
+    margin-left: 260px; /* 사이드바 너비만큼 띄우기 */
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* 오늘의 작업 섹션 */
+.task-highlight-bar {
+    width: 320px;
+    height: 4px;
+    background: linear-gradient(0deg, #3AF325 0%, #3AF325 100%),
+    linear-gradient(0deg, rgba(245, 35, 75, 0.40) 0%, rgba(245, 35, 75, 0.40) 100%);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 600px;
+}
+
+.task-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid;
+}
+
+.red-border {
+    border-left-color: #ff6b6b;
+}
+
+.yellow-border {
+    border-left-color: #ffa94d;
+}
+
+.task-details h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.task-details p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: #777;
+}
+
+.task-date {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}

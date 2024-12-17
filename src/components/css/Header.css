@@ -1,41 +1,28 @@
-.header-container {
-    position: absolute; /* 헤더를 이미지 위에 겹치도록 설정 */
-    top: 0; /* 화면 최상단에 배치 */
-    left: 0;
-    width: 100%; /* 헤더 너비를 화면 전체로 설정 */
-    z-index: 10; /* 배경 이미지보다 위에 배치 */
-    background: rgba(0, 0, 0, 0.4); /* 반투명 배경 추가 (선택사항) */
-    color: white;
-    padding: 1rem 2rem;
-    font-family: 'Open Sans', sans-serif;
-}
-
-.navbar {
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #49485e;
+    padding: 10px 20px;
+    color: white;
 }
 
-.logo a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
+.header .logo {
+    font-size: 20px;
     font-weight: bold;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
+.header input {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
 }
 
-.nav-links a {
+.header button {
+    background-color: #7f77f1;
     color: white;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #f0f0f0;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 12px;
+    cursor: pointer;
 }
