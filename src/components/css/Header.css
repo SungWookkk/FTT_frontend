@@ -1,28 +1,79 @@
+/* 전체 헤더 스타일 */
 .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background-color: #49485e;
-    padding: 10px 20px;
+    justify-content: space-between;
+    background-color: #49475e;
+    height: 40px;
+    padding: 0 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+/* 로고 스타일 */
+.header-logo img {
+    height: 30px;
+}
+
+/* 검색창 스타일 */
+.header-search {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    height: 28px;
+    width: 320px;
+}
+
+.header-search input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.header-search input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.header-search button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
     color: white;
 }
 
-.header .logo {
-    font-size: 20px;
-    font-weight: bold;
+/* 사용자 정보 */
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.header input {
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: none;
-}
-
-.header button {
+/* 사용자 아이콘 */
+.user-icon {
     background-color: #7f77f1;
     color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* 로그아웃 버튼 */
+.logout {
+    color: white;
+    font-size: 14px;
     cursor: pointer;
 }

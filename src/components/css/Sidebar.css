@@ -1,34 +1,811 @@
-.sidebar {
-    width: 260px;
-    height: 100vh;
-    background-color: #f7f8f9;
-    position: fixed;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
 }
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
+html,
+body {
+    margin: 0px;
+    height: 100%;
 }
-
-.sidebar ul li {
-    margin: 10px 0;
+/* a blue color as a generic focus style */
+button:focus-visible {
+    outline: 2px solid #4a90e2 !important;
+    outline: -webkit-focus-ring-color auto 5px !important;
 }
-
-.sidebar ul li a {
+a {
     text-decoration: none;
-    color: #333;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px;
-    display: block;
+}
+
+:root {
+    --wwwfigmacomblack: rgba(0, 0, 0, 1);
+    --wwwfigmacomwhite: rgba(255, 255, 255, 1);
+    --www-figma-com-inter-italic-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-italic-font-weight: 400;
+    --www-figma-com-inter-italic-font-size: 11px;
+    --www-figma-com-inter-italic-letter-spacing: 0px;
+    --www-figma-com-inter-italic-line-height: normal;
+    --www-figma-com-inter-italic-font-style: italic;
+    --www-figma-com-inter-medium-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-medium-font-weight: 500;
+    --www-figma-com-inter-medium-font-size: 11px;
+    --www-figma-com-inter-medium-letter-spacing: 0px;
+    --www-figma-com-inter-medium-line-height: normal;
+    --www-figma-com-inter-medium-font-style: normal;
+    --www-figma-com-inter-medium-italic-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-medium-italic-font-weight: 500;
+    --www-figma-com-inter-medium-italic-font-size: 11px;
+    --www-figma-com-inter-medium-italic-letter-spacing: 0px;
+    --www-figma-com-inter-medium-italic-line-height: normal;
+    --www-figma-com-inter-medium-italic-font-style: italic;
+    --www-figma-com-inter-semi-bold-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-semi-bold-font-weight: 600;
+    --www-figma-com-inter-semi-bold-font-size: 11px;
+    --www-figma-com-inter-semi-bold-letter-spacing: 0px;
+    --www-figma-com-inter-semi-bold-line-height: normal;
+    --www-figma-com-inter-semi-bold-font-style: normal;
+    --www-figma-com-inter-regular-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-regular-font-weight: 400;
+    --www-figma-com-inter-regular-font-size: 11px;
+    --www-figma-com-inter-regular-letter-spacing: 0px;
+    --www-figma-com-inter-regular-line-height: normal;
+    --www-figma-com-inter-regular-font-style: normal;
+    --www-figma-com-inter-semi-bold-italic-font-family: "Inter", Helvetica;
+    --www-figma-com-inter-semi-bold-italic-font-weight: 600;
+    --www-figma-com-inter-semi-bold-italic-font-size: 11px;
+    --www-figma-com-inter-semi-bold-italic-letter-spacing: 0px;
+    --www-figma-com-inter-semi-bold-italic-line-height: normal;
+    --www-figma-com-inter-semi-bold-italic-font-style: italic;
+}
+
+
+.box {
+    position: relative;
+    width: 258px;
+    height: 859px;
+}
+
+.box .group {
+    position: fixed;
+    width: 258px;
+    height: 859px;
+    top: 0;
+    left: 0;
+}
+
+.box .div-cu-simple-bar-wrapper {
+    width: 254px;
+    height: 40px;
+    top: 819px;
+    left: 0;
+}
+
+.box .div-cu-simple-bar {
+    height: 40px;
+    background-color: #f7f8f9;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-color: #e8eaed;
+}
+
+.box .overlap {
+    position: relative;
+    width: 255px;
+    height: 894px;
+    top: -860px;
+    left: -1px;
+}
+
+.box .div {
+    position: absolute;
+    width: 255px;
+    height: 894px;
+    top: 0;
+    left: 0;
+}
+
+.box .overlap-group {
+    position: relative;
+    height: 894px;
+}
+
+.box .div-cu-simple-bar-2 {
+    position: absolute;
+    width: 1px;
+    height: 16px;
+    top: 872px;
+    left: 128px;
+    background-color: #e8eaed;
+}
+
+.box .rectangle {
+    width: 255px;
+    height: 860px;
+    top: 0;
+    background-color: #f7f8f9;
+    position: absolute;
+    left: 0;
+}
+
+.box .button-help-upgrade {
+    position: absolute;
+    width: 113px;
+    height: 28px;
+    top: 866px;
+    left: 134px;
     border-radius: 6px;
 }
 
-.sidebar ul li a:hover {
+.box .text-wrapper {
+    height: 16px;
+    top: 4px;
+    left: 39px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2a2e34;
+    font-size: 13.7px;
+    line-height: 16px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .button-grayed {
+    position: absolute;
+    width: 113px;
+    height: 28px;
+    top: 866px;
+    left: 9px;
+    border-radius: 6px;
+}
+
+.box .text-wrapper-2 {
+    height: 16px;
+    top: 4px;
+    left: 49px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2a2e34;
+    font-size: 13.7px;
+    line-height: 16px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .overlap-2 {
+    position: absolute;
+    width: 259px;
+    height: 263px;
+    top: 405px;
+    left: 4px;
+}
+
+.box .cu-sidebar-favorites {
+    display: flex;
+    width: 254px;
+    height: 38px;
+    align-items: flex-start;
+    gap: 130.39px;
+    padding: 10px 0px 4px 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.box .button-cu-sidebar {
+    position: relative;
+    width: 80.61px;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.box .text-wrapper-3 {
+    position: absolute;
+    height: 24px;
+    top: 0;
+    left: 8px;
+    font-family: "Inter-Medium", Helvetica;
+    font-weight: 500;
+    color: #656f7d;
+    font-size: 11.8px;
+    letter-spacing: 0;
+    line-height: 24px;
+    white-space: nowrap;
+}
+
+.box .group-2 {
+    position: absolute;
+    width: 243px;
+    height: 232px;
+    top: 31px;
+    left: 16px;
+}
+
+.box .text-wrapper-4 {
+    height: 32px;
+    top: 32px;
+    left: 23px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2a2e34;
+    font-size: 13.7px;
+    line-height: 32px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .text-wrapper-5 {
+    height: 32px;
+    top: 0;
+    left: 0;
+    font-family: "Inter-Bold", Helvetica;
+    font-weight: 700;
+    color: #656f7d;
+    font-size: 11.8px;
+    line-height: 32px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .button-create-new {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 4px;
+    left: 200px;
+    background-color: #5f55ee;
+    border-radius: 4px;
+}
+
+.box .overlap-3 {
+    position: absolute;
+    width: 233px;
+    height: 33px;
+    top: 69px;
+    left: 0;
+}
+
+.box .overlap-group-wrapper {
+    position: absolute;
+    width: 233px;
+    height: 33px;
+    top: 0;
+    left: 0;
+}
+
+.box .overlap-group-2 {
+    position: relative;
+    width: 231px;
+    height: 33px;
+}
+
+.box .rectangle-2 {
+    width: 231px;
+    height: 32px;
+    top: 1px;
     background-color: #e5e4fc;
+    border-radius: 8px;
+    position: absolute;
+    left: 0;
+}
+
+.box .text-wrapper-6 {
+    width: 120px;
+    height: 32px;
+    top: 0;
+    left: 43px;
+    font-family: "Inter-Medium", Helvetica;
+    font-weight: 500;
+    color: #000000;
+    font-size: 13.7px;
+    line-height: 32px;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .group-3 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 7px;
+    left: 12px;
+    background-color: #ccc9fa;
+    border-radius: 10px;
+}
+
+.box .div-wrapper {
+    position: absolute;
+    width: 12px;
+    height: 32px;
+    top: 0;
+    left: 18px;
+}
+
+.box .text-wrapper-7 {
+    position: absolute;
+    width: 10px;
+    height: 32px;
+    top: 0;
+    left: 0;
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
     color: #544dc9;
+    font-size: 12.2px;
+    letter-spacing: 0;
+    line-height: 32px;
+}
+
+.box .p {
+    position: absolute;
+    width: 182px;
+    height: 32px;
+    top: 104px;
+    left: 49px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #000000;
+    font-size: 13px;
+    letter-spacing: 0;
+    line-height: 32px;
+}
+
+.box .text-wrapper-8 {
+    width: 182px;
+    height: 32px;
+    top: 136px;
+    left: 49px;
+    color: #000000;
+    font-size: 13px;
+    line-height: 32px;
+    position: absolute;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.box .text-wrapper-9 {
+    width: 182px;
+    height: 32px;
+    top: 168px;
+    left: 49px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #000000;
+    font-size: 13px;
+    line-height: 32px;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .text-wrapper-10 {
+    width: 182px;
+    height: 32px;
+    top: 200px;
+    left: 49px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #000000;
+    font-size: 13px;
+    line-height: 32px;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .div-cu-simple-bar-3 {
+    position: absolute;
+    width: 254px;
+    height: 1px;
+    top: 402px;
+    left: 3px;
+    background-color: #e8eaed;
+}
+
+.box .overlap-4 {
+    position: absolute;
+    width: 254px;
+    height: 49px;
+    top: 0;
+    left: 4px;
+}
+
+.box .link-ng-tns {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 12px;
+    left: 12px;
+    border-radius: 6px;
+}
+
+.box .div-cu-simple-bar-4 {
+    position: relative;
+    width: 188px;
+    height: 16px;
+    top: 8px;
+    left: 40px;
+}
+
+.box .text-wrapper-11 {
+    position: absolute;
+    height: 16px;
+    top: -1px;
+    left: 0;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2a2e34;
+    font-size: 13.7px;
+    letter-spacing: 0;
+    line-height: 16.0px;
+    white-space: nowrap;
+}
+
+.box .div-ng-tns {
+    position: absolute;
+    width: 254px;
+    height: 49px;
+    top: 0;
+    left: 0;
+    background-color: #f7f8f9;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: #e8eaed;
+}
+
+.box .button-cu-simple-bar {
+    position: relative;
+    width: 170px;
+    height: 32px;
+    top: 8px;
+    left: 12px;
+    border-radius: 6px;
+}
+
+.box .span-ng-tns {
+    display: flex;
+    flex-direction: column;
+    width: 123px;
+    height: 20px;
+    align-items: flex-start;
+    padding: 0px 0px 34px;
+    position: absolute;
+    top: 6px;
+    left: 34px;
+}
+
+.box .text-wrapper-12 {
+    position: relative;
+    width: fit-content;
+    margin-bottom: -34.00px;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    color: #2a2e34;
+    font-size: 8.1px;
+    letter-spacing: 0;
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+.box .user-info {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 3px;
+    left: 6px;
+}
+
+.box .group-4 {
+    position: absolute;
+    width: 241px;
+    height: 304px;
+    top: 80px;
+    left: 16px;
+}
+
+.box .button-cu-simple-bar-2 {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 272px;
+    left: 0;
+    border-radius: 6px;
+}
+
+.box .span-cu-simple-bar {
+    position: absolute;
+    width: 188px;
+    height: 16px;
+    top: 8px;
+    left: 40px;
+}
+
+.box .plus {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 5px;
+    left: 10px;
+}
+
+.box .text-wrapper-13 {
+    height: 16px;
+    top: 231px;
+    left: 40px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2a2e34;
+    font-size: 13.7px;
+    line-height: 16.0px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .div-ng-tns-2 {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 173px;
+    left: 0;
+}
+
+.box .link-cu-simple-bar {
+    position: relative;
+    height: 32px;
+    border-radius: 6px;
+}
+
+.box .icon {
+    width: 20px;
+    height: 20px;
+    left: 10px;
+    position: absolute;
+    top: 6px;
+}
+
+.box .div-ng-tns-3 {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 116px;
+    left: 0;
+}
+
+.box .img {
+    width: 17px;
+    height: 17px;
+    left: 12px;
+    position: absolute;
+    top: 6px;
+}
+
+.box .div-ng-tns-4 {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 59px;
+    left: 0;
+}
+
+.box .div-ng-tns-wrapper {
+    height: 32px;
+    border-radius: 6px;
+}
+
+.box .div-ng-tns-5 {
+    width: 238px;
+    height: 32px;
+}
+
+.box .overlap-5 {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 0;
+    left: 1px;
+    border-radius: 6px;
+}
+
+.box .cdk-tree-node-cdk {
+    position: absolute;
+    width: 238px;
+    height: 32px;
+    top: 0;
+    left: 0;
+    background-color: #e5e4fc;
+    border-radius: 6px;
+}
+
+
+.box .cu-project-row {
+    width: 234px;
+    height: 32px;
+}
+
+.box .cu-sidebar-row {
+    height: 32px;
+}
+
+.box .div-row {
+    display: flex;
+    width: 52px;
+    height: 24px;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 0px 168px 0px 0px;
+    position: relative;
+    top: 4px;
+    left: 182px;
+}
+
+.box .button-cu-project {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    margin-right: -140.00px;
+    border-radius: 4px;
+}
+.sidebar-container {
+    position: fixed;
+    width: 258px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    left: 0;
+    top: 0;
+
+}
+
+.sidebar-content {
+    position: absolute;
+    width: 100%;
+    top: 120px; /* 위의 프로필 영역을 위한 여백 */
+    left: 15px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* 기본 링크 스타일 */
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    width: 100%;
+    gap: 15px;
+    margin-top: 8px;
+    margin-right: 15px;
+}
+
+/* 활성화된 메뉴(Bold 적용) */
+.sidebar-menu li.active a {
+    font-weight: bold;
+    background-color: #e5e4fc; /* 선택된 배경 강조 */
+}
+
+.sidebar-menu li img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 사용자 정보 영역 */
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    margin-top: 25px;
+    background-color: #f7f8f9; /* 배경 색상 추가 */
+    border-bottom: 1px solid #e8eaed;
+    z-index: 100; /* 다른 요소 위에 배치 */
+}
+
+.user-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2a2e34;
+    white-space: nowrap;
+}
+/* Favorites 섹션 스타일 */
+.cu-sidebar-favorites {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 38px;
+    padding: 10px 0px 4px 16px; /* 좌측 패딩 조정 */
+    width: 254px;
+    margin-top: 10px; /* 상단 여백 추가 */
+}
+
+.cu-sidebar-favorites .button-cu-sidebar {
+    border-radius: 4px;
+    height: 24px;
+    overflow: hidden;
+    position: relative;
+    width: 100px; /* 버튼 크기 조정 */
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.cu-sidebar-favorites .text-wrapper {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    height: 24px;
+    letter-spacing: 0;
+    line-height: 24px;
+    white-space: nowrap;
+}
+
+
+.box .button-cu-project-2 {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    margin-right: -166.00px;
+    border-radius: 4px;
+}
+
+.box .vector {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 8px;
+    left: 9px;
+}
+
+.box .span-cu-simple-bar-2 {
+    position: absolute;
+    width: 188px;
+    height: 16px;
+    top: 10px;
+    left: 37px;
+}
+
+.box .text-wrapper-14 {
+    height: 16px;
+    top: -1px;
+    left: 0;
+    font-family: "Inter-Bold", Helvetica;
+    font-weight: 700;
+    color: #2a2e34;
+    font-size: 13.7px;
+    line-height: 16.0px;
+    white-space: nowrap;
+    position: absolute;
+    letter-spacing: 0;
+}
+
+.box .board {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 229px;
+    left: 10px;
 }
