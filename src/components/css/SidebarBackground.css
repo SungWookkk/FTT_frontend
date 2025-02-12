@@ -1,0 +1,35 @@
+.sidebar-background {
+    position: fixed;
+    width: 258px;
+    height: 100vh;
+    background-color: #f7f8f9;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.background-box {
+    width: 100%;
+    height: 100%;
+}
+
+.help-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    position: absolute;
+    bottom: 20px;
+    width: 90%;
+}
+
+.help-button, .share-button {
+    background-color: #e8eaed;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}

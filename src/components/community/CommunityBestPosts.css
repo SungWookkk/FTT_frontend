@@ -1,0 +1,124 @@
+/* 전체 레이아웃 설정 */
+.community-page {
+    display: flex;
+}
+
+/* 사이드바 컨테이너 스타일 */
+.sidebar-container {
+    width: 260px; /* 사이드바 너비 설정 */
+    height: 100vh;
+    background-color: #f4f5f7;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+/* 커뮤니티 게시판 컨텐츠 스타일 */
+.community-best-posts {
+    flex: 1;
+    padding: 40px;
+    margin-left: 260px; /* 사이드바 공간 확보 */
+    background-color: #f7f8f9;
+}
+
+/* 제목 스타일 */
+.community-best-posts h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2a2e34;
+    margin-bottom: 20px;
+}
+
+/* 테이블 스타일 */
+.table {
+    width: calc(100% - 260px); /* 사이드바를 고려한 너비 설정 */
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 테이블 헤더 스타일 */
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background-color: #f2f1fe;
+    font-weight: bold;
+    color: #4f5762;
+}
+
+/* 게시글 행 스타일 */
+.table-row + .table-row {
+    border-top: 1px solid #e8eaed;
+}
+
+.table-row span {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    color: #141b34;
+}
+
+/* 제목을 왼쪽 정렬 */
+.table-row span:nth-child(2) {
+    text-align: left;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #ffffff;
+    border: 1px solid #e8eaed;
+    padding: 8px 12px;
+    margin: 0 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #4f5762;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #f2f1fe;
+    color: #544dc9;
+}
+
+.pagination button:hover {
+    background-color: #e5e4fc;
+}
+
+/* 사이드바 네비게이션 스타일 */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s ease-in-out;
+}
+
+/* 클릭된 메뉴만 bold 처리 */
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    gap: 15px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.sidebar-menu li a.active {
+    font-weight: bold;
+}
