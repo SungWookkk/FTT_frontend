@@ -1,6 +1,6 @@
 import React from "react";
 import "../css/DashboardContent.css";
-
+import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
 const DashboardContent = () => {
     return (
         <div className="dashboard-content">
@@ -27,27 +27,37 @@ const DashboardContent = () => {
             </div>
 
             {/* 메인 작업 컨테이너 */}
+            <div className="info-title">짱구가 좋은 성욱 님의 정보</div>
+            <div className="info-underline"></div>
             <div className="main-task-container">
-                {/* 🔹 좌측 - 사용자 정보 및 진행률 */}
+                {/* 좌측 - 사용자 정보 및 진행률 */}
                 <div className="user-info-box">
-                    <div className="info-title">짱구가 좋은 성욱 님의 정보</div>
-                    <div className="progress-area">
-                        <div className="progress-bar"></div>
+                    <div className="info-header">
+                        <img className="profile-img" src={badge} alt="프로필 이미지"/>
+                        <span className="user-name"><strong>짱구가 좋은 성욱</strong></span>
+                        <span className="user-text">님의 현재 뱃지 등급은</span>
+                        <div className="badge-icon"></div>
+                        <span className="badge-text">입니다.</span>
+                    </div>
+                    <div className="progress-container">
+                        <div className="progress-bar">
+                            <div className="progress-fill"></div>
+                        </div>
                         <div className="progress-labels">
                             <span>25%</span>
                             <span>50%</span>
                             <span>75%</span>
                         </div>
                     </div>
-                    <div className="badge-area"></div>
                 </div>
 
+
                 {/* 🔹 우측 - 기존 작업 컨테이너 */}
+
                 <div className="task-container">
+                    <div className="task-title">오늘의 작업!</div>
                     {/* 오늘의 작업 */}
                     <div className="task-box today-task">
-                        <div className="task-title">오늘의 작업!</div>
-
                         {/* 첫 번째 작업 */}
                         <div className="task-card">
                             <div className="task-color red-gradient"></div>
