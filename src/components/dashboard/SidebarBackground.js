@@ -6,9 +6,10 @@ const SidebarBackground = () => {
         <aside className="sidebar-background">
             {/* 배경 박스 */}
             <div className="background-box">
-                <div className="help-section">
-                    <button className="help-button">도움말</button>
-                    <button className="share-button">공유</button>
+                <div className="help-secti  on">
+                    <div className="help-item">공유</div>
+                    <div className="divider"></div>
+                    <div className="help-item1">도움말</div>
                 </div>
             </div>
         </aside>

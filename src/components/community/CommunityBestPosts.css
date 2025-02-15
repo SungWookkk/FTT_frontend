@@ -94,31 +94,3 @@
     background-color: #e5e4fc;
 }
 
-/* 사이드바 네비게이션 스타일 */
-.sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar-menu li {
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s ease-in-out;
-}
-
-/* 클릭된 메뉴만 bold 처리 */
-.sidebar-menu li a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #333;
-    gap: 15px;
-    font-size: 14px;
-    width: 100%;
-}
-
-.sidebar-menu li a.active {
-    font-weight: bold;
-}

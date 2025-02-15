@@ -670,12 +670,13 @@ a {
 
 .sidebar-menu {
     list-style: none;
-    padding: 0;
+    padding-right: 10px;
     margin: 0;
+
 }
 
 .sidebar-menu li {
-    padding: 10px 20px;
+    padding: 10px 20px 10px 10px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -691,15 +692,27 @@ a {
     font-size: 14px;
     width: 100%;
     gap: 15px;
-    margin-top: 8px;
-    margin-right: 15px;
+    margin-top: 15px;
+    margin-right: -10px;
+    transition: color 0.2s ease;
+
 }
 
-/* 활성화된 메뉴(Bold 적용) */
+
+/* 활성화된 메뉴 */
 .sidebar-menu li.active a {
     font-weight: bold;
-    background-color: #e5e4fc; /* 선택된 배경 강조 */
+    background-color: #e5e4fc;
+    height: 32px;
+    width: 238px;
+    border-radius: 6px;
 }
+.sidebar-menu li a:hover {
+    text-decoration: underline;
+    color: #5f55ee;
+    cursor: pointer;
+}
+
 
 .sidebar-menu li img {
     width: 20px;
@@ -711,7 +724,7 @@ a {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 20px;
+    padding: 15px 20px 20px 20px;
     margin-top: 25px;
     background-color: #f7f8f9; /* 배경 색상 추가 */
     border-bottom: 1px solid #e8eaed;
@@ -726,10 +739,11 @@ a {
 }
 
 .user-name {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
     color: #2a2e34;
     white-space: nowrap;
+
 }
 /* Favorites 섹션 스타일 */
 .cu-sidebar-favorites {

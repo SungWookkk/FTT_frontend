@@ -19,7 +19,7 @@ const Sidebar = () => {
             {/* 사용자 정보 영역 */}
             <div className="sidebar-user">
                 <img className="user-icon" src={userinfo} alt="User Icon" />
-                <span className="user-name">Park Sung Wook’s Workspace</span>
+                <span className="user-name">박성욱의 워크스페이스</span>
             </div>
 
             <nav className="sidebar-content">
@@ -62,9 +62,16 @@ const Sidebar = () => {
                     </li>
                 </ul>
                 {/* 🔹 추가된 Favorites 섹션 */}
-                <SidebarFavorites />
+                <SidebarFavorites/>
+                        {/* 도움말 & 공유 버튼 */}
+                <div className="help-section">
+                    <button className="help-button">공유</button>
+                    <div className="div-cu-simple-bar"/>
+                    <button className="share-button">도움말</button>
+                </div>
             </nav>
         </div>
+
     );
 };
 

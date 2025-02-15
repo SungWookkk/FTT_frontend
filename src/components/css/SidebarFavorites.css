@@ -1,0 +1,135 @@
+/* Sidebar Favorites (Favorites 아래 작업 공간) */
+.sidebar-favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 8px;
+    width: 254px;
+    margin-top: 10px;
+    padding-right: 20px;
+}
+
+.sidebar-favorites .favorites-button {
+    border-radius: 4px;
+    height: 24px;
+    width: 100px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.sidebar-favorites .favorites-text {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    height: 24px;
+    line-height: 24px;
+    white-space: nowrap;
+    margin-top: 10px;
+}
+
+/* 작업 공간 메뉴 */
+.sidebar-workspace-menu {
+    width: 231px;
+    margin-top: 5px;
+}
+
+.sidebar-workspace-container {
+    height: 32px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.workspace-title {
+    color: #656f7d;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 11.8px;
+    font-weight: 700;
+    line-height: 32px;
+}
+
+.workspace-add-button {
+    background-color: #5f55ee;
+    border-radius: 4px;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    top: 380px;
+    right: 30px;
+    cursor: pointer;
+}
+
+/* 작업 공간 리스트 */
+.workspace-active {
+    position: relative;
+    width: 231px;
+    margin-bottom: 5px;
+}
+
+.workspace-active .active-bg {
+    background-color: #e5e4fc;
+    border-radius: 8px;
+    height: 32px;
+    width: 231px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.workspace-active .active-text {
+    color: #000000;
+    font-family: "Inter-Medium", sans-serif;
+    font-size: 13.7px;
+    font-weight: 500;
+    line-height: 32px;
+    padding-left: 45px;
+    position: relative;
+    z-index: 2;
+}
+
+.workspace-icon {
+    background-color: #ccc9fa;
+    border-radius: 10px;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    z-index: 3;
+}
+
+.workspace-arrow {
+    color: #544dc9;
+    font-family: "Inter-BlackItalic", sans-serif;
+    font-size: 12.2px;
+    font-style: italic;
+    font-weight: 900;
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    z-index: 3;
+}
+
+/* 작업 공간 하위 메뉴 */
+.workspace-list {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.workspace-list-item {
+    color: #000000;
+    font-family: "Inter-Regular", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-left: 49px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.workspace-list-item:hover {
+    text-decoration: underline;
+    color: #5f55ee;
+}
