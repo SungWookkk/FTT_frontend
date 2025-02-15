@@ -1,0 +1,53 @@
+.sidebar-background {
+    position: fixed;
+    width: 258px;
+    height: 100vh;
+    background-color: #f7f8f9;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.background-box {
+    width: 100%;
+    height: 100%;
+}
+
+.help-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 150px;
+    position: absolute;
+    width: 90%;
+}
+
+.help-button, .share-button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 13.7px;
+    color: #2a2e34;
+    font-family: "Inter-Regular", sans-serif;
+    background-color: #f7f8f9;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.help-item {
+    border-radius: 6px;
+    height: 28px;
+    left: 9px;
+    position: absolute;
+    width: 113px;
+}
+
+.div-cu-simple-bar {
+    background-color: #e8eaed;
+    height: 24px;
+    margin-top: 10px;
+    width: 2px;
+}

@@ -5,31 +5,23 @@ import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import Dashboard from "./components/dashboard/Dashboard";
 import MainNavigation from "./MainNavigation";
-import Sidebar from "./components/dashboard/Sidebar";
-import Header from "./components/Header";
 import "./App.css";
+import CommunityBestPosts from "./components/community/CommunityBestPosts";
 
 const App = () => {
     return (
         <AuthProvider>
             <Router>
-                <MainNavigation />
+                <MainNavigation/>
                 <div className="app-container">
-                    {/* Sidebar */}
-                    <Sidebar />
-
-                    <div className="main-content">
-                        {/* Header */}
-                        <Header />
-
-                        {/* Routes */}
-                        <Switch>
-                            <Route exact path="/" component={Login} />
-                            <Route path="/login" component={Login} />
-                            <Route path="/signup" component={Signup} />
-                            <Route path="/dashboard" component={Dashboard} />
-                        </Switch>
-                    </div>
+                    <Switch>
+                        <Route exact path="/" component={Login}/>
+                        <Route path="/login" component={Login}/>
+                        <Route path="/signup" component={Signup}/>
+                        <Route path="/dashboard" component={Dashboard}/>
+                        <Route path="/community" component={CommunityBestPosts}/>
+                        <Route path="/dasboard" component={Dashboard}/>
+                    </Switch>
                 </div>
             </Router>
         </AuthProvider>
