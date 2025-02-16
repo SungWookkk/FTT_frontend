@@ -54,11 +54,13 @@ const DashboardContent = () => {
 
                 {/* 🔹 우측 - 기존 작업 컨테이너 */}
 
+
                 <div className="task-container">
-                    <div className="task-title">오늘의 작업!</div>
                     {/* 오늘의 작업 */}
                     <div className="task-box today-task">
-                        {/* 첫 번째 작업 */}
+                        <div className="title-underline"></div> {/* 구분선 추가 */}
+
+                        <div className="task-title">오늘의 작업!</div>
                         <div className="task-card">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
@@ -68,7 +70,6 @@ const DashboardContent = () => {
                             <div className="task-deadline">D-1</div>
                         </div>
 
-                        {/* 두 번째 작업 */}
                         <div className="task-card">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
@@ -81,9 +82,8 @@ const DashboardContent = () => {
 
                     {/* 작성한 작업 */}
                     <div className="task-box written-task">
+                        <div className="title-underline"></div> {/* 구분선 추가 */}
                         <div className="task-title">작성한 작업!</div>
-
-                        {/* 첫 번째 작업 */}
                         <div className="task-card">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
@@ -93,7 +93,6 @@ const DashboardContent = () => {
                             <div className="task-deadline">D-1</div>
                         </div>
 
-                        {/* 두 번째 작업 */}
                         <div className="task-card">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
@@ -104,6 +103,7 @@ const DashboardContent = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

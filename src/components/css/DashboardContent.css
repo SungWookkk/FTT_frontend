@@ -186,6 +186,21 @@
     font-size: 8px;
     font-weight: 700;
 }
+.info-title {
+    flex-wrap: nowrap;
+    white-space: nowrap; /* 모든 텍스트를 한 줄로 표시 */
+    padding: 20px 40px 0;
+}
+
+/* 작업 컨테이너 수정 */
+.task-container {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap; /* 모든 텍스트를 한 줄로 표시 */
+    padding-right: 230px;
+    justify-content: flex-start; /* 왼쪽 정렬로 변경 */
+}
+
 
 /* 작업 박스 (오늘의 작업, 작성한 작업) */
 .task-box {
@@ -197,18 +212,36 @@
     padding: 15px;
     position: relative;
 }
-.info-title {
-    flex-wrap: nowrap;
-    white-space: nowrap; /* 모든 텍스트를 한 줄로 표시 */
-    padding: 20px 40px 0;
+
+/*  새로운 제목 컨테이너 스타일 */
+.task-title-container {
+    margin-bottom: 10px; /* 제목과 박스 간 간격 */
+    padding-left: 15px;
 }
 
-/* 작업 제목 */
+
+    /*  구분선 스타일 */
+.title-underline {
+    position: relative;
+    top: -35px;
+    left: -15px;
+    width: 75%;
+    height: 2px;
+    background-color: #F2F1FE;
+    margin-top: 5px;
+    border-radius: 2px;
+}
+
+/*  작업 제목 - 카드 박스 상단에 고정 */
 .task-title {
+    position: relative;
+    top: -60px;
+    left: -20px;
     color: #adb3bd;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    margin-bottom: 5px;
+    padding-left: 5px;
+    white-space: nowrap;
 }
 
 /* 작업 카드 */
@@ -218,19 +251,22 @@
     margin-bottom: 10px;
     border: 1px solid #0000001a;
     border-radius: 8px;
-    box-shadow: 0px 1px 4px #0000000d;
-    padding: 0;
+    box-shadow: 0 1px 4px #0000000d;
     position: relative;
-
+    box-sizing: border-box;
+    top: -15px;
+    padding: 12px 12px 12px 50px; /* 왼쪽 패딩 증가 */
+    overflow: hidden;
+    background: linear-gradient(
+            to left,
+            rgba(255, 24, 24, 0.2) 10%, /* 레드 그라데이션 */
+            #ffffff 70px /* 흰색 배경을 38px 이후부터 적용 */
+    );
 }
 
-/* 작업 카드 색상 */
+/* 작업 카드 색상 제거 */
 .task-color {
-    width: 38px;
-    height: 56px;
-    border-radius: 8px;
-    margin-right: 5px;
-
+    display: none; /* 기존 task-color 제거 */
 }
 
 .red-gradient {
