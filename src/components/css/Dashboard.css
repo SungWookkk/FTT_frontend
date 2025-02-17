@@ -162,7 +162,7 @@
 }
 
 .info-underline {
-    margin-left: 40px;
+    margin-left: 25px;
     margin-top: 8px;
     width: 363px;
     background-color: #F2F1FE;
@@ -172,7 +172,7 @@
 /* 좌측 사용자 정보 박스 */
 .user-info-box {
     width: 100%;
-    max-width: 540px;
+    max-width: 700px;
     height: 175px;
     background-color: #ffffff;
     border-radius: 10px;
@@ -192,23 +192,32 @@
     margin-bottom: 10px;
 }
 
-/*  진행률 바 */
-.progress-area {
-    height: 12px;
-    background-color: #f2f6fb;
-    border-radius: 6px;
-    margin-top: 10px;
-    position: relative;
+/* 진행률 바 컨테이너 */
+.progress-container {
+    width: 80%; /* 전체 너비의 80%로 조정 */
+    margin-top: 20px;
 }
 
+/* 진행률 바 */
 .progress-bar {
-    width: 75%;
-    height: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background-color: #f2f6fb;
+    box-shadow: 0px 4px 8px #2121211a;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.progress-fill {
+    height: 12px;
+    width: 75%; /* 진행률 */
     background-color: #006be5;
     border-radius: 6px;
+    box-shadow: 0px 8px 16px #21212133;
 }
 
-/*  진행률 레이블 */
+/* 진행률 레이블 */
 .progress-labels {
     display: flex;
     justify-content: space-between;
@@ -216,7 +225,6 @@
     font-size: 10px;
     color: #2a2e34;
 }
-
 /*  뱃지 공간 */
 .badge-area {
     width: 100%;

@@ -1,0 +1,126 @@
+/* 알림 배너 스타일 */
+.alert-banner-todo {
+    background-color: #f2f1fe;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+    width: 100%; /* 🔹 배너 전체 폭 채우기 */
+
+}
+/* 알림 텍스트 스타일 */
+.alert-text-todo {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 120px;
+}
+
+/* 일반 텍스트 */
+.alert-text .normal-text {
+    font-weight: 400;
+}
+
+/* 강조 텍스트 */
+.alert-text .highlight-text {
+    font-weight: 700;
+}
+
+.list-tap {
+    height: 47px;
+    width: 1032px;
+}
+
+.list-tap .div-items {
+    height: 48px;
+    left: -16px;
+    position: relative;
+    width: 264px;
+}
+
+.list-tap .cu-data-view-item-cu {
+    align-items: flex-start;
+    border-radius: 6px;
+    display: flex;
+    gap: 4px;
+    height: 28px;
+    left: 119px;
+    padding: 6px 349.77px 6px 1px;
+    position: absolute;
+    top: 10px;
+    width: 57px;
+}
+
+.list-tap .div-cu-data-view {
+    height: 16px;
+    margin-right: -322.77px;
+    overflow: hidden;
+    position: relative;
+    width: 23.91px;
+}
+
+.list-tap .text-wrapper {
+    color: #656f7d;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 13.7px;
+    font-weight: 500;
+    height: 16px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 16.0px;
+    position: absolute;
+    top: -1px;
+    white-space: nowrap;
+}
+
+.list-tap .div-wrapper {
+    height: 16px;
+    left: 57px;
+    overflow: hidden;
+    position: absolute;
+    top: 16px;
+    width: 24px;
+}
+
+.list-tap .div {
+    color: #656f7d;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 13.7px;
+    font-weight: 700;
+    height: 16px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 16.0px;
+    position: absolute;
+    top: -1px;
+    white-space: nowrap;
+}
+
+.list-tap .div-2 {
+    background-color: #5f55ee;
+    height: 2px;
+    left: 40px;
+    position: absolute;
+    top: 37px;
+    width: 59px;
+}
+
+.list-tap .text-wrapper-2 {
+    color: #656f7d;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 13.7px;
+    font-weight: 500;
+    height: 16px;
+    left: 190px;
+    letter-spacing: 0;
+    line-height: 16.0px;
+    position: absolute;
+    top: 15px;
+    white-space: nowrap;
+}

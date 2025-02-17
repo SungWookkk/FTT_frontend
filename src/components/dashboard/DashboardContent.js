@@ -1,6 +1,8 @@
 import React from "react";
 import "../css/DashboardContent.css";
 import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
+import arrow1 from "../../Auth/css/img/arrow1.svg";
+
 const DashboardContent = () => {
     return (
         <div className="dashboard-content">
@@ -33,8 +35,10 @@ const DashboardContent = () => {
                 {/* 좌측 - 사용자 정보 및 진행률 */}
                 <div className="user-info-box">
                     <div className="info-header">
+                        <div className="profile-container">
                         <img className="profile-img" src={badge} alt="프로필 이미지"/>
                         <span className="user-name"><strong>짱구가 좋은 성욱</strong></span>
+                        </div>
                         <span className="user-text">님의 현재 뱃지 등급은</span>
                         <div className="badge-icon"></div>
                         <span className="badge-text">입니다.</span>
@@ -52,9 +56,7 @@ const DashboardContent = () => {
                 </div>
 
 
-                {/* 🔹 우측 - 기존 작업 컨테이너 */}
-
-
+                {/* 우측 - 기존 작업 컨테이너 */}
                 <div className="task-container">
                     {/* 오늘의 작업 */}
                     <div className="task-box today-task">
@@ -64,8 +66,8 @@ const DashboardContent = () => {
                         <div className="task-card">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
-                                <div className="task-name">프로젝트 보고서 작성</div>
-                                <div className="task-desc">이거 빨리 디자인을 마무리 해야해 그래야</div>
+                                <div className="task-name">옆의 색상은 </div>
+                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
                             </div>
                             <div className="task-deadline">D-1</div>
                         </div>
@@ -73,8 +75,8 @@ const DashboardContent = () => {
                         <div className="task-card">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
-                                <div className="task-name">피그마 디자인 마무리 하기</div>
-                                <div className="task-desc">빨리빨리 디자인 마무리 하자</div>
+                                <div className="task-name">옆의 색상은 </div>
+                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
                             </div>
                             <div className="task-deadline">D-3</div>
                         </div>
@@ -87,8 +89,8 @@ const DashboardContent = () => {
                         <div className="task-card">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
-                                <div className="task-name">프로젝트 보고서 작성</div>
-                                <div className="task-desc">이거 빨리 디자인을 마무리 해야해 그래야</div>
+                                <div className="task-name">옆의 색상은 </div>
+                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
                             </div>
                             <div className="task-deadline">D-1</div>
                         </div>
@@ -96,14 +98,60 @@ const DashboardContent = () => {
                         <div className="task-card">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
-                                <div className="task-name">피그마 디자인 마무리 하기</div>
-                                <div className="task-desc">빨리빨리 디자인 마무리 하자</div>
+                                <div className="task-name">옆의 색상은 </div>
+                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
                             </div>
                             <div className="task-deadline">D-3</div>
                         </div>
                     </div>
                 </div>
+                {/* 데이터 통계 섹션 */}
+                <div className="data-statistics">
+                    <div className="data-title">데이터 통계</div>
+                    <div className="data-underline"></div>
 
+                    {/* 통계 카드 5개 생성 */}
+                    <div className="statistics-container">
+                        {["작업 처리 평균 시간", "작성한 작업", "완료한 작업", "실패한 작업", "작업에 따른 사용자 순위"].map((title, index) => (
+                            <div className={`stat-card ${index === 4 ? 'last-card' : ''}`} key={index}>
+                                <div className="stat-title">{title}</div>
+                                <div className="stat-value-placeholder"></div>
+                                {/* 마지막 카드에 화살표 추가 */}
+                                {index === 4 && <img className="arrow-icon" src={arrow1} alt="Arrow" />}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                {/* 그래프 섹션 */}
+                <div className="graph-section">
+                    <div className="graph-title">작업 시작 통계</div>
+                    <div className="graph-underline"></div>
+                    {/* 그래프 영역 - #f2f1fe 색상 적용 */}
+                    <div className="graph-placeholder"></div>
+                </div>
+                {/* 🎨 피그마 디자인 코드(노란색 영역) */}
+                <div className="yellow-design-section">
+                    {/* 뱃지 */}
+                    <div className="yellow-title">뱃지</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill badge-fill"></div>
+                        <div className="progress-text">작업 진척도</div>
+                    </div>
+
+                    {/* 칭호 */}
+                    <div className="yellow-title">칭호</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill title-fill"></div>
+                        <div className="progress-text">3일 연속 작업 완료! - "3일의 기적"</div>
+                    </div>
+
+                    {/* 마감시간 */}
+                    <div className="yellow-title">마감 시간 준수</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill time-fill"></div>
+                        <div className="progress-text">마감 시간 준수! - "시간 관리의 신!"</div>
+                    </div>
+                </div>
             </div>
         </div>
     );

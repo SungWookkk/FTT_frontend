@@ -7,6 +7,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import MainNavigation from "./MainNavigation";
 import "./App.css";
 import CommunityBestPosts from "./components/community/CommunityBestPosts";
+import TodoList from "./components/todolist/TodoList";
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
                         <Route path="/dashboard" component={Dashboard}/>
                         <Route path="/community" component={CommunityBestPosts}/>
                         <Route path="/dasboard" component={Dashboard}/>
+                        <Route path="/todo" component={TodoList}/>
                     </Switch>
                 </div>
             </Router>
