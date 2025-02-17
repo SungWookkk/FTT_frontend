@@ -184,7 +184,7 @@
     height: 50px;
     margin-left: 5px;
     margin-top: 10px;
-    background: url('../../Auth/css/img/badge_design/Badge_01.svg') no-repeat center/contain;
+    background: url('../../../Auth/css/img/badge_design/Badge_01.svg') no-repeat center/contain;
 }
 
 .badge-text {

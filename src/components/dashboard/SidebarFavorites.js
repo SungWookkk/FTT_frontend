@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/SidebarFavorites.css"
+import "./css/SidebarFavorites.css"
 
 export const SidebarFavorites = () => {
     return (

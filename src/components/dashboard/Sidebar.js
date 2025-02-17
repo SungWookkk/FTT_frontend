@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import "../css/Sidebar.css";
+import "./css/Sidebar.css";
 import SidebarBackground from "./SidebarBackground";
 import DashboardIcon from "../../../src/Auth/css/img/Dashboard.svg";
 import ToDoIcon from "../../../src/Auth/css/img/Todolist.svg";

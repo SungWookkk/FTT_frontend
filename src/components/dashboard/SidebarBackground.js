@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/SidebarBackground.css"; // CSS 파일 유지
+import "./css/SidebarBackground.css"; // CSS 파일 유지
 
 const SidebarBackground = () => {
     return (

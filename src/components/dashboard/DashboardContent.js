@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/DashboardContent.css";
+import "./css/DashboardContent.css";
 import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
 import arrow1 from "../../Auth/css/img/arrow1.svg";
 
