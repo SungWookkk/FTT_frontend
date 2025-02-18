@@ -1,0 +1,60 @@
+/* 작업 카드 스타일 */
+.task {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 2px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    width: 310px;
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+    min-height: 60px; /* 박스 최소 높이 */
+}
+
+.task:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 체크박스 공간 */
+.task-checkbox-placeholder {
+    width: 24px; /* 체크박스 공간 */
+    height: 24px;
+    margin-right: 12px; /* 내용과 간격 */
+}
+
+/* 작업 내용 */
+.task-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 세로 중앙 정렬 */
+    flex: 1;
+}
+
+/* 작업 제목 */
+.task-name {
+    color: #2a2e34;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* 작업 설명 */
+.description {
+    color: #4f5762;
+    font-size: 12px;
+    line-height: 1.5;
+    height: 36px; /* 두 줄까지만 표시 */
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}

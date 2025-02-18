@@ -23,104 +23,263 @@
 }
 
 /* 일반 텍스트 */
-.alert-text .normal-text {
+.alert-text-todo .normal-text {
     font-weight: 400;
 }
 
 /* 강조 텍스트 */
-.alert-text .highlight-text {
+.alert-text-todo .highlight-text {
     font-weight: 700;
 }
 
+/* 목록 선택 탭 스타일 개선 */
 .list-tap {
     height: 47px;
-    width: 1032px;
-}
-
-.list-tap .div-items {
-    height: 48px;
-    left: -16px;
-    position: relative;
-    width: 264px;
-}
-
-.list-tap .cu-data-view-item-cu {
-    align-items: flex-start;
-    border-radius: 6px;
+    width: 100%;
     display: flex;
-    gap: 4px;
-    height: 28px;
-    left: 119px;
-    padding: 6px 349.77px 6px 1px;
-    position: absolute;
-    top: 10px;
-    width: 57px;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid #e8eaed;
+}
+/*  탭 컨테이너 */
+.list-tab-container {
+    display: flex;
+    gap: 40px; /* 탭 간 간격 */
+    margin-left: 30px;
 }
 
-.list-tap .div-cu-data-view {
-    height: 16px;
-    margin-right: -322.77px;
-    overflow: hidden;
+/*  각 탭 공통 스타일 */
+.tab-item {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
     position: relative;
-    width: 23.91px;
-}
-
-.list-tap .text-wrapper {
-    color: #656f7d;
-    font-family: "Inter-Medium", Helvetica;
-    font-size: 13.7px;
-    font-weight: 500;
-    height: 16px;
-    left: 0;
-    letter-spacing: 0;
-    line-height: 16.0px;
-    position: absolute;
-    top: -1px;
     white-space: nowrap;
+    transition: color 0.3s ease;
 }
 
-.list-tap .div-wrapper {
-    height: 16px;
-    left: 57px;
-    overflow: hidden;
-    position: absolute;
-    top: 16px;
-    width: 24px;
-}
-
-.list-tap .div {
-    color: #656f7d;
-    font-family: "Inter-Bold", Helvetica;
-    font-size: 13.7px;
+/*  선택된 탭 스타일 */
+.tab-item.active {
+    color: #2a2e34;
     font-weight: 700;
-    height: 16px;
+}
+
+/*  활성 탭 하단 언더라인 */
+.tab-item.active::after {
+    content: '';
+    position: absolute;
     left: 0;
-    letter-spacing: 0;
-    line-height: 16.0px;
-    position: absolute;
-    top: -1px;
-    white-space: nowrap;
-}
-
-.list-tap .div-2 {
+    bottom: -2px;
+    width: 100%;
+    height: 3px;
     background-color: #5f55ee;
-    height: 2px;
-    left: 40px;
-    position: absolute;
-    top: 37px;
-    width: 59px;
+    border-radius: 2px;
 }
 
-.list-tap .text-wrapper-2 {
-    color: #656f7d;
-    font-family: "Inter-Medium", Helvetica;
-    font-size: 13.7px;
-    font-weight: 500;
-    height: 16px;
-    left: 190px;
-    letter-spacing: 0;
-    line-height: 16.0px;
+/*  탭 호버 시 색상 변경 */
+.tab-item:hover {
+    color: #2a2e34;
+}
+
+/* 버튼 그룹 */
+.header-button-group {
     position: absolute;
-    top: 15px;
+    right: 20px;
+    display: flex;
+    gap: 10px; /* 버튼 간격을 10px로 변경하여 디자인과 동일하게 */
+    align-items: center;
+    margin-top: -5px; /* 버튼을 상단에 가깝게 위치 */
+}
+
+/* 버튼 기본 스타일 */
+.btn {
+    border: 1px solid #e8eaed; /* 피그마 디자인과 동일한 테두리 */
+    border-radius: 6px;
+    padding: 6px 0;
+    font-size: 13.7px;
+    cursor: pointer;
+    font-family: "Inter-Medium", Helvetica;
+    color: #4f5762;
+    text-align: center;
+    width: 82px; /* 피그마 디자인에서 제공한 너비로 고정 */
+    height: 32px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
     white-space: nowrap;
+}
+
+/* 생성 버튼 */
+.btn-create {
+    background-color: #f2f1fe;
+    color: #4f5762;
+    width: 113px; /* 생성 버튼은 더 넓게 */
+}
+.btn-create:hover {
+    background-color: #e2e6f6;
+}
+
+/* 수정 버튼 */
+.btn-edit {
+    color: #4f5762;
+}
+.btn-edit:hover {
+    background-color: #dce1e7;
+}
+
+/* 삭제 버튼 */
+.btn-delete {
+    background-color: #f95656;
+    color: #ffffff;
+    border-color: #f95656;
+}
+.btn-delete:hover {
+    background-color: #e04040;
+}
+
+/* 작업 리스트 섹션 */
+.task-sections {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 개별 섹션 */
+.task-section {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 섹션 제목 스타일 */
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.recent-title {
+    border-color: #ffa500;
+}
+
+.urgent-title {
+    border-color: #e74c3c;
+}
+
+.remaining-title {
+    border-color: #3498db;
+}
+
+.completed-title {
+    border-color: #27ae60;
+}
+/* 작업 리스트 섹션 */
+.task-sections {
+    display: flex;
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+/* 개별 섹션 */
+.task-section {
+    width: 310px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-right: 20px;
+    padding-left: 10px;
+}
+
+/* 섹션 헤더 */
+.section-header {
+    padding: 20px 0;
+    border-bottom: 3px solid #ffa500;
+    width: 310px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a2e34;
+}
+
+/* 작업 리스트 */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+/* 개별 작업 카드 */
+.task-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.task-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 작업 내용 */
+.task-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2e34;
+    margin-bottom: 4px;
+}
+
+.task-description {
+    font-size: 12px;
+    color: #4f5762;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* 작업 추가 버튼 */
+.add-task {
+    color: #5f55ee;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    padding: 6px 0;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 10px;
+    transition: color 0.3s;
+}
+
+.add-task:hover {
+    color: #3d3dbb;
+}
+/* "더보기" 버튼 */
+.more-tasks-btn {
+    margin-top: 10px;
+    color: #5f55ee;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    padding: 6px 0;
+    border-top: 1px solid #e0e0e0;
+    transition: color 0.3s ease;
+}
+
+.more-tasks-btn:hover {
+    color: #3d3dbb;
 }

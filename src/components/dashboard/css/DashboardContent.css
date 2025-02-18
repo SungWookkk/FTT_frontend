@@ -19,6 +19,7 @@
     align-items: center;
     padding: 0px 20px 28px 20px;
     box-sizing: border-box;
+    justify-content: space-between; /* 왼쪽 제목, 오른쪽 버튼 그룹 */
 }
 
 /* 대시보드 제목 스타일 */
@@ -52,6 +53,8 @@
     font-size: 16px;
     line-height: 1.5;
 }
+
+
 
 /* 알림 배너 스타일 */
 .alert-banner {
@@ -280,7 +283,7 @@
 }
 
 /* 작업 카드 */
-.task-card {
+.task-card1 {
     display: flex;
     align-items: center;
     margin-bottom: 10px;

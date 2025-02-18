@@ -63,7 +63,7 @@ const DashboardContent = () => {
                         <div className="title-underline"></div> {/* 구분선 추가 */}
 
                         <div className="task-title">오늘의 작업!</div>
-                        <div className="task-card">
+                        <div className="task-card1">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
                                 <div className="task-name">옆의 색상은 </div>
@@ -72,7 +72,7 @@ const DashboardContent = () => {
                             <div className="task-deadline">D-1</div>
                         </div>
 
-                        <div className="task-card">
+                        <div className="task-card1">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
                                 <div className="task-name">옆의 색상은 </div>
@@ -86,7 +86,7 @@ const DashboardContent = () => {
                     <div className="task-box written-task">
                         <div className="title-underline"></div> {/* 구분선 추가 */}
                         <div className="task-title">작성한 작업!</div>
-                        <div className="task-card">
+                        <div className="task-card1">
                             <div className="task-color red-gradient"></div>
                             <div className="task-content">
                                 <div className="task-name">옆의 색상은 </div>
@@ -95,7 +95,7 @@ const DashboardContent = () => {
                             <div className="task-deadline">D-1</div>
                         </div>
 
-                        <div className="task-card">
+                        <div className="task-card1">
                             <div className="task-color blue-gradient"></div>
                             <div className="task-content">
                                 <div className="task-name">옆의 색상은 </div>
