@@ -124,12 +124,28 @@
     font-size: 13px;
     font-weight: 400;
     line-height: 32px;
-    margin-left: 49px;
+    /* 🔽 기존 49px에서 줄여서, 왼쪽 여백을 조금만 둠 */
+    margin-left: 30px;
     cursor: pointer;
     transition: color 0.2s ease;
+    text-decoration: none; /* Link 기본 스타일 제거 */
 }
 
+/* 호버 시 밑줄 & 색상 변경 */
 .workspace-list-item:hover {
     text-decoration: underline;
     color: #5f55ee;
+}
+
+/* 🔽 active 상태: 왼쪽으로 더 확장되도록 padding-left 추가 */
+.workspace-list-item.active {
+    font-weight: 500;
+    background-color: #e5e4fc;
+    border-radius: 8px;
+
+    /* 🔽 추가: 텍스트 왼쪽에 여유 공간을 더 줌 */
+    padding-left: 10px;
+
+    /* 필요하다면 margin-left도 더 줄이거나 없앨 수 있음 */
+    margin-left: 20px;
 }

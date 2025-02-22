@@ -1,7 +1,10 @@
 import React from "react";
-import "./css/SidebarFavorites.css"
+import { Link, useLocation } from "react-router-dom";
+import "./css/SidebarFavorites.css";
 
-export const SidebarFavorites = () => {
+const SidebarFavorites = () => {
+    const location = useLocation();
+
     return (
         <div className="sidebar-favorites">
             {/* Favorites 제목 */}
@@ -17,7 +20,7 @@ export const SidebarFavorites = () => {
                     <div className="workspace-add-button" title="새 작업 공간 추가"></div>
                 </div>
 
-                {/* 작업 공간 리스트 */}
+                {/* 현재 활성화된 작업 공간 (예: "작업 공간") */}
                 <div className="workspace-active">
                     <div className="active-bg"></div>
                     <div className="workspace-icon"></div>
@@ -25,12 +28,55 @@ export const SidebarFavorites = () => {
                     <div className="active-text">작업 공간</div>
                 </div>
 
-                {/* 작업 공간 하위 메뉴 */}
+                {/* 작업 공간 하위 메뉴 (Link로 변경) */}
                 <div className="workspace-list">
-                    <div className="workspace-list-item">내 To Do List 목록</div>
-                    <div className="workspace-list-item">To Do List 작성</div>
-                    <div className="workspace-list-item">작업 폴더 생성</div>
-                    <div className="workspace-list-item">모든 작업 폴더</div>
+                    {/* 1) 내 To Do List 목록 */}
+                    <Link
+                        to="/todo"
+                        className={
+                            location.pathname === "/todo"
+                                ? "workspace-list-item active"
+                                : "workspace-list-item"
+                        }
+                    >
+                        내 To Do List 목록
+                    </Link>
+
+                    {/* 2) To Do List 작성 */}
+                    <Link
+                        to="/todo/create"
+                        className={
+                            location.pathname === "/todo/create"
+                                ? "workspace-list-item active"
+                                : "workspace-list-item"
+                        }
+                    >
+                        To Do List 작성
+                    </Link>
+
+                    {/* 3) 작업 폴더 생성 */}
+                    <Link
+                        to="/todo/folder/create"
+                        className={
+                            location.pathname === "/todo/folder/create"
+                                ? "workspace-list-item active"
+                                : "workspace-list-item"
+                        }
+                    >
+                        작업 폴더 생성
+                    </Link>
+
+                    {/* 4) 모든 작업 폴더 */}
+                    <Link
+                        to="/todo/folder/all"
+                        className={
+                            location.pathname === "/todo/folder/all"
+                                ? "workspace-list-item active"
+                                : "workspace-list-item"
+                        }
+                    >
+                        모든 작업 폴더
+                    </Link>
                 </div>
             </div>
         </div>

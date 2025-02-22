@@ -3,19 +3,13 @@ import "../todolist/css/TodoListContent.css";
 import { Task } from "./Task";
 
 const TodoListContent = () => {
-    //  작업 목록 데이터
+    // 작업 목록 데이터
     const sections = [
         {
             title: "📍 최근 작성",
             color: "#ffa500",
             tasks: [
                 { id: 1, title: "어서 마무리를 하자", description: "이거 빨리 디자인을 마무리해야 해..." },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
-                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
                 { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
                 { id: 3, title: "근데 아마 이걸로 할 거 같은데", description: "이번 디자인으로 끝내자" }
             ]
@@ -49,13 +43,21 @@ const TodoListContent = () => {
         }
     ];
 
-    //  상태 관리
+    // "더보기" 상태
     const [expandedSections, setExpandedSections] = useState({});
     const moreTasksRefs = useRef({});
-    const [selectedSection, setSelectedSection] = useState(null); // 특정 섹션 선택 상태
-    const [selectedSectionTasks, setSelectedSectionTasks] = useState([]); // 선택한 섹션의 Task 리스트
 
-    //  "더보기" 버튼 클릭 이벤트
+    // 선택된 섹션 인덱스
+    const [selectedSectionIndex, setSelectedSectionIndex] = useState(null);
+
+    // 선택된 섹션(객체) & 해당 섹션의 Task 배열
+    const [selectedSection, setSelectedSection] = useState(null);
+    const [selectedSectionTasks, setSelectedSectionTasks] = useState([]);
+
+    // 애니메이션 클래스
+    const [transitionClass, setTransitionClass] = useState("");
+
+    // "더보기" 버튼
     const handleToggleTasks = (index) => {
         setExpandedSections((prev) => ({
             ...prev,
@@ -63,19 +65,57 @@ const TodoListContent = () => {
         }));
     };
 
-    //  "특정 섹션 보기" 기능
-    const handleSelectSection = (sectionTitle) => {
-        const foundSection = sections.find((section) => section.title === sectionTitle);
-        if (foundSection) {
-            setSelectedSection(sectionTitle);
-            setSelectedSectionTasks(foundSection.tasks); // 해당 섹션의 Task 저장
-        }
+    // 특정 섹션 + 특정 Task 클릭 => 오른쪽에 "그 Task만" 표시
+    const handleSelectSection = (section, task) => {
+        const idx = sections.findIndex((s) => s.title === section.title);
+        setSelectedSectionIndex(idx);
+        setSelectedSection(section);
+        setSelectedSectionTasks([task]);
     };
 
-    //  "전체 보기로 돌아가기" 기능
+    // 뒤로 가기
     const handleBackToAll = () => {
+        setSelectedSectionIndex(null);
         setSelectedSection(null);
         setSelectedSectionTasks([]);
+        setTransitionClass("");
+    };
+
+    // "이전" 섹션 (무한 반복)
+    const handlePrevSection = () => {
+        if (selectedSectionIndex === null) return;
+        // 🔽 맨 앞(0)에서 더 누르면 맨 끝(sections.length-1)으로
+        const newIndex = (selectedSectionIndex - 1 + sections.length) % sections.length;
+        animateSectionChange(newIndex, "prev");
+    };
+
+    // "다음" 섹션 (무한 반복)
+    const handleNextSection = () => {
+        if (selectedSectionIndex === null) return;
+        // 🔽 맨 뒤(sections.length-1)에서 더 누르면 맨 앞(0)으로
+        const newIndex = (selectedSectionIndex + 1) % sections.length;
+        animateSectionChange(newIndex, "next");
+    };
+
+    // 부드러운 섹션 전환
+    const animateSectionChange = (newIndex, direction) => {
+        // 1) slide-out
+        setTransitionClass(direction === "next" ? "slide-out-left" : "slide-out-right");
+
+        setTimeout(() => {
+            // 2) 실제 섹션 교체
+            setSelectedSectionIndex(newIndex);
+            setSelectedSection(sections[newIndex]);
+            setSelectedSectionTasks([sections[newIndex].tasks[0]]);
+
+            // slide-in
+            setTransitionClass(direction === "next" ? "slide-in-right" : "slide-in-left");
+
+            // 3) 끝나면 초기화
+            setTimeout(() => {
+                setTransitionClass("");
+            }, 300);
+        }, 300);
     };
 
     return (
@@ -107,41 +147,75 @@ const TodoListContent = () => {
                     <span className="highlight-text">효율적인 하루</span>
                     <span className="normal-text">를 설계하세요! 우리의 </span>
                     <span className="highlight-text">To-Do List 서비스</span>
-                    <span className="normal-text">를 통해 목표를 정리하고 실천하세요. 지금 바로 시작해보세요!</span>
+                    <span className="normal-text">
+                        를 통해 목표를 정리하고 실천하세요. 지금 바로 시작해보세요!
+                    </span>
                 </p>
             </div>
 
             {/* 작업 리스트 & 상세 정보 표시 */}
             <div className="task-view-container">
-                {/* 작업 리스트 (왼쪽) */}
-                <div className="task-sections">
+                {/* 왼쪽 목록 */}
+                <div className={`task-sections ${transitionClass}`}>
                     {sections.map((section, index) => {
-                        if (selectedSection && section.title !== selectedSection) {
-                            return null; // 선택된 섹션만 표시
+                        // 선택된 섹션이 있다면, title이 다른 섹션은 숨김
+                        if (selectedSection && section.title !== selectedSection.title) {
+                            return null;
                         }
 
-                        const visibleTasks = expandedSections[index] ? section.tasks : section.tasks.slice(0, 6);
+                        const visibleTasks = expandedSections[index]
+                            ? section.tasks
+                            : section.tasks.slice(0, 6);
 
                         return (
                             <div className="task-section" key={index}>
-                                <div className="section-header" style={{ borderBottom: `5px solid ${section.color}`}}>
+                                <div
+                                    className="section-header"
+                                    style={{ borderBottom: `5px solid ${section.color}`}}
+                                >
                                     <div className="section-header-content">
-                                        <span className="section-title">{section.title} {section.tasks.length}</span>
+                                        <span className="section-title">
+                                            {section.title} {section.tasks.length}
+                                        </span>
+
+                                        {/* 🔽🔽🔽 인디케이터 (동그라미) - 현재 섹션 위치 표시 */}
+                                        {selectedSection && selectedSection.title === section.title && (
+                                            <div className="indicator-container">
+                                                {sections.map((_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className={
+                                                            "indicator-dot " +
+                                                            (selectedSectionIndex === i ? "active" : "")
+                                                        }
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+
                                         <span className="add-task">+ 작업 추가 생성</span>
                                     </div>
                                 </div>
 
-                                {/* 동적 렌더링 */}
-                                <div className={`task-list ${expandedSections[index] ? "expanded" : ""}`}
-                                     ref={el => moreTasksRefs.current[index] = el}>
-                                    {visibleTasks.map(task => (
-                                        <Task key={task.id} title={task.title} description={task.description} onClick={() => handleSelectSection(section.title)} />
+                                <div
+                                    className={`task-list ${expandedSections[index] ? "expanded" : ""}`}
+                                    ref={(el) => (moreTasksRefs.current[index] = el)}
+                                >
+                                    {visibleTasks.map((task) => (
+                                        <Task
+                                            key={task.id}
+                                            title={task.title}
+                                            description={task.description}
+                                            onClick={() => handleSelectSection(section, task)}
+                                        />
                                     ))}
                                 </div>
 
-                                {/* "더보기" 버튼 */}
                                 {section.tasks.length > 6 && (
-                                    <div className="more-tasks-btn" onClick={() => handleToggleTasks(index)}>
+                                    <div
+                                        className="more-tasks-btn"
+                                        onClick={() => handleToggleTasks(index)}
+                                    >
                                         {expandedSections[index] ? "▲ 접기" : "▼ 더보기"}
                                     </div>
                                 )}
@@ -150,16 +224,28 @@ const TodoListContent = () => {
                     })}
                 </div>
 
-                {/* 선택된 섹션 Task 리스트 (오른쪽) */}
-                {selectedSection && (
+                {/* 오른쪽 상세 영역: 단일 Task 정보 */}
+                {selectedSection && selectedSectionTasks.length > 0 && (
                     <div className="selected-task-details">
-                        {/* 뒤로 가기 버튼 */}
-                        {selectedSection && (
-                            <div className="back-button-container">
-                                <button className="btn-back" onClick={handleBackToAll}>← 뒤로 가기</button>
+                        <button className="btn-back-top-right" onClick={handleBackToAll}>
+                            ← 뒤로 가기
+                        </button>
+
+                        <div
+                            className="section-header"
+                            style={{
+                                borderBottom: `5px solid ${selectedSection.color}`,
+                                width: "100%",
+                                marginBottom: "20px"
+                            }}
+                        >
+                            <div className="section-header-content">
+                                <span className="section-title">
+                                    {selectedSection.title} - Task 상세
+                                </span>
                             </div>
-                        )}
-                        <h3>{selectedSection} - Task 리스트</h3>
+                        </div>
+
                         <ul>
                             {selectedSectionTasks.map((task) => (
                                 <li key={task.id}>
@@ -169,6 +255,14 @@ const TodoListContent = () => {
                             ))}
                         </ul>
                     </div>
+                )}
+
+                {/* 이전/다음 섹션 화살표 */}
+                {selectedSection && (
+                    <>
+                        <button className="arrow-nav-left" onClick={handlePrevSection}>◀</button>
+                        <button className="arrow-nav-right" onClick={handleNextSection}>▶</button>
+                    </>
                 )}
             </div>
         </div>
