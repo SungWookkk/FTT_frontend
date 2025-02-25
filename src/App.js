@@ -8,6 +8,7 @@ import MainNavigation from "./MainNavigation";
 import "./App.css";
 import CommunityBestPosts from "./components/community/CommunityBestPosts";
 import TodoList from "./components/todolist/TodoList";
+import TodoListWritePage from "./components/todolist/TodoListWritePage";
 
 const App = () => {
     return (
@@ -22,7 +23,8 @@ const App = () => {
                         <Route path="/dashboard" component={Dashboard}/>
                         <Route path="/community" component={CommunityBestPosts}/>
                         <Route path="/dasboard" component={Dashboard}/>
-                        <Route path="/todo" component={TodoList}/>
+                        <Route exact path="/todo" component={TodoList} />
+                        <Route path="/todo/write" component={TodoListWritePage} />
                     </Switch>
                 </div>
             </Router>
