@@ -46,7 +46,7 @@ const SidebarFavorites = () => {
                     <Link
                         to="/todo/create"
                         className={
-                            location.pathname === "/todo/create"
+                            location.pathname === "/todo/write"
                                 ? "workspace-list-item active"
                                 : "workspace-list-item"
                         }

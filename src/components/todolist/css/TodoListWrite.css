@@ -1,0 +1,766 @@
+/* 대시보드 컨테이너 */
+.dashboard-content {
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 대시보드 헤더 */
+.dashboard-header {
+    height: 27px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e8eaed;
+    display: flex;
+    align-items: center;
+    padding: 0px 20px 28px 20px;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+/* 헤더 제목 */
+.dashboard-title .title-text {
+    color: #2a2e34;
+    font-family: "Inter-Bold", sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 16px;
+    padding-bottom: 25px;
+}
+
+/* 버튼 그룹 */
+.header-button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 버튼 기본 스타일 */
+.btn {
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 6px 0;
+    font-size: 13.7px;
+    cursor: pointer;
+    font-family: "Inter-Medium", Helvetica;
+    color: #4f5762;
+    text-align: center;
+    width: 82px;
+    height: 32px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+.btn-create {
+    background-color: #f2f1fe;
+    color: #4f5762;
+    width: 113px;
+}
+.btn-create:hover {
+    background-color: #e2e6f6;
+}
+.btn-edit {
+    color: #4f5762;
+}
+.btn-edit:hover {
+    background-color: #dce1e7;
+}
+.btn-delete {
+    background-color: #f95656;
+    color: #ffffff;
+    border-color: #f95656;
+}
+.btn-delete:hover {
+    background-color: #e04040;
+}
+
+/* 목록 선택 탭 */
+.list-tap {
+    height: 47px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid #e8eaed;
+}
+.list-tab-container {
+    display: flex;
+    gap: 40px;
+    margin-left: 30px;
+}
+.tab-item {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+.tab-item.active {
+    color: #2a2e34;
+    font-weight: 700;
+}
+.tab-item.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 3px;
+    background-color: #5f55ee;
+    border-radius: 2px;
+}
+.tab-item:hover {
+    color: #2a2e34;
+}
+
+/* 알림 배너 */
+.alert-banner {
+    background-color: #f2f1fe;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+    width: 100%;
+}
+.alert-text {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 120px;
+}
+.alert-text .normal-text {
+    font-weight: 400;
+}
+.alert-text .highlight-text {
+    font-weight: 700;
+}
+
+/* 대시보드 본문 영역 */
+.dashboard-main-content {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.write-layout {
+    display: flex;
+    gap: 40px;
+}
+
+.write-right {
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* 보고서 박스 */
+.report-box {
+    height: 58px;
+    width: 443px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.report-group {
+    height: 58px;
+    width: 443px;
+    position: relative;
+}
+
+.report-underline {
+    background-color: #e8eaed;
+    height: 1px;
+    width: 443px;
+    position: absolute;
+    top: 45px;
+    left: 0;
+}
+
+.report-subtitle {
+    color: #adb3bd;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 11.8px;
+    font-weight: 700;
+    line-height: 16px;
+    position: absolute;
+    top: -10px;
+    left: 2px;
+    white-space: nowrap;
+}
+
+.report-title-input {
+    position: absolute;
+    top: 12px;
+    left: -2px;
+    width: 443px;
+    border: none;
+    outline: none;
+    color: #000000;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    background: transparent;
+}
+
+/* 작업 내용 박스 */
+.write-content-box {
+    height: 199px;
+    width: 443px;
+    position: relative;
+    margin-top: 20px;
+}
+
+/* 작업 내용 박스 */
+.write-content-box {
+    height: 199px;
+    width: 443px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.content-group {
+    height: 199px;
+    width: 447px;
+    position: relative;
+}
+
+.content-overlap {
+    height: 199px;
+    width: 443px;
+    position: relative;
+}
+
+/* 상단 회색 구분선 */
+.content-divider {
+    background-color: #e8eaed;
+    height: 1px;
+    width: 443px;
+    position: absolute;
+    top: 189px;
+    left: 0;
+}
+
+/* 작업 내용 레이블 */
+.content-label {
+    color: #adb3bd;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 11.8px;
+    font-weight: 700;
+    line-height: 16px;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    white-space: nowrap;
+    width: 55px;
+}
+
+/* 작업 내용 입력  */
+.content-description {
+    position: absolute;
+    top: 2px;
+    left: 0;
+
+    width: 442px;
+    height: 185px;
+    box-sizing: border-box;
+
+    border: none;
+    outline: none;
+
+    color: #000000;
+    font-family: "Inter-Regular", Helvetica;
+    font-size: 11.8px;
+    font-weight: 400;
+    line-height: 16px;
+    resize: none;  /* 사용자가 사이즈 변경 못하게 */
+    background: transparent;
+    white-space: pre-line;
+    overflow-y: auto;
+
+}
+
+/* placeholder */
+.content-description::placeholder {
+    color: #999;
+    font-size: 14px;
+    position: absolute;
+    left: -1px;
+}
+
+/* 컨테이너 */
+.motivation-container {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* 제목 */
+.motivation-title {
+    color: #000000;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 14px;
+    margin-bottom: 6px;
+}
+
+/* 보라색 박스 */
+.motivation-content {
+    background-color: #e5e4fc;
+    border-radius: 6px;
+    display: inline-flex;
+    white-space: nowrap;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 12px;
+}
+
+/* 문구 */
+.motivation-quote {
+    white-space: nowrap;
+    margin: 0;
+    color: #000;
+    font-family: "Inter-Regular", Helvetica;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 14px;
+}
+
+/* 아이콘 */
+.motivation-reply {
+    width: 18px;
+    height: 20px;
+    flex-shrink: 0;
+}
+/* 파일 첨부 전체 래퍼 */
+.file-upload-wrapper {
+    max-width: 480px;
+    background-color: #ffffff;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top: 30px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 헤더 영역 */
+.file-upload-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* "파일 등록" 제목 */
+.file-upload-title {
+    color: #2a2e34;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 18px;
+}
+
+/* 설명 */
+.file-upload-desc {
+    color: #4f5762;
+    font-family: "Inter-Medium", sans-serif;
+    font-size: 13px;
+    margin: 0;
+    line-height: 16px;
+}
+
+/* 업로드 상태 */
+.file-upload-state {
+    color: #5f55ee;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 13px;
+    margin: 0;
+    line-height: 16px;
+}
+
+/* 드래그 앤 드롭/클릭 영역 */
+.file-drop-area {
+    background-color: #f2f1fe;
+    border: 2px dashed #d3d3d3;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.file-instruction {
+    color: #4f5762;
+    font-family: "Inter-Medium", sans-serif;
+    font-size: 13px;
+    margin: 0;
+    line-height: 16px;
+}
+.file-instruction span {
+    color: #5f55ee;
+    font-weight: 600;
+}
+
+.file-input {
+    display: none;
+}
+
+/* 파일 목록 */
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 개별 파일 아이템 */
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #fafafa;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 8px 12px;
+
+    font-size: 13px;
+    color: #4f5762;
+}
+
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f95656;
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+.file-remove-btn:hover {
+    background-color: #fde8e8;
+}
+
+.file-drop-area:hover {
+    background-color: #e2e6f6;
+    border-color: #b5b5b5;
+}
+
+/* 드로어 위치 수정 */
+.detail-drawer {
+    position: fixed;
+    top: 120px;
+    right: 0;
+    height: calc(100% - 120px);
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+
+    width: 0;
+    transition: width 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+.detail-drawer.open {
+    width: 400px;
+}
+
+/* 드로어 내부 구조는 기존과 동일 */
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.drawer-header h2 {
+    color: #2a2e34;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 16px;
+    margin: 0;
+}
+
+.drawer-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #999;
+    transition: color 0.2s ease;
+}
+.drawer-close-btn:hover {
+    color: #555;
+}
+
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.drawer-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.drawer-field label {
+    color: #adb3bd;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.drawer-field select,
+.drawer-field input,
+.drawer-field textarea {
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+    color: #2a2e34;
+    font-family: "Inter-Regular", sans-serif;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.drawer-field select:focus,
+.drawer-field input:focus,
+.drawer-field textarea:focus {
+    border-color: #5f55ee;
+}
+
+.drawer-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e8eaed;
+    display: flex;
+    justify-content: flex-end;
+}
+/* 작업 내용 필드 옆 버튼 */
+.editor-open-btn {
+    margin-top: 4px;
+    background-color: #f2f1fe;
+    color: #4f5762;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.editor-open-btn:hover {
+    background-color: #e2e6f6;
+}
+
+/* WYSIWYG 모달 오버레이 */
+.editor-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 모달 본체 */
+.editor-modal {
+    background: #fff;
+    width: 600px;
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 모달 헤더 */
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+.editor-header h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #2a2e34;
+}
+.editor-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+.editor-close-btn:hover {
+    color: #555;
+}
+
+/* 툴바 */
+.editor-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+.editor-toolbar button {
+    background: #f2f1fe;
+    border: 1px solid #e8eaed;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.editor-toolbar button:hover {
+    background-color: #e2e6f6;
+}
+
+/* 에디터 본문 */
+.editor-content {
+    flex: 1;
+    padding: 12px 16px;
+    overflow-y: auto;
+    min-height: 200px;
+    line-height: 1.6;
+    font-size: 14px;
+    color: #2a2e34;
+}
+
+/* 모달 푸터 */
+.editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #e8eaed;
+}
+
+/* 달력 팝업의 래퍼 */
+.custom-calendar {
+    border: 1px solid #e2e6f6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    animation: fadeInDown 0.2s ease forwards;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+@keyframes fadeInDown {
+    0%   { opacity: 0; transform: translateY(-4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 달력 헤더 영역 */
+.custom-calendar .react-datepicker__header {
+    background-color: #f2f1fe;
+    border-bottom: 1px solid #e8eaed;
+}
+
+/* 월/년도 텍스트 */
+.custom-calendar .react-datepicker__current-month {
+    color: #5f55ee;
+    font-weight: 700;
+    font-family: "Inter-Bold", sans-serif;
+}
+
+/* 요일 헤더 */
+.custom-calendar .react-datepicker__day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+/* 날짜 셀 기본 */
+.custom-calendar .react-datepicker__day {
+    width: 32px;
+    line-height: 32px;
+    margin: 2px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+}
+
+/* hover 시 */
+.custom-calendar .react-datepicker__day:hover {
+    background-color: #e2e6f6;
+    color: #2a2e34;
+}
+
+/* 오늘 날짜 표시 */
+.custom-calendar .react-datepicker__day--today {
+    border: 1px dashed #5f55ee;
+    color: #5f55ee;
+}
+
+/* 선택된 날짜 */
+.custom-calendar .react-datepicker__day--selected,
+.custom-calendar .react-datepicker__day--selected:hover {
+    background-color: #5f55ee;
+    color: #ffffff;
+}
+
+/* 주말(토, 일) 강조 */
+.custom-calendar .react-datepicker__day--weekend {
+    color: #f95656; /* 빨강 계열 */
+}
+
+
+.custom-date-input {
+    width: 100%;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+    color: #2a2e34;
+    font-family: "Inter-Regular", sans-serif;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.custom-date-input:focus {
+    border-color: #5f55ee;
+}

@@ -1,0 +1,94 @@
+
+.priority-dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.priority-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    border: 1px solid #e8eaed;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2a2e34;
+    background-color: #f9f9f9;
+    min-width: 140px;
+    position: relative;
+    padding-right: 30px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.priority-pill:hover {
+    background-color: #f2f1fe;
+    border-color: #d3d3d3;
+}
+
+.priority-pill::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #888;
+    pointer-events: none;
+}
+
+.priority-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #e8eaed;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 160px;
+    z-index: 999;
+    animation: fadeIn 0.2s ease;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeIn {
+    0%   { opacity: 0; transform: translateY(-4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+
+.priority-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2a2e34;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* 마우스오버 시 */
+.priority-menu-item:hover {
+    background-color: #f2f1fe;
+    transform: translateX(2px);
+}
+
+
+.priority-item-high {
+    background-color: #ffd6d6;
+}
+
+.priority-item-medium {
+    background-color: #fff2c6;
+}
+
+.priority-item-low {
+    background-color: #d6ffd6;
+}

@@ -30,7 +30,7 @@ const Sidebar = () => {
                             <span>대시보드</span>
                         </Link>
                     </li>
-                    <li className={location.pathname === "/todo" ? "active" : ""}>
+                    <li className={location.pathname.startsWith("/todo") ? "active" : ""}>
                         <Link to="/todo">
                             <img className="icon" src={ToDoIcon} alt="To-Do Icon"/>
                             <span>To Do List</span>
