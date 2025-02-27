@@ -60,7 +60,7 @@ const DashboardContent = () => {
                 <div className="task-container">
                     {/* 오늘의 작업 */}
                     <div className="task-box today-task">
-                        <div className="title-underline"></div> {/* 구분선 추가 */}
+                        <div className="title-underline"></div>
 
                         <div className="task-title">오늘의 작업!</div>
                         <div className="task-card1">
@@ -84,7 +84,7 @@ const DashboardContent = () => {
 
                     {/* 작성한 작업 */}
                     <div className="task-box written-task">
-                        <div className="title-underline"></div> {/* 구분선 추가 */}
+                        <div className="title-underline"></div>
                         <div className="task-title">작성한 작업!</div>
                         <div className="task-card1">
                             <div className="task-color red-gradient"></div>
@@ -116,7 +116,6 @@ const DashboardContent = () => {
                             <div className={`stat-card ${index === 4 ? 'last-card' : ''}`} key={index}>
                                 <div className="stat-title">{title}</div>
                                 <div className="stat-value-placeholder"></div>
-                                {/* 마지막 카드에 화살표 추가 */}
                                 {index === 4 && <img className="arrow-icon" src={arrow1} alt="Arrow" />}
                             </div>
                         ))}
@@ -126,10 +125,9 @@ const DashboardContent = () => {
                 <div className="graph-section">
                     <div className="graph-title">작업 시작 통계</div>
                     <div className="graph-underline"></div>
-                    {/* 그래프 영역 - #f2f1fe 색상 적용 */}
                     <div className="graph-placeholder"></div>
                 </div>
-                {/* 🎨 피그마 디자인 코드(노란색 영역) */}
+                {/* 피그마 디자인 코드(노란색 영역) */}
                 <div className="yellow-design-section">
                     {/* 뱃지 */}
                     <div className="yellow-title">뱃지</div>

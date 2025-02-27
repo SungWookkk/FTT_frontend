@@ -194,7 +194,7 @@
 
 /* 진행률 바 컨테이너 */
 .progress-container {
-    width: 80%; /* 전체 너비의 80%로 조정 */
+    width: 80%;
     margin-top: 20px;
 }
 
@@ -238,8 +238,6 @@
     font-size: 12px;
     font-weight: 600;
 }
-
-/* 반응형 미디어 쿼리 *
 
 /* ▶ 태블릿 (화면 너비 768px 이하) */
 @media (max-width: 768px) {

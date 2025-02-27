@@ -1,63 +1,57 @@
 import React, { useState } from "react";
-
-//글쓰기 설정
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import "./css/TodoListWrite.css";
 import reply1 from "../../Auth/css/img/reply-1.svg";
 
-//드롭다운 디자인
 import PriorityDropdown from "./PriorityDropdown";
 
-//달력
-import DatePicker, {registerLocale} from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ko from "date-fns/locale/ko"; // 한글 가져오기
+import ko from "date-fns/locale/ko";
 
-//  ReactQuill 툴바 설정
 const quillModules = {
     toolbar: [
-        // [스타일] 1단계 ~ 3단계 헤더 or false
         [{ header: [1, 2, 3, false] }],
-        // 굵게, 이탤릭, 밑줄, 취소선
         ["bold", "italic", "underline", "strike"],
-        // 리스트 (순서형 / 순서없는)
         [{ list: "ordered" }, { list: "bullet" }],
-        // 링크, 이미지, 코드블럭 등
         ["link", "image"],
-        // 서식 제거
         ["clean"],
     ],
 };
-
 const quillFormats = [
     "header",
-    "bold", "italic", "underline", "strike",
-    "list", "bullet",
-    "link", "image",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+    "image",
 ];
 
 const TodoListWrite = () => {
-    //  상태
     const [taskName, setTaskName] = useState("");
     const [content, setContent] = useState("<p>작업 내용을 입력하세요...</p>");
     const [priority, setPriority] = useState("보통");
     const [dueDate, setDueDate] = useState(null);
     const [assignee, setAssignee] = useState("");
     const [memo, setMemo] = useState("");
+    const [daysLeft, setDaysLeft] = useState(null);
 
-    // 파일 업로드
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    // 오른쪽 드로어 열림 여부
+    // 드로어 열림 여부
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-    // 에디터 모달 열림 여부
+    // 에디터 모달
     const [isEditorOpen, setIsEditorOpen] = useState(false);
-
-    // 모달에서 편집할 임시 HTML
     const [tempHTML, setTempHTML] = useState(content);
+
+    // 툴팁
+    const [showTips, setShowTips] = useState(false);
 
     // 파일 업로드 핸들러
     const handleFileChange = (e) => {
@@ -65,8 +59,8 @@ const TodoListWrite = () => {
         const newFiles = [...uploadedFiles, ...Array.from(e.target.files)];
         setUploadedFiles(newFiles);
     };
-    const handleRemoveFile = (index) => {
-        setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+    const handleRemoveFile = (idx) => {
+        setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
     };
     const handleDragOver = (e) => e.preventDefault();
     const handleDrop = (e) => {
@@ -77,10 +71,11 @@ const TodoListWrite = () => {
         }
     };
 
-    //오른쪽 드로어
+    // 드로어 열기/닫기
     const handleOpenDetail = () => setIsDetailOpen(true);
     const handleCloseDetail = () => setIsDetailOpen(false);
 
+    // 드로어 저장
     const handleDetailSave = () => {
         console.log("작업 이름:", taskName);
         console.log("작업 내용(HTML):", content);
@@ -91,26 +86,40 @@ const TodoListWrite = () => {
         setIsDetailOpen(false);
     };
 
-    //  reactQuill 모달 열기/닫기
+    // Quill 열기/닫기
     const openEditor = () => {
-        setTempHTML(content); // 현재 content HTML 복사
+        setTempHTML(content);
         setIsEditorOpen(true);
     };
     const closeEditor = () => setIsEditorOpen(false);
-
-    // 모달에서 최종 확인 > content 갱신
     const saveEditorContent = () => {
         setContent(tempHTML);
         setIsEditorOpen(false);
     };
 
-    // 달력 한글 등록
+    // DatePicker 한글
     registerLocale("ko", ko);
 
+    // 마감일 계산
+    const handleDueDateChange = (date) => {
+        setDueDate(date);
+        if (!date) {
+            setDaysLeft(null);
+            return;
+        }
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const picked = new Date(date);
+        picked.setHours(0, 0, 0, 0);
+
+        const diff = Math.floor((picked - now) / (1000 * 60 * 60 * 24));
+        setDaysLeft(diff);
+    };
 
     return (
         <div className="dashboard-content">
-            {/* 상단 헤더 */}
+            {/* 헤더 */}
             <div className="dashboard-header">
                 <div className="dashboard-title">
                     <span className="title-text">작업 작성</span>
@@ -121,7 +130,7 @@ const TodoListWrite = () => {
                 </div>
             </div>
 
-            {/* 목록 선택 탭 */}
+            {/* 탭 */}
             <div className="list-tap">
                 <div className="list-tab-container">
                     <div className="tab-item active">작성</div>
@@ -141,20 +150,20 @@ const TodoListWrite = () => {
                 </p>
             </div>
 
-            {/* 본문 */}
+            {/* 본문 (왼쪽 내용) */}
             <div className="dashboard-main-content">
                 {/* 동기부여 멘트 */}
                 <div className="motivation-container">
                     <div className="motivation-title">오늘의 동기부여 멘트!</div>
                     <div className="motivation-content">
                         <p className="motivation-quote">
-                            열정을 잃지 않고 실패에서 실패로 걸어가는 것이 성공이다. – 윈스턴 처칠
+                            열정을 잃지 않고 실패에서 실패로 걸어가는 것이 성공이다. – 박성욱
                         </p>
                         <img className="motivation-reply" alt="Reply" src={reply1} />
                     </div>
                 </div>
 
-                {/* 작업 이름 (왼쪽) */}
+                {/* 작업 이름 */}
                 <div className="report-box" onClick={handleOpenDetail}>
                     <div className="report-group">
                         <div className="report-underline" />
@@ -169,13 +178,12 @@ const TodoListWrite = () => {
                     </div>
                 </div>
 
-                {/* 작업 내용 (왼쪽) */}
+                {/* 작업 내용 */}
                 <div className="write-content-box" onClick={handleOpenDetail}>
                     <div className="content-group">
                         <div className="content-overlap">
                             <div className="content-divider" />
                             <div className="content-label">작업 내용</div>
-                            {/* HTML 미리보기 */}
                             <div
                                 className="content-preview"
                                 dangerouslySetInnerHTML={{ __html: content }}
@@ -197,7 +205,7 @@ const TodoListWrite = () => {
                             (예: 팀 보고서, 참고 자료 등)
                         </p>
                         <p className="file-upload-state">
-                            업로드 - {uploadedFiles.length} files
+                            업로드 - 파일 {uploadedFiles.length}개
                         </p>
                     </div>
 
@@ -229,115 +237,172 @@ const TodoListWrite = () => {
                     </div>
                 </div>
 
-                {/* 오른쪽 드로어 */}
-                <div className={`detail-drawer ${isDetailOpen ? "open" : ""}`}>
-                    <div className="drawer-header">
-                        <h2>추가 상세 정보</h2>
-                        <button className="drawer-close-btn" onClick={handleCloseDetail}>
-                            닫기
-                        </button>
-                    </div>
-                    <div className="drawer-body">
-                        {/* 작업 이름 */}
-                        <div className="drawer-field">
-                            <label>작업 이름</label>
-                            <input
-                                type="text"
-                                placeholder="작업 이름"
-                                value={taskName}
-                                onChange={(e) => setTaskName(e.target.value)}
-                            />
-                        </div>
+                {/* 오른쪽 AI 요약 패널 */}
+                <div className={`ai-summary-panel ${isDetailOpen ? "move-right" : ""}`}>
+                    <h2>AI 요약 패널</h2>
+                    <p>이곳에는 백엔드 설계 후 내용 넣을 에정</p>
+                    <p>OpenAI API를 사용할 것임.</p>
+                </div>
 
-                        {/* 작업 내용 (우측 드로어) + "고급 편집" 버튼 */}
-                        <div className="drawer-field">
-                            <label>작업 내용</label>
-                            <textarea
-                                rows={3}
-                                placeholder="작업 내용을 입력하세요"
-                                value={content.replace(/<[^>]+>/g, "")}
-                                onChange={(e) => {
-                                    // 사용자가 여기서도 텍스트 변경하면, content를 단순 텍스트로...
-                                    setContent(e.target.value);
-                                }}
-                            />
-                            <button
-                                className="editor-open-btn"
-                                onClick={() => {
-                                    setTempHTML(content); // 현재 HTML을 모달에 전달
-                                    setIsEditorOpen(true); // 모달 오픈
-                                }}
-                            >
-                                사용자 커스텀 편집
+                {/* 피그마 디자인 코드 */}
+                <div className={`yellow-design-section ${isDetailOpen ? "move-right" : ""}`}>
+                    {/* 뱃지 */}
+                    <div className="yellow-title">뱃지</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill badge-fill"></div>
+                        <div className="progress-text">작업 진척도</div>
+                    </div>
+
+                    {/* 칭호 */}
+                    <div className="yellow-title">칭호</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill title-fill"></div>
+                        <div className="progress-text">3일 연속 작업 완료! - "3일의 기적"</div>
+                    </div>
+
+                    {/* 마감시간 */}
+                    <div className="yellow-title">마감 시간 준수</div>
+                    <div className="progress-bar badge-bar">
+                        <div className="progress-fill time-fill"></div>
+                        <div className="progress-text">마감 시간 준수! - "시간 관리의 신!"</div>
+                    </div>
+                </div>
+
+                {/* 드로어 컨테이너 */}
+                <div className={`detail-container ${isDetailOpen ? "open" : ""}`}>
+                    <div className="detail-drawer">
+                        <div className="drawer-header">
+                            <h2>추가 상세 정보</h2>
+                        </div>
+                        <div className="drawer-body">
+                            {/* 작업 이름 */}
+                            <div className="drawer-field">
+                                <label>작업 이름</label>
+                                <input
+                                    type="text"
+                                    placeholder="작업 이름"
+                                    value={taskName}
+                                    onChange={(e) => setTaskName(e.target.value)}
+                                />
+                            </div>
+                            <div className="drawer-field">
+                                <label>작업 내용</label>
+                                <textarea
+                                    rows={3}
+                                    placeholder="작업 내용을 입력하세요"
+                                    value={content.replace(/<[^>]+>/g, "")}
+                                    onChange={(e) => setContent(e.target.value)}
+                                />
+                                <button className="editor-open-btn" onClick={openEditor}>
+                                    사용자 커스텀 편집
+                                </button>
+                            </div>
+                            <div className="drawer-field">
+                                <label>우선순위</label>
+                                <PriorityDropdown
+                                    priority={priority}
+                                    onChange={(val) => setPriority(val)}
+                                />
+                            </div>
+                            <div className="drawer-field">
+                                <label>마감일</label>
+                                <DatePicker
+                                    selected={dueDate}
+                                    onChange={handleDueDateChange}
+                                    dateFormat="yyyy-MM-dd"
+                                    placeholderText="연도-월-일"
+                                    locale="ko"
+                                    className="custom-date-input"
+                                    calendarClassName="custom-calendar"
+                                    popperPlacement="auto"
+                                />
+                                {daysLeft !== null && (
+                                    <div className="due-remaining">
+                                        {daysLeft > 0
+                                            ? `남은 일수: ${daysLeft}일 (D-${daysLeft})`
+                                            : daysLeft === 0
+                                                ? "오늘이 마감일입니다."
+                                                : `마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="drawer-field">
+                                <label>메모</label>
+                                <textarea
+                                    rows={3}
+                                    placeholder="추가 메모를 입력하세요"
+                                    value={memo}
+                                    onChange={(e) => setMemo(e.target.value)}
+                                />
+                            </div>
+                            <div className="drawer-field">
+                                <label>담당자</label>
+                                <input
+                                    type="text"
+                                    placeholder="담당자 이름"
+                                    value={assignee}
+                                    onChange={(e) => setAssignee(e.target.value)}
+                                />
+                            </div>
+                            <div className="drawer-field">
+                                <label>작업 폴더</label>
+                                <select
+                                    value={assignee}
+                                    onChange={(e) => setAssignee(e.target.value)}
+                                >
+                                    <option value="">폴더 선택</option>
+                                    <option value="folderA">폴더 A</option>
+                                    <option value="folderB">폴더 B</option>
+                                    <option value="folderC">폴더 C</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="drawer-footer">
+                            <button className="btn btn-create" onClick={handleDetailSave}>
+                                저장
                             </button>
                         </div>
+                    </div>
 
-                        {/* 우선순위 */}
-                        <div className="drawer-field">
-                            <label>우선순위</label>
-                            <PriorityDropdown
-                                priority={priority}
-                                onChange={(val) => setPriority(val)}
-                            />
-                        </div>
+                    {/* 드로어 열림 시: 오른쪽 상단(바깥)에 닫기 버튼 + ? 아이콘 */}
+                    {isDetailOpen && (
+                        <div className="drawer-top-actions">
+                            <button className="drawer-close-btn" onClick={handleCloseDetail}>
+                                닫기
+                            </button>
 
-                        {/* 마감일 → React DatePicker */}
-                        <div className="drawer-field">
-                            <label>마감일</label>
-                            <DatePicker
-                                selected={dueDate}
-                                onChange={(date) => setDueDate(date)}
-                                dateFormat="yyyy-MM-dd"
-                                placeholderText="연도-월-일"
-                                locale="ko" // 한글
-                                className="custom-date-input"
-                                calendarClassName="custom-calendar"  // 달력 팝업 커스텀 클래스
-                                popperPlacement="auto"   // 위치 자동 조정
-                            />
-                        </div>
-
-                        {/* 메모 */}
-                        <div className="drawer-field">
-                            <label>메모</label>
-                            <textarea
-                                rows={3}
-                                placeholder="추가 메모를 입력하세요"
-                                value={memo}
-                                onChange={(e) => setMemo(e.target.value)}
-                            />
-                        </div>
-
-                        {/* 담당자 */}
-                        <div className="drawer-field">
-                            <label>담당자</label>
-                            <input
-                                type="text"
-                                placeholder="담당자 이름"
-                                value={assignee}
-                                onChange={(e) => setAssignee(e.target.value)}
-                            />
-                        </div>
-                        {/* 작업 폴더 */}
-                        <div className="drawer-field">
-                            <label>작업 폴더</label>
-                            <select
-                                value={assignee}        // 현재 state 사용 (임시로 assignee에 저장 중)
+                            <div
+                                className="tips-icon-wrapper"
+                                onMouseEnter={() => setShowTips(true)}
+                                onMouseLeave={() => setShowTips(false)}
                             >
-                                <option value="">폴더 선택</option>
-                                <option value="folderA">폴더 A</option>
-                                <option value="folderB">폴더 B</option>
-                                <option value="folderC">폴더 C</option>
-                            </select>
+                                <span className="tips-icon">?</span>
+                                {showTips && (
+                                    <div className="tips-tooltip">
+                                        <h3>작업 작성 TIP</h3>
+                                        <ul>
+                                            <li>작업은 구체적으로 적어주세요.</li>
+                                            <li>마감일을 꼭 설정해 보세요.</li>
+                                            <li>단계를 나누어 작성하면 실행이 쉬워집니다.</li>
+                                            <li>우선순위를 명확히 정해주세요.</li>
+                                        </ul>
+                                        <div className="tooltip-divider"></div>
+                                        <h3>미루기 방지 체크리스트</h3>
+                                        <ol>
+                                            <li>이 작업의 구체적인 목표는?</li>
+                                            <li>언제까지 끝낼 것인가?</li>
+                                            <li>중간 점검이 필요한가?</li>
+                                            <li>이 작업을 끝내면 무엇이 좋은가?</li>
+                                        </ol>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <div className="drawer-footer">
-                        <button className="btn btn-create" onClick={handleDetailSave}>
-                            저장
-                        </button>
-                    </div>
+                    )}
                 </div>
             </div>
 
+            {/* 커스텀 에디터 모달 */}
             {isEditorOpen && (
                 <div className="editor-modal-overlay">
                     <div className="editor-modal">
@@ -347,8 +412,6 @@ const TodoListWrite = () => {
                                 ×
                             </button>
                         </div>
-
-                        {/* ReactQuill로 사용자 커스텀*/}
                         <ReactQuill
                             theme="snow"
                             value={tempHTML}
@@ -357,8 +420,6 @@ const TodoListWrite = () => {
                             formats={quillFormats}
                             style={{ height: "300px", marginBottom: "20px" }}
                         />
-
-                        {/* 하단 버튼 */}
                         <div className="editor-footer">
                             <button className="btn btn-edit" onClick={closeEditor}>
                                 취소

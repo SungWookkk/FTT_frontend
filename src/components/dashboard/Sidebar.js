@@ -7,8 +7,8 @@ import StatisticsIcon from "../../../src/Auth/css/img/statistics.svg";
 import BadgeIcon from "../../../src/Auth/css/img/badge.svg";
 import CommunityIcon from "../../../src/Auth/css/img/community.svg";
 import plus from "../../../src/Auth/css/img/plus.svg";
-import userinfo from "../../../src/Auth/css/img/userinfo.svg"; // 사용자 아이콘 추가
-import SidebarFavorites from "./SidebarFavorites"; // 추가된 컴포넌트
+import userinfo from "../../../src/Auth/css/img/userinfo.svg";
+import SidebarFavorites from "./SidebarFavorites";
 const Sidebar = () => {
     const location = useLocation(); // 현재 활성화된 URL을 가져옴
 
@@ -61,7 +61,6 @@ const Sidebar = () => {
                         </Link>
                     </li>
                 </ul>
-                {/* 🔹 추가된 Favorites 섹션 */}
                 <SidebarFavorites/>
                         {/* 도움말 & 공유 버튼 */}
                 <div className="help-section">

@@ -150,6 +150,7 @@
 .dashboard-main-content {
     padding: 20px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .write-layout {
@@ -163,7 +164,6 @@
     flex-direction: column;
     gap: 10px;
 }
-
 
 /* 보고서 박스 */
 .report-box {
@@ -223,14 +223,6 @@
     margin-top: 20px;
 }
 
-/* 작업 내용 박스 */
-.write-content-box {
-    height: 199px;
-    width: 443px;
-    position: relative;
-    margin-top: 20px;
-}
-
 .content-group {
     height: 199px;
     width: 447px;
@@ -267,39 +259,6 @@
     width: 55px;
 }
 
-/* 작업 내용 입력  */
-.content-description {
-    position: absolute;
-    top: 2px;
-    left: 0;
-
-    width: 442px;
-    height: 185px;
-    box-sizing: border-box;
-
-    border: none;
-    outline: none;
-
-    color: #000000;
-    font-family: "Inter-Regular", Helvetica;
-    font-size: 11.8px;
-    font-weight: 400;
-    line-height: 16px;
-    resize: none;  /* 사용자가 사이즈 변경 못하게 */
-    background: transparent;
-    white-space: pre-line;
-    overflow-y: auto;
-
-}
-
-/* placeholder */
-.content-description::placeholder {
-    color: #999;
-    font-size: 14px;
-    position: absolute;
-    left: -1px;
-}
-
 /* 컨테이너 */
 .motivation-container {
     display: inline-block;
@@ -324,7 +283,6 @@
     white-space: nowrap;
     align-items: center;
     gap: 8px;
-
     padding: 8px 12px;
 }
 
@@ -345,6 +303,7 @@
     height: 20px;
     flex-shrink: 0;
 }
+
 /* 파일 첨부 전체 래퍼 */
 .file-upload-wrapper {
     max-width: 480px;
@@ -477,29 +436,48 @@
     border-color: #b5b5b5;
 }
 
-/* 드로어 위치 수정 */
-.detail-drawer {
+/* 드로어 + 우측 패널을 함께 감싸는 컨테이너 */
+.detail-container {
     position: fixed;
-    top: 120px;
-    right: 0;
-    height: calc(100% - 120px);
-    overflow: hidden;
-    background-color: #ffffff;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-
-    width: 0;
-    transition: width 0.3s ease;
+    top: 0;
+    left: 50%;
+    transform: translate(-15%, -120%);
+    transition: transform 0.7s ease;
     z-index: 999;
+
+    display: flex;
+    gap: 20px;
+}
+
+/* 열릴 때 아래로 슬라이딩 */
+.detail-container.open {
+    transform: translate(-23%, 23%);
+}
+
+/* detail-drawer (가운데/왼쪽) */
+.detail-drawer {
+    width: 500px;
+    max-height: 80vh;
+    overflow: visible;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
 }
-.detail-drawer.open {
-    width: 400px;
+/* 드로어 오른쪽 상단에 닫기버튼 + 물음표 아이콘 */
+.drawer-top-actions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
-
 /* 드로어 내부 구조는 기존과 동일 */
 .drawer-header {
     display: flex;
+    position: relative; /* 툴팁의 절대 위치 기준 */
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
@@ -525,9 +503,10 @@
     color: #555;
 }
 
+/* 바디만 스크롤 */
 .drawer-body {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* 내용이 많으면 스크롤 */
     padding: 16px 20px;
     display: flex;
     flex-direction: column;
@@ -571,7 +550,6 @@
     display: flex;
     justify-content: flex-end;
 }
-/* 작업 내용 필드 옆 버튼 */
 .editor-open-btn {
     margin-top: 4px;
     background-color: #f2f1fe;
@@ -587,6 +565,19 @@
     background-color: #e2e6f6;
 }
 
+/* 오른쪽 패널*/
+.right-panel-floating {
+    width: 240px;
+    max-height: 80vh;
+    overflow-y: auto;
+
+    background-color: #f9f9ff;
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
 /* WYSIWYG 모달 오버레이 */
 .editor-modal-overlay {
     position: fixed;
@@ -594,7 +585,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -607,7 +598,7 @@
     width: 600px;
     max-width: 90%;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -638,27 +629,7 @@
     color: #555;
 }
 
-/* 툴바 */
-.editor-toolbar {
-    display: flex;
-    gap: 8px;
-    padding: 8px 16px;
-    border-bottom: 1px solid #e8eaed;
-}
-.editor-toolbar button {
-    background: #f2f1fe;
-    border: 1px solid #e8eaed;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.editor-toolbar button:hover {
-    background-color: #e2e6f6;
-}
-
-/* 에디터 본문 */
+/* 에디터 본문 (ReactQuill) */
 .editor-content {
     flex: 1;
     padding: 12px 16px;
@@ -681,7 +652,7 @@
 /* 달력 팝업의 래퍼 */
 .custom-calendar {
     border: 1px solid #e2e6f6;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     animation: fadeInDown 0.2s ease forwards;
     opacity: 0;
@@ -689,8 +660,14 @@
 }
 
 @keyframes fadeInDown {
-    0%   { opacity: 0; transform: translateY(-4px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* 달력 헤더 영역 */
@@ -746,21 +723,132 @@
 
 /* 주말(토, 일) 강조 */
 .custom-calendar .react-datepicker__day--weekend {
-    color: #f95656; /* 빨강 계열 */
+    color: #f95656;
 }
-
-
-.custom-date-input {
-    width: 100%;
-    border: 1px solid #e8eaed;
-    border-radius: 6px;
-    padding: 8px;
+.tips-tooltip {
+    position: absolute;
+    top: 50%;
+    left: 110%;
+    transform: translateY(-50%) translateX(10px) scale(0.95);
+    opacity: 0;
+    width: 230px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f2f1fe 0%, #ffffff 100%);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    color: #333;
     font-size: 13px;
-    color: #2a2e34;
-    font-family: "Inter-Regular", sans-serif;
-    outline: none;
-    transition: border-color 0.2s ease;
+    line-height: 1.5;
+    z-index: 1000;
+    transition:
+            transform 0.25s ease,
+            opacity 0.25s ease;
 }
-.custom-date-input:focus {
-    border-color: #5f55ee;
+.tips-tooltip {
+    position: absolute;
+    top: 176px;
+    left: 135%;
+    transform: translateY(-50%) translateX(10px) scale(0.95);
+    opacity: 0;
+    width: 230px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f2f1fe 0%, #ffffff 100%);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    color: #333;
+    font-size: 13px;
+    line-height: 1.5;
+    z-index: 1000;
+    transition:
+            transform 0.25s ease,
+            opacity 0.25s ease;
+}
+/* 아이콘 호버 시 툴팁 보여주기 */
+.tips-icon-wrapper:hover .tips-tooltip {
+    transform: translateY(-50%) translateX(0) scale(1);
+    opacity: 1;
+}
+
+.tips-tooltip::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-right-color: #e2e1fc;
+    z-index: 1001;
+}
+
+.tips-tooltip h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #4f5762;
+}
+
+.tips-tooltip ul,
+.tips-tooltip ol {
+    margin: 0;
+    padding-left: 18px;
+    margin-bottom: 10px;
+}
+
+.tips-tooltip li {
+    margin-bottom: 6px;
+}
+
+.tooltip-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #dcdcdc;
+    margin: 8px 0;
+}
+/* AI 요약 패널 (오른쪽) */
+.ai-summary-panel {
+    position: absolute;
+    top: 70px;
+    left: 650px;
+    width: 350px;
+    background-color: #f2f1fe;
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+
+
+    transform: translateX(0);
+    transition: transform 0.5s ease;
+}
+
+/* 드로어 열릴 때 AI 패널만 오른쪽으로 이동 */
+.ai-summary-panel.move-right {
+    transform: translateX(550px);
+    left: 550px;
+}
+/*  피그마 디자인 코드 영역 */
+.yellow-design-section {
+    height: 300px;
+    position: absolute;
+    top: 200px;
+    left: 650px;
+    width: 470px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    margin-right: 270px;
+    margin-top: 70px;
+
+    /* 이동 애니메이션 */
+    transform: translateX(0);
+    transition: transform 0.5s ease;
+}
+.yellow-design-section.move-right{
+    transform: translateX(450px)
 }
