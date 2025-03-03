@@ -9,6 +9,9 @@ import "./App.css";
 import CommunityBestPosts from "./components/community/CommunityBestPosts";
 import TodoList from "./components/todolist/TodoList";
 import TodoListWritePage from "./components/todolist/TodoListWritePage";
+import TodoListContent from "./components/todolist/TodoListContent";
+import TodoListAllListView from "./components/todolist/TodoListAllListView";
+import TodoListAllListViewPage from "./components/todolist/TodoListAllListViewPage";
 
 const App = () => {
     return (
@@ -25,6 +28,7 @@ const App = () => {
                         <Route path="/dasboard" component={Dashboard}/>
                         <Route exact path="/todo" component={TodoList} />
                         <Route path="/todo/write" component={TodoListWritePage} />
+                        <Route path="/todo/list-all" component={TodoListAllListViewPage} />
                     </Switch>
                 </div>
             </Router>
