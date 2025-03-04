@@ -1,7 +1,5 @@
-import React, { useState, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
-import { Task } from "./Task";
 
 
 const TodoListAllListView = () => {
@@ -14,6 +12,10 @@ const TodoListAllListView = () => {
     // "전체 목록" 버튼 클릭 시 페이지 이동
     const handleAllListViewClick = () => {
         history.push("/todo/list-all"); //  페이지 이동
+    };
+    // "내 목록 " 버튼 클릭 시 페이지 이동
+    const handleMyListClick = () => {
+        history.push("/todo"); //  페이지 이동
     };
   return(
       <div className="dashboard-content">
@@ -36,8 +38,8 @@ const TodoListAllListView = () => {
           {/* 목록 선택 탭 */}
           <div className="list-tap">
               <div className="list-tab-container">
-                  <div className="tab-item active">내 목록</div>
-                  <div className="tab-item" onClick={handleAllListViewClick}>전체 목록</div>
+                  <div className="tab-item" onClick={handleMyListClick}>내 목록</div>
+                  <div className="tab-item active" onClick={handleAllListViewClick}>전체 목록</div>
                   <div className="tab-item">팀</div>
               </div>
           </div>

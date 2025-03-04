@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
 import { Task } from "./Task";
+import TodoListWrite from "./TodoListWrite";
 
 
 const TodoListContent = () => {
@@ -14,6 +15,12 @@ const TodoListContent = () => {
             tasks: [
                 { id: 1, title: "어서 마무리를 하자", description: "이거 빨리 디자인을 마무리해야 해..." },
                 { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
                 { id: 3, title: "근데 아마 이걸로 할 거 같은데", description: "이번 디자인으로 끝내자" }
             ]
         },
@@ -22,6 +29,10 @@ const TodoListContent = () => {
             color: "#e74c3c",
             tasks: [
                 { id: 4, title: "프레젠테이션 준비", description: "내일까지 발표 자료 완성" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
                 { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
                 { id: 6, title: "서류 제출", description: "업무 보고서 제출 기한 체크" }
             ]
@@ -32,6 +43,10 @@ const TodoListContent = () => {
             tasks: [
                 { id: 7, title: "새로운 기능 개발", description: "API 설계 및 구현 진행" },
                 { id: 8, title: "UI 리팩토링", description: "디자인 개선 사항 적용" },
+                { id: 8, title: "UI 리팩토링", description: "디자인 개선 사항 적용" },
+                { id: 8, title: "UI 리팩토링", description: "디자인 개선 사항 적용" },
+                { id: 8, title: "UI 리팩토링", description: "디자인 개선 사항 적용" },
+                { id: 8, title: "UI 리팩토링", description: "디자인 개선 사항 적용" },
                 { id: 9, title: "성능 최적화", description: "페이지 로딩 속도 개선" }
             ]
         },
@@ -40,6 +55,10 @@ const TodoListContent = () => {
             color: "#27ae60",
             tasks: [
                 { id: 10, title: "배포 완료", description: "최신 버전 배포 완료" },
+                { id: 11, title: "버그 수정 완료", description: "긴급 수정 사항 반영" },
+                { id: 11, title: "버그 수정 완료", description: "긴급 수정 사항 반영" },
+                { id: 11, title: "버그 수정 완료", description: "긴급 수정 사항 반영" },
+                { id: 11, title: "버그 수정 완료", description: "긴급 수정 사항 반영" },
                 { id: 11, title: "버그 수정 완료", description: "긴급 수정 사항 반영" },
                 { id: 12, title: "코드 리팩토링", description: "불필요한 코드 정리" }
             ]
@@ -87,7 +106,7 @@ const TodoListContent = () => {
     // "이전" 섹션 (무한 반복)
     const handlePrevSection = () => {
         if (selectedSectionIndex === null) return;
-        // 🔽 맨 앞(0)에서 더 누르면 맨 끝(sections.length-1)으로
+        //  맨 앞(0)에서 더 누르면 맨 끝(sections.length-1)으로
         const newIndex = (selectedSectionIndex - 1 + sections.length) % sections.length;
         animateSectionChange(newIndex, "prev");
     };
@@ -95,7 +114,7 @@ const TodoListContent = () => {
     // "다음" 섹션 (무한 반복)
     const handleNextSection = () => {
         if (selectedSectionIndex === null) return;
-        // 🔽 맨 뒤(sections.length-1)에서 더 누르면 맨 앞(0)으로
+        // 맨 뒤(sections.length-1)에서 더 누르면 맨 앞(0)으로
         const newIndex = (selectedSectionIndex + 1) % sections.length;
         animateSectionChange(newIndex, "next");
     };
@@ -129,6 +148,12 @@ const TodoListContent = () => {
     const handleAllListViewClick = () => {
         history.push("/todo/list-all"); //  페이지 이동
     };
+
+    // "작업 추가 생성" 버튼 클릭 시 페이지 이동 이벤트 핸들러
+    const handleAddTask = () => {
+        history.push("/todo/write");
+    };
+
 
     return (
         <div className="dashboard-content">
@@ -195,7 +220,7 @@ const TodoListContent = () => {
                                             {section.title} {section.tasks.length}
                                         </span>
 
-                                        {/* 🔽🔽🔽 인디케이터 (동그라미) - 현재 섹션 위치 표시 */}
+                                        {/* 인디케이터 - 현재 섹션 위치 표시 */}
                                         {selectedSection && selectedSection.title === section.title && (
                                             <div className="indicator-container">
                                                 {sections.map((_, i) => (
@@ -210,7 +235,7 @@ const TodoListContent = () => {
                                             </div>
                                         )}
 
-                                        <span className="add-task">+ 작업 추가 생성</span>
+                                        <span className="add-task" onClick={handleAddTask}>+ 작업 추가 생성</span>
                                     </div>
                                 </div>
 

@@ -238,14 +238,14 @@ const TodoListWrite = () => {
                 </div>
 
                 {/* 오른쪽 AI 요약 패널 */}
-                <div className={`ai-summary-panel ${isDetailOpen ? "move-right" : ""}`}>
+                <div className={`ai-summary-panel1 ${isDetailOpen ? "move-right" : ""}`}>
                     <h2>AI 요약 패널</h2>
                     <p>이곳에는 백엔드 설계 후 내용 넣을 에정</p>
                     <p>OpenAI API를 사용할 것임.</p>
                 </div>
 
                 {/* 피그마 디자인 코드 */}
-                <div className={`yellow-design-section ${isDetailOpen ? "move-right" : ""}`}>
+                <div className={`yellow-design-section1 ${isDetailOpen ? "move-right" : ""}`}>
                     {/* 뱃지 */}
                     <div className="yellow-title">뱃지</div>
                     <div className="progress-bar badge-bar">

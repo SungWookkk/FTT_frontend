@@ -441,7 +441,7 @@
     position: fixed;
     top: 0;
     left: 50%;
-    transform: translate(-15%, -120%);
+    transform: translate(-23%, -120%);
     transition: transform 0.7s ease;
     z-index: 999;
 
@@ -806,7 +806,7 @@
     margin: 8px 0;
 }
 /* AI 요약 패널 (오른쪽) */
-.ai-summary-panel {
+.ai-summary-panel1 {
     position: absolute;
     top: 70px;
     left: 650px;
@@ -817,18 +817,16 @@
     padding: 16px;
     box-sizing: border-box;
 
-
     transform: translateX(0);
     transition: transform 0.5s ease;
 }
 
 /* 드로어 열릴 때 AI 패널만 오른쪽으로 이동 */
-.ai-summary-panel.move-right {
+.ai-summary-panel1.move-right {
     transform: translateX(550px);
     left: 550px;
 }
-/*  피그마 디자인 코드 영역 */
-.yellow-design-section {
+.yellow-design-section1 {
     height: 300px;
     position: absolute;
     top: 200px;
@@ -849,6 +847,6 @@
     transform: translateX(0);
     transition: transform 0.5s ease;
 }
-.yellow-design-section.move-right{
+.yellow-design-section1.move-right{
     transform: translateX(450px)
 }
