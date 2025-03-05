@@ -20,12 +20,31 @@
     text-align: center;
     margin-right: 120px;
 }
+/* 알림 텍스트 스타일 */
+.alert-text-todo1 {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 140.5px;
+}
 /* 일반 텍스트 */
 .alert-text-todo .normal-text {
     font-weight: 400;
 }
 /* 강조 텍스트 */
 .alert-text-todo .highlight-text {
+    font-weight: 700;
+}
+/* 일반 텍스트 */
+.alert-text-todo1 .normal-text {
+    font-weight: 400;
+}
+/* 강조 텍스트 */
+.alert-text-todo1 .highlight-text {
     font-weight: 700;
 }
 
@@ -285,7 +304,7 @@
     display: flex;
     gap: 30px;
     padding: 20px;
-    position: relative; /* 🔸 화살표 절대배치용 */
+    position: relative; /* 화살표 절대배치용 */
 }
 
 /* 선택된 Task 상세 정보 (오른쪽) */

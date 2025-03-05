@@ -23,7 +23,6 @@ const SidebarFavorites = () => {
                 <div className="workspace-active">
                     <div className="active-bg"></div>
                     <div className="workspace-icon"></div>
-                    <div className="workspace-arrow">v</div>
                     <div className="active-text">작업 공간</div>
                 </div>
 

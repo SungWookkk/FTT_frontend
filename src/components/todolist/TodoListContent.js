@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
 import { Task } from "./Task";
-import TodoListWrite from "./TodoListWrite";
 
 
 const TodoListContent = () => {
