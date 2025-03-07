@@ -78,6 +78,11 @@ const TodoListContent = () => {
     // 애니메이션 클래스
     const [transitionClass, setTransitionClass] = useState("");
 
+    // 수정 기능
+    const [isEditMode, setisEditMode] = useState(false);
+
+
+
     // "더보기" 버튼
     const handleToggleTasks = (index) => {
         setExpandedSections((prev) => ({
@@ -88,6 +93,10 @@ const TodoListContent = () => {
 
     // 특정 섹션 + 특정 Task 클릭 => 오른쪽에 "그 Task만" 표시
     const handleSelectSection = (section, task) => {
+        if (isEditMode) {
+            alert(`"${section.title}" - "${task.title}" 작업을 수정합니다!`);
+            return;
+        }
         const idx = sections.findIndex((s) => s.title === section.title);
         setSelectedSectionIndex(idx);
         setSelectedSection(section);
@@ -118,26 +127,36 @@ const TodoListContent = () => {
         animateSectionChange(newIndex, "next");
     };
 
+    const [detailTransitionClass, setDetailTransitionClass] = useState("");
+
+
     // 부드러운 섹션 전환
+    // "이전" / "다음" 화살표 클릭 시 섹션 전환
     const animateSectionChange = (newIndex, direction) => {
-        // 1) slide-out
+        // 1) 왼쪽 목록 슬라이드 아웃
         setTransitionClass(direction === "next" ? "slide-out-left" : "slide-out-right");
+        // 1) 오른쪽 상세 슬라이드 아웃
+        setDetailTransitionClass(direction === "next" ? "slide-out-left-detail" : "slide-out-right-detail");
 
         setTimeout(() => {
-            // 2) 실제 섹션 교체
+            // 2) 실제 섹션/Task 교체
             setSelectedSectionIndex(newIndex);
             setSelectedSection(sections[newIndex]);
             setSelectedSectionTasks([sections[newIndex].tasks[0]]);
 
-            // slide-in
+            // 3) 왼쪽 목록 슬라이드 인
             setTransitionClass(direction === "next" ? "slide-in-right" : "slide-in-left");
+            // 3) 오른쪽 상세 슬라이드 인
+            setDetailTransitionClass(direction === "next" ? "slide-in-right-detail" : "slide-in-left-detail");
 
-            // 3) 끝나면 초기화
+            // 4) 애니메이션 완료 후 초기화
             setTimeout(() => {
                 setTransitionClass("");
+                setDetailTransitionClass("");
             }, 300);
         }, 300);
     };
+
     //  생성하기 버튼 클릭
     const handleCreateClick = () => {
         history.push("/todo/write");
@@ -153,6 +172,9 @@ const TodoListContent = () => {
         history.push("/todo/write");
     };
 
+    const handleEditClick = () => {
+        setisEditMode((prev) => !prev);
+    };
 
     return (
         <div className="dashboard-content">
@@ -168,10 +190,14 @@ const TodoListContent = () => {
                     >
                         생성하기
                     </button>
-                    <button className="btn btn-edit">수정</button>
+                    <button className="btn btn-edit" onClick={handleEditClick}>
+                        {isEditMode ? "수정 취소" : "수정"}
+                    </button>
                     <button className="btn btn-delete">삭제</button>
                 </div>
             </div>
+
+
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
@@ -194,10 +220,18 @@ const TodoListContent = () => {
                 </p>
             </div>
 
+            {/* [추가] 수정 모드 배너 (원하는 디자인으로 변경 가능) */}
+            {isEditMode && (
+                <div className="edit-mode-banner">
+                    <p>수정할 작업을 선택하세요!</p>
+                </div>
+            )}
+
+
             {/* 작업 리스트 & 상세 정보 표시 */}
-            <div className="task-view-container">
+            <div className={`task-view-container ${transitionClass} ${isEditMode ? "edit-mode" : ""}`}>
                 {/* 왼쪽 목록 */}
-                <div className={`task-sections ${transitionClass}`}>
+                <div className={`task-sections ${transitionClass} ${isEditMode ? "edit-mode" : ""}`}>
                     {sections.map((section, index) => {
                         // 선택된 섹션이 있다면, title이 다른 섹션은 숨김
                         if (selectedSection && section.title !== selectedSection.title) {
@@ -212,7 +246,7 @@ const TodoListContent = () => {
                             <div className="task-section" key={index}>
                                 <div
                                     className="section-header"
-                                    style={{ borderBottom: `5px solid ${section.color}`}}
+                                    style={{borderBottom: `5px solid ${section.color}`}}
                                 >
                                     <div className="section-header-content">
                                         <span className="section-title">
@@ -267,7 +301,7 @@ const TodoListContent = () => {
 
                 {/* 오른쪽 상세 영역: 단일 Task 정보 */}
                 {selectedSection && selectedSectionTasks.length > 0 && (
-                    <div className="selected-task-details">
+                    <div className={`selected-task-details ${detailTransitionClass}`}>
                         <button className="btn-back-top-right" onClick={handleBackToAll}>
                             ← 뒤로 가기
                         </button>

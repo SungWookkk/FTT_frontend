@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import "./css/PriorityDropdown.css";
 
 const priorityOptions = [
-    { value: "높음",  label: "매우 중요", color: "#F6C1B5" },
-    { value: "보통",  label: "중요",     color: "#F6F0B5" },
-    { value: "낮음",  label: "보통",     color: "#D1F6B5" },
+    { value: "중요",  label: "중요", color: "#F6C1B5" },
+    { value: "보통",  label: "보통",     color: "#F6F0B5" },
+    { value: "낮음",  label: "낮음",     color: "#D1F6B5" },
 ];
 
 const PriorityDropdown = ({ priority, onChange }) => {
