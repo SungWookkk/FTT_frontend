@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../dashboard/Sidebar";
 import Header from "../dashboard/Header";
-import TodoListWrite from "./TodoListWrite";
+import TodoListWrite from "./TodoCreateModal";
 
 const TodoListWritePage = () => {
     return (

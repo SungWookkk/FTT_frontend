@@ -1,0 +1,310 @@
+/* 모달 배경(오버레이) */
+.drawer-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 콘텐츠 */
+.drawer-modal-content {
+    background: #fff;
+    width: 600px;
+    left: 350px;
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeInModal 0.3s ease forwards;
+}
+
+@keyframes fadeInModal {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 좌우 2분할 래퍼 */
+.drawer-content-wrapper {
+    display: flex;
+    gap: 20px;
+}
+
+/* ───── 왼쪽 미리보기 패널 (가로 리사이즈 가능) ───── */
+.preview-panel {
+    background-color: #ffffff;
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+
+    /* 가로 리사이즈 속성들 */
+    flex: none;              /* flex-item 자동 확장 X */
+    width: 240px;            /* 초기 너비 */
+    resize: horizontal;      /* 수평 리사이즈 허용 */
+    overflow: auto;          /* 리사이즈 시 내부 스크롤 */
+    min-width: 160px;        /* 최소 너비 */
+    max-width: 600px;        /* 최대 너비 */
+}
+
+.preview-panel h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a2e34;
+    border-bottom: 1px solid #e8eaed;
+    padding-bottom: 8px;
+}
+
+.preview-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: #4f5762;
+}
+
+.preview-row label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #adb3bd;
+}
+
+.preview-value {
+    min-height: 24px;
+    border: 1px solid #e8eaed;
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 6px 8px;
+    line-height: 1.4;
+    color: #2a2e34;
+}
+
+/* 우선순위 색상 예시 */
+.preview-value.priority-높음,
+.preview-value.priority-high {
+    background-color: #fdecea;
+    color: #e74c3c;
+    font-weight: bold;
+}
+.preview-value.priority-보통,
+.preview-value.priority-normal {
+    background-color: #eafaf1;
+    color: #27ae60;
+    font-weight: bold;
+}
+.preview-value.priority-낮음,
+.preview-value.priority-low {
+    background-color: #e8f0fe;
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* ───── 오른쪽 입력 폼 패널 ───── */
+.form-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-panel h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a2e34;
+    border-bottom: 1px solid #e8eaed;
+    padding-bottom: 8px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.form-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f5762;
+}
+
+.form-field input[type="text"],
+.form-field textarea,
+.form-field select {
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    font-family: "Inter-Regular", sans-serif;
+    color: #2a2e34;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+    border-color: #5f55ee;
+}
+
+/* 폼 내 작업 내용 미리보기 */
+.form-preview {
+    min-height: 60px;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 8px;
+    background-color: #fafafa;
+    font-size: 14px;
+    color: #2a2e34;
+    line-height: 1.4;
+}
+
+/* 파일 첨부 스타일 (폼 내) */
+.file-drop-area {
+    background: linear-gradient(135deg, #f2f1fe, #ffffff);
+    border: 2px dashed #d3d3d3;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+.file-drop-area:hover {
+    background: linear-gradient(135deg, #e2e6f6, #f9f9ff);
+    border-color: #5f55ee;
+}
+.file-instruction {
+    font-size: 13px;
+    color: #4f5762;
+}
+.file-instruction span {
+    color: #5f55ee;
+    font-weight: 600;
+}
+.file-input {
+    display: none;
+}
+.file-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #4f5762;
+}
+.file-item:hover {
+    background: #f2f1fe;
+}
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 폼 하단 버튼 */
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* (Quill) 에디터 모달 */
+.editor-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.editor-modal {
+    background: #fff;
+    width: 500px;
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeInEditor 0.3s ease forwards;
+}
+@keyframes fadeInEditor {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+.editor-header h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #2a2e34;
+}
+.editor-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+.editor-close-btn:hover {
+    color: #555;
+}
+.editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #e8eaed;
+}
