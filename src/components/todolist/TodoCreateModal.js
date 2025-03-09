@@ -54,9 +54,7 @@ const TodoCreateModal = ({ onClose }) => {
         const newFiles = [...uploadedFiles, ...Array.from(e.target.files)];
         setUploadedFiles(newFiles);
     };
-    const handleRemoveFile = (idx) => {
-        setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
-    };
+
     const handleDragOver = (e) => e.preventDefault();
     const handleDrop = (e) => {
         e.preventDefault();
