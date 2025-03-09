@@ -1,4 +1,3 @@
-/* TodoCreateModal.jsx */
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -6,8 +5,8 @@ import PriorityDropdown from "./PriorityDropdown";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko";
-import "../todolist/css/TodoCreateModal.css"; // ← 이 CSS 파일에 최종 스타일을 넣는다고 가정
-import "../todolist/css/TodoDrawerWithPreview.css"; // ← 이 CSS 파일에 최종 스타일을 넣는다고 가정
+import "../todolist/css/TodoCreateModal.css";
+import "../todolist/css/TodoDrawerWithPreview.css";
 
 registerLocale("ko", ko);
 
@@ -47,6 +46,7 @@ const TodoCreateModal = ({ onClose }) => {
     // Quill Editor
     const [isEditorOpen, setIsEditorOpen] = useState(false);
     const [tempHTML, setTempHTML] = useState(content);
+
 
     // 파일 첨부
     const handleFileChange = (e) => {
@@ -108,58 +108,109 @@ const TodoCreateModal = ({ onClose }) => {
                 <h2>새 작업 작성</h2>
 
                 <div className="drawer-content-wrapper">
-                    {/* 왼쪽 미리보기 패널 (가로 리사이즈 가능) */}
                     <div className="preview-panel">
                         <h3>미리보기</h3>
-
-                        <div className="preview-row">
-                            <label>작업 이름</label>
-                            <div className="preview-value">{taskName || "입력 중..."}</div>
+                        {/* 상단 헤더 (오렌지 라인) */}
+                        <div
+                            className="section-header3"
+                            style={{
+                                borderBottom: "4px solid #ffa500",
+                            }}
+                        >
                         </div>
+                        {/* detail-items-container */}
+                        <div className="detail-items-container">
 
-                        <div className="preview-row">
-                            <label>작업 내용</label>
-                            <div
-                                className="preview-value"
-                                dangerouslySetInnerHTML={{ __html: content }}
-                            />
-                        </div>
-
-                        <div className="preview-row">
-                            <label>우선순위</label>
-                            <div className={`preview-value priority-${priority.toLowerCase()}`}>
-                                {priority}
-                            </div>
-                        </div>
-
-                        <div className="preview-row">
-                            <label>마감일</label>
-                            <div className="preview-value">
-                                {dueDate ? new Date(dueDate).toLocaleDateString() : "미설정"}
-                            </div>
-                        </div>
-
-                        <div className="preview-row">
-                            <label>담당자</label>
-                            <div className="preview-value">{assignee || "미지정"}</div>
-                        </div>
-
-                        <div className="preview-row">
-                            <label>메모</label>
-                            <div className="preview-value">{memo || "없음"}</div>
-                        </div>
-
-                        {/* 첨부파일 미리보기 */}
-                        {uploadedFiles.length > 0 && (
-                            <div className="preview-row">
-                                <label>첨부파일</label>
-                                <div className="preview-value">
-                                    {uploadedFiles.map((file, idx) => (
-                                        <div key={idx}>{file.name}</div>
-                                    ))}
+                            {/* 작업 이름 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="fas fa-file-alt" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">작업 이름</span>
+                                    <span className="detail-value">{taskName || "입력 중..."}</span>
                                 </div>
                             </div>
-                        )}
+
+                            {/* 작업 내용 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="fas fa-info-circle" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">작업 내용</span>
+                                    <span
+                                        className="detail-value"
+                                        dangerouslySetInnerHTML={{ __html: content }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* 우선순위 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="fas fa-exclamation-circle" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">우선순위</span>
+                                    <span className={`detail-value priority-${priority.toLowerCase()}`}>
+          {priority}
+        </span>
+                                </div>
+                            </div>
+
+                            {/* 마감일 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="far fa-calendar-alt" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">마감일</span>
+                                    <span className="detail-value">
+          {dueDate ? new Date(dueDate).toLocaleDateString() : "미설정"}
+        </span>
+                                </div>
+                            </div>
+
+                            {/* 담당자 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="fas fa-user" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">담당자</span>
+                                    <span className="detail-value">{assignee || "미지정"}</span>
+                                </div>
+                            </div>
+
+                            {/* 메모 */}
+                            <div className="detail-row">
+                                <div className="detail-icon">
+                                    <i className="far fa-sticky-note" />
+                                </div>
+                                <div className="detail-text">
+                                    <span className="detail-label">메모</span>
+                                    <span className="detail-value">{memo || "없음"}</span>
+                                </div>
+                            </div>
+
+                            {/* 첨부파일 */}
+                            {uploadedFiles.length > 0 && (
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-paperclip" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">첨부파일</span>
+                                        <span className="detail-value">
+            {uploadedFiles.map((file, idx) => (
+                <div key={idx}>{file.name}</div>
+            ))}
+          </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* 오른쪽 입력 폼 패널 */}
