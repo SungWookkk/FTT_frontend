@@ -107,39 +107,32 @@ const TodoCreateModal = ({ onClose }) => {
 
                 <div className="drawer-content-wrapper">
                     <div className="preview-panel">
-                        <h3>미리보기</h3>
+                        <h3>작업 생성 (미리보기)</h3>
                         {/* 상단 헤더 (오렌지 라인) */}
                         <div
                             className="section-header3"
                             style={{
                                 borderBottom: "4px solid #ffa500",
+                                padding: "8px 0", // 예시로 약간의 여백
                             }}
                         >
+                            {/* 여기서 taskName을 표시 */}
+                            <span style={{fontSize: "16px", fontWeight: "bold", marginLeft: "8px"}}>{taskName || "제목..."}</span>
                         </div>
                         {/* detail-items-container */}
                         <div className="detail-items-container">
 
-                            {/* 작업 이름 */}
-                            <div className="detail-row">
-                                <div className="detail-icon">
-                                    <i className="fas fa-file-alt" />
-                                </div>
-                                <div className="detail-text">
-                                    <span className="detail-label">작업 이름</span>
-                                    <span className="detail-value">{taskName || "입력 중..."}</span>
-                                </div>
-                            </div>
 
                             {/* 작업 내용 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-info-circle" />
+                                    <i className="fas fa-info-circle"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">작업 내용</span>
                                     <span
                                         className="detail-value"
-                                        dangerouslySetInnerHTML={{ __html: content }}
+                                        dangerouslySetInnerHTML={{__html: content}}
                                     />
                                 </div>
                             </div>
@@ -147,33 +140,34 @@ const TodoCreateModal = ({ onClose }) => {
                             {/* 우선순위 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-exclamation-circle" />
+                                    <i className="fas fa-exclamation-circle"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">우선순위</span>
-                                    <span className={`detail-value priority-${priority.toLowerCase()}`}>
-          {priority}
-        </span>
+                                    <span className={`detail-value priority-${priority}`}>{priority}</span>
                                 </div>
                             </div>
 
                             {/* 마감일 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-calendar-alt" />
+                                    <i className="far fa-calendar-alt"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">마감일</span>
-                                    <span className="detail-value">
-          {dueDate ? new Date(dueDate).toLocaleDateString() : "미설정"}
-        </span>
+                                    <span
+                                        className="detail-value">{dueDate ? new Date(dueDate).toLocaleDateString() : "미설정"}{daysLeft > 0
+                                        ? ` || 남은 일수: ${daysLeft}일 (D-${daysLeft})`
+                                        : daysLeft === 0
+                                            ? " || 오늘이 마감일입니다."
+                                            : `  || 마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}</span>
                                 </div>
                             </div>
 
                             {/* 담당자 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-user" />
+                                    <i className="fas fa-user"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">담당자</span>
@@ -184,7 +178,7 @@ const TodoCreateModal = ({ onClose }) => {
                             {/* 메모 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-sticky-note" />
+                                    <i className="far fa-sticky-note"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">메모</span>
@@ -196,15 +190,11 @@ const TodoCreateModal = ({ onClose }) => {
                             {uploadedFiles.length > 0 && (
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-paperclip" />
+                                        <i className="fas fa-paperclip"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">첨부파일</span>
-                                        <span className="detail-value">
-            {uploadedFiles.map((file, idx) => (
-                <div key={idx}>{file.name}</div>
-            ))}
-          </span>
+                                        <span className="detail-value">{uploadedFiles.map((file, idx) => (<div key={idx}>{file.name}</div>))}</span>
                                     </div>
                                 </div>
                             )}
@@ -259,7 +249,7 @@ const TodoCreateModal = ({ onClose }) => {
                                     {daysLeft > 0
                                         ? `남은 일수: ${daysLeft}일 (D-${daysLeft})`
                                         : daysLeft === 0
-                                            ? "오늘이 마감일입니다."
+                                            ? " || 오늘이 마감일입니다."
                                             : `마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
                                 </div>
                             )}

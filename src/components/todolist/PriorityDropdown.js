@@ -25,6 +25,7 @@ const PriorityDropdown = ({ priority, onChange }) => {
         setOpen(false);
     };
 
+
     return (
         <div className="priority-dropdown" onClick={toggleDropdown}>
             <div className="priority-pill" style={{ backgroundColor: current.color }}>

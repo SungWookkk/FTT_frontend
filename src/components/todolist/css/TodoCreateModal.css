@@ -26,6 +26,7 @@
     flex-direction: column;
     gap: 16px;
     animation: fadeInModal 0.3s ease forwards;
+
 }
 
 @keyframes fadeInModal {
@@ -46,6 +47,8 @@
 }
 
 .preview-panel {
+    max-height: 100vh;        /* 뷰포트의 80% 정도로 제한 */
+    overflow-y: auto;        /* 내용이 넘치면 세로 스크롤 */
     background-color: #ffffff;
     border: 1px solid #e8eaed;
     border-radius: 8px;
@@ -93,6 +96,7 @@
     padding: 6px 8px;
     line-height: 1.4;
     color: #2a2e34;
+
 }
 
 .preview-value.priority-높음,
@@ -120,6 +124,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+
 }
 
 .form-panel h3 {
@@ -136,6 +141,7 @@
     flex-direction: column;
     gap: 6px;
     margin-bottom: 12px;
+    overflow-y: auto;
 }
 
 .form-field label {

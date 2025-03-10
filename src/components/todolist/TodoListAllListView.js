@@ -33,25 +33,25 @@ const quillFormats = [
     "image",
 ];
 
-const TodoListAllListView = () => {
+registerLocale("ko", ko);
+
+function TodoListAllListView() {
     const history = useHistory();
 
-    // 선택된 Task (모달에 표시)
+    // ---------------------- (1) 수정 모드, Task 선택 ----------------------
     const [selectedTask, setSelectedTask] = useState(null);
+    const [isEditMode, setIsEditMode] = useState(false);
+
     const handleTaskClick = (task) => {
         setSelectedTask(task);
     };
     const handleCloseModal = () => {
         setSelectedTask(null);
-        // 수정 모달도 닫기
         resetEditForm();
     };
-
-    // ---------------------- 수정 모드 ----------------------
-    const [isEditMode, setIsEditMode] = useState(false);
     const handleEditClick = () => {
         setIsEditMode((prev) => !prev);
-        // 수정 모드 끌 때, 폼도 초기화
+        // 수정 모드 끌 때, 폼 초기화
         if (isEditMode) {
             resetEditForm();
             setSelectedTask(null);
@@ -66,15 +66,13 @@ const TodoListAllListView = () => {
     const [editPriority, setEditPriority] = useState("보통");
     const [editAssignee, setEditAssignee] = useState("");
     const [editMemo, setEditMemo] = useState("");
-
-    // 파일 첨부
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    // Quill 에디터 모달 열기/닫기
+    // ---------------------- Quill 에디터 모달 ----------------------
     const [isEditorOpen, setIsEditorOpen] = useState(false);
     const [tempHTML, setTempHTML] = useState(editContent);
 
-    // 폼 초기화 함수
+    // 폼 초기화
     const resetEditForm = () => {
         setEditTaskName("");
         setEditContent("<p>작업 내용을 입력하세요...</p>");
@@ -86,19 +84,6 @@ const TodoListAllListView = () => {
         setUploadedFiles([]);
         setIsEditorOpen(false);
     };
-
-    // DatePicker 한글
-    registerLocale("ko", ko);
-
-    // ---------------------- 수정 모드에서 Task 클릭 시 => 폼에 데이터 세팅----------------------
-    useEffect(() => {
-        if (isEditMode && selectedTask) {
-            // 여기에 Task -> 수정 폼 값 매핑
-            setEditTaskName(selectedTask.title || "");
-            setEditContent(`<p>${selectedTask.description || ""}</p>`);
-
-        }
-    }, [isEditMode, selectedTask]);
 
     // ---------------------- 파일 첨부 핸들러 ----------------------
     const handleFileChange = (e) => {
@@ -118,7 +103,7 @@ const TodoListAllListView = () => {
         }
     };
 
-    // ---------------------- 마감일 계산 ----------------------
+    // ----------------------  마감일 계산 ----------------------
     const handleDueDateChange = (date) => {
         setEditDueDate(date);
         if (!date) {
@@ -148,7 +133,6 @@ const TodoListAllListView = () => {
 
     // ---------------------- 수정 폼 저장 ----------------------
     const handleSaveEditForm = () => {
-        // 여기에 백엔드 API 연동 or state 업데이트 로직
         console.log("=== 수정 폼 저장 ===");
         console.log("작업 이름:", editTaskName);
         console.log("작업 내용(HTML):", editContent);
@@ -159,12 +143,10 @@ const TodoListAllListView = () => {
         console.log("업로드된 파일:", uploadedFiles);
 
         alert("수정 내용이 저장되었습니다! (실제로는 백엔드로 전송)");
-
-        // 저장 후 모달 닫기
         handleCloseModal();
     };
 
-    // ---------------------- 더미 섹션 / Task 데이터 백엔드 설계 후 바꿀 예정----------------------
+    // ---------------------- 더미 섹션 / Task 데이터 ----------------------
     const sections = [
         {
             title: "📍 최근 작성",
@@ -172,6 +154,7 @@ const TodoListAllListView = () => {
             tasks: [
                 { id: 1, title: "어서 마무리를 하자", description: "이거 빨리 디자인을 마무리해야 해..." },
                 { id: 2, title: "내 파일을 찾아줘", description: "UI 작업이 너무 오래 걸림" },
+                // ... (가상의 Task들)
                 { id: 3, title: "근데 아마 이걸로 할 거 같은데", description: "이번 디자인으로 끝내자" }
             ]
         },
@@ -180,6 +163,8 @@ const TodoListAllListView = () => {
             color: "#e74c3c",
             tasks: [
                 { id: 4, title: "프레젠테이션 준비", description: "내일까지 발표 자료 완성" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
+                { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
                 { id: 5, title: "코드 리뷰", description: "PR 코드 리뷰 마감일 준수" },
                 { id: 6, title: "서류 제출", description: "업무 보고서 제출 기한 체크" }
             ]
@@ -206,21 +191,20 @@ const TodoListAllListView = () => {
 
     // 모든 섹션의 task들을 하나의 배열로 병합
     const allTasks = sections.reduce((acc, section) => {
-        const tasksWithSection = section.tasks.map(task => ({
+        const tasksWithSection = section.tasks.map((task) => ({
             ...task,
             sectionTitle: section.title,
-            sectionColor: section.color
+            sectionColor: section.color,
         }));
         return acc.concat(tasksWithSection);
     }, []);
 
-    // 필터
+    // ---------------------- 필터  검색 ----------------------
     const [filterOption, setFilterOption] = useState("all");
     const handleFilterChange = (e) => {
         setFilterOption(e.target.value);
     };
 
-    // 검색
     const [searchQuery, setSearchQuery] = useState("");
     const [searchOption, setSearchOption] = useState("both");
     const handleSearchQueryChange = (e) => {
@@ -234,30 +218,43 @@ const TodoListAllListView = () => {
 
     // 필터 적용
     if (filterOption === "completed") {
-        displayTasks = displayTasks.filter(task => task.sectionTitle === "✅ 완료됨");
+        displayTasks = displayTasks.filter((task) => task.sectionTitle === "✅ 완료됨");
     } else if (filterOption === "dueSoon") {
-        displayTasks = displayTasks.filter(task => task.sectionTitle === "⏳ 마감 임박");
+        displayTasks = displayTasks.filter((task) => task.sectionTitle === "⏳ 마감 임박");
     } else if (filterOption === "remainingTodo") {
-        displayTasks = displayTasks.filter(task => task.sectionTitle === "🔥 남은 To Do");
+        displayTasks = displayTasks.filter((task) => task.sectionTitle === "🔥 남은 To Do");
     }
 
     // 검색 적용
     if (searchQuery.trim() !== "") {
         const query = searchQuery.trim().toLowerCase();
         if (searchOption === "title") {
-            displayTasks = displayTasks.filter(task => task.title.toLowerCase().includes(query));
+            displayTasks = displayTasks.filter((task) => task.title.toLowerCase().includes(query));
         } else if (searchOption === "description") {
-            displayTasks = displayTasks.filter(task => task.description.toLowerCase().includes(query));
+            displayTasks = displayTasks.filter((task) => task.description.toLowerCase().includes(query));
         } else {
             displayTasks = displayTasks.filter(
-                task =>
+                (task) =>
                     task.title.toLowerCase().includes(query) ||
                     task.description.toLowerCase().includes(query)
             );
         }
     }
 
-    // 버튼들
+    // ---------------------- 더보기 상태저장 ----------------------
+    // 1) 보이는 개수를 관리할 state
+    const [visibleCount, setVisibleCount] = useState(12);
+
+    // 2) 실제 렌더링할 Task 목록
+    const visibleTasks = displayTasks.slice(0, visibleCount);
+
+    // 3) 더 보기 버튼 클릭 시
+    const handleLoadMore = () => {
+        // 예: 한 번에 10개씩 더 보여주기
+        setVisibleCount((prev) => prev + 10);
+    };
+
+    // ---------------------- 버튼 이벤트 ----------------------
     const handleCreateClick = () => {
         history.push("/todo/write");
     };
@@ -268,7 +265,7 @@ const TodoListAllListView = () => {
         history.push("/todo");
     };
 
-    return(
+    return (
         <>
             <div className="dashboard-content">
                 {/* 작업공간 헤더 */}
@@ -277,10 +274,7 @@ const TodoListAllListView = () => {
                         <span className="title-text">To Do List - 작업 공간</span>
                     </div>
                     <div className="header-button-group">
-                        <button
-                            className="btn btn-create"
-                            onClick={handleCreateClick}
-                        >
+                        <button className="btn btn-create" onClick={handleCreateClick}>
                             생성하기
                         </button>
                         {/* 수정 버튼 */}
@@ -294,8 +288,12 @@ const TodoListAllListView = () => {
                 {/* 목록 선택 탭 */}
                 <div className="list-tap">
                     <div className="list-tab-container">
-                        <div className="tab-item" onClick={handleMyListClick}>내 목록</div>
-                        <div className="tab-item active" onClick={handleAllListViewClick}>전체 목록</div>
+                        <div className="tab-item" onClick={handleMyListClick}>
+                            내 목록
+                        </div>
+                        <div className="tab-item active" onClick={handleAllListViewClick}>
+                            전체 목록
+                        </div>
                         <div className="tab-item">팀</div>
                     </div>
                 </div>
@@ -307,8 +305,8 @@ const TodoListAllListView = () => {
                         <span className="normal-text">를 설계하세요! 우리의 </span>
                         <span className="highlight-text">To-Do List 서비스</span>
                         <span className="normal-text">
-                            를 통해 목표를 정리하고 실천하세요. 지금 바로 시작해보세요!
-                        </span>
+              를 통해 목표를 정리하고 실천하세요. 지금 바로 시작해보세요!
+            </span>
                     </p>
                 </div>
 
@@ -347,9 +345,9 @@ const TodoListAllListView = () => {
                     </div>
                 </div>
 
-                {/* 모든 작업을 통합한 그리드 */}
+                {/* 실제 렌더링할 Task 목록: visibleTasks */}
                 <div className={`all-tasks-grid ${isEditMode ? "edit-mode" : ""}`}>
-                    {displayTasks.map((task) => {
+                    {visibleTasks.map((task) => {
                         // 완료됨 여부 확인
                         const isCompleted = task.sectionTitle === "✅ 완료됨";
                         return (
@@ -366,10 +364,7 @@ const TodoListAllListView = () => {
                                     }
                                 }}
                             >
-                                <div
-                                    className="task-section-badge"
-                                    style={{ backgroundColor: task.sectionColor }}
-                                >
+                                <div className="task-section-badge" style={{ backgroundColor: task.sectionColor }}>
                                     {task.sectionTitle}
                                 </div>
                                 <div className="all-list-task-title">{task.title}</div>
@@ -378,6 +373,14 @@ const TodoListAllListView = () => {
                         );
                     })}
                 </div>
+
+                {visibleCount < displayTasks.length && (
+                    <div style={{ textAlign: "center", marginTop: "10px", marginRight:"200px" }}>
+                        <button onClick={handleLoadMore} className="btn btn-edit">
+                            더 보기
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* ---------------------- 일반 모달 (상세 보기) ---------------------- */}
@@ -388,8 +391,8 @@ const TodoListAllListView = () => {
                             className="section-header1"
                             style={{
                                 borderBottom: `4px solid ${selectedTask.sectionColor}`,
-                                marginTop: '1px',
-                                width: '500px'
+                                marginTop: "1px",
+                                width: "500px",
                             }}
                         >
                             <div className="section-header-content">
@@ -445,18 +448,19 @@ const TodoListAllListView = () => {
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">마감일</span>
-                                    <span className="detail-value">{editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}</span>
+                                    <span className="detail-value">
+                    {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
+                  </span>
                                 </div>
                             </div>
 
-                            {/* 우선순위 (우선순위에 따라 색상 변경) */}
+                            {/* 우선순위 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
                                     <i className="fas fa-exclamation-circle" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">우선순위</span>
-                                    {/* 우선순위값에 따라 클래스 변경 */}
                                     <span className={`detail-value priority-${editPriority}`}>{editPriority}</span>
                                 </div>
                             </div>
@@ -495,14 +499,13 @@ const TodoListAllListView = () => {
             {selectedTask && isEditMode && (
                 <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-edit-content" onClick={(e) => e.stopPropagation()}>
-
                         {/* 좌측: 상세 정보 (실시간 미리보기) */}
                         <div className="edit-left-panel">
                             <div
                                 className="section-header1"
                                 style={{
                                     borderBottom: `5px solid ${selectedTask.sectionColor}`,
-                                    marginTop: '1px'
+                                    marginTop: "1px",
                                 }}
                             >
                                 <div className="section-header-content">
@@ -511,41 +514,38 @@ const TodoListAllListView = () => {
                             </div>
 
                             <div className="modal-body">
-                                <p><strong>섹션:</strong> {selectedTask.sectionTitle}</p>
-
-                                <p><strong>제목:</strong> {editTaskName}</p>
-
-
-                                <p><strong>설명:</strong>
+                                <p>
+                                    <strong>섹션:</strong> {selectedTask.sectionTitle}
+                                </p>
+                                <p>
+                                    <strong>제목:</strong> {editTaskName}
+                                </p>
+                                <p>
+                                    <strong>설명:</strong>
                                     <span dangerouslySetInnerHTML={{ __html: editContent }} />
                                 </p>
-
-                                {/* 마감일: editDueDate  */}
-                                <p><strong>마감일:</strong>
-                                    {editDueDate
-                                        ? new Date(editDueDate).toLocaleDateString()
-                                        : "미설정"
-                                    }
+                                <p>
+                                    <strong>마감일:</strong>
+                                    {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
                                 </p>
-
-                                {/* 우선순위 */}
-                                <p><strong>우선순위:</strong> {editPriority}</p>
-
-                                {/* 담당자 */}
-                                <p><strong>담당자:</strong> {editAssignee}</p>
-
-                                {/* 메모 */}
-                                <p><strong>메모:</strong> {editMemo}</p>
+                                <p>
+                                    <strong>우선순위:</strong> {editPriority}
+                                </p>
+                                <p>
+                                    <strong>담당자:</strong> {editAssignee}
+                                </p>
+                                <p>
+                                    <strong>메모:</strong> {editMemo}
+                                </p>
                             </div>
                         </div>
 
                         {/* 우측: 수정 폼 */}
-                        <div className="edit-right-panel">
-                            <div className="edit-right-header">
-                                <h2>작업 수정 폼</h2>
-                            </div>
+                        <div className="form-panel1">
+                            <h3>작업 수정 폼</h3>
 
-                            <div className="drawer-field">
+                            {/* 작업 이름 */}
+                            <div className="form-field1">
                                 <label>작업 이름</label>
                                 <input
                                     type="text"
@@ -556,16 +556,19 @@ const TodoListAllListView = () => {
                             </div>
 
                             {/* 작업 내용 */}
-                            <div className="drawer-field">
+                            <div className="form-field1">
                                 <label>작업 내용</label>
-                                <div className="content-preview" dangerouslySetInnerHTML={{ __html: editContent }} />
+                                <div
+                                    className="content-preview form-preview1"
+                                    dangerouslySetInnerHTML={{ __html: editContent }}
+                                />
                                 <button className="editor-open-btn" onClick={openEditor}>
                                     에디터 열기
                                 </button>
                             </div>
 
                             {/* 마감일 */}
-                            <div className="drawer-field">
+                            <div className="form-field1">
                                 <label>마감일</label>
                                 <DatePicker
                                     selected={editDueDate}
@@ -573,10 +576,10 @@ const TodoListAllListView = () => {
                                     dateFormat="yyyy-MM-dd"
                                     placeholderText="연도-월-일"
                                     locale="ko"
-                                    className="custom-date-input"
+                                    className="custom-date-input1"
                                 />
                                 {editDaysLeft !== null && (
-                                    <div className="due-remaining">
+                                    <div className="due-remaining1">
                                         {editDaysLeft > 0
                                             ? `남은 일수: ${editDaysLeft}일 (D-${editDaysLeft})`
                                             : editDaysLeft === 0
@@ -586,19 +589,14 @@ const TodoListAllListView = () => {
                                 )}
                             </div>
 
-                            {/* 우선순위  */}
-                            <div className="drawer-field">
-                                <div className="drawer-field">
-                                    <label>우선순위</label>
-                                    <PriorityDropdown
-                                        priority={editPriority}
-                                        onChange={(val) => setEditPriority(val)}
-                                    />
-                                </div>
+                            {/* 우선순위 */}
+                            <div className="form-field1">
+                                <label>우선순위</label>
+                                <PriorityDropdown priority={editPriority} onChange={(val) => setEditPriority(val)} />
                             </div>
 
                             {/* 담당자 */}
-                            <div className="drawer-field">
+                            <div className="form-field1">
                                 <label>담당자</label>
                                 <input
                                     type="text"
@@ -609,7 +607,7 @@ const TodoListAllListView = () => {
                             </div>
 
                             {/* 메모 */}
-                            <div className="drawer-field">
+                            <div className="form-field1">
                                 <label>메모</label>
                                 <textarea
                                     rows={3}
@@ -619,43 +617,20 @@ const TodoListAllListView = () => {
                                 />
                             </div>
 
-                            {/* 파일 업로드 */}
-                            <div
-                                className="file-upload-wrapper"
-                                onDragOver={handleDragOver}
-                                onDrop={handleDrop}
-                            >
-                                <div className="file-upload-header">
-                                    <h3 className="file-upload-title">파일 등록</h3>
-                                    <p className="file-upload-desc">
-                                        필요한 파일을 등록해 주세요! (수정 모드)
-                                    </p>
-                                    <p className="file-upload-state">
-                                        업로드 - 파일 {uploadedFiles.length}개
-                                    </p>
-                                </div>
-
-                                <label htmlFor="file-input" className="file-drop-area">
-                                    <p className="file-instruction">
+                            {/* 파일 첨부 */}
+                            <div className="form-field1">
+                                <label>파일 첨부</label>
+                                <div className="file-drop-area" onDragOver={handleDragOver} onDrop={handleDrop}>
+                                    <p className="file-instruction1">
                                         이 영역을 드래그하거나 <span>클릭</span>하여 업로드
                                     </p>
-                                    <input
-                                        id="file-input"
-                                        type="file"
-                                        multiple
-                                        className="file-input"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
-
-                                <div className="file-list">
+                                    <input type="file" multiple className="file-input" onChange={handleFileChange} />
+                                </div>
+                                <div className="file-list1">
                                     {uploadedFiles.map((file, idx) => (
                                         <div className="file-item" key={idx}>
                                             <span className="file-name">{file.name}</span>
-                                            <button
-                                                className="file-remove-btn"
-                                                onClick={() => handleRemoveFile(idx)}
-                                            >
+                                            <button className="file-remove-btn" onClick={() => handleRemoveFile(idx)}>
                                                 X
                                             </button>
                                         </div>
@@ -708,6 +683,6 @@ const TodoListAllListView = () => {
             )}
         </>
     );
-};
+}
 
 export default TodoListAllListView;

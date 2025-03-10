@@ -182,8 +182,7 @@ const TodoDrawerWithPreview = () => {
                                                             ? "오늘 마감!"
                                                             : `(D+${Math.abs(daysLeft)})`}
                                                 </em>
-                                            )}
-                    </span>
+                                            )}</span>
                                     </div>
                                 </div>
 
