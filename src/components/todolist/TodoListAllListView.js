@@ -3,6 +3,7 @@ import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
 import "../todolist/css/TodoListAllListView.css";
 import PriorityDropdown from "../todolist/PriorityDropdown.js";
+import TodoCreateModal from "../todolist/TodoCreateModal";
 
 /* Quill, DatePicker 필요한 라이브러리 */
 import ReactQuill from "react-quill";
@@ -10,7 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko";
-
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 // Quill 설정
 const quillModules = {
     toolbar: [
@@ -38,7 +39,7 @@ registerLocale("ko", ko);
 function TodoListAllListView() {
     const history = useHistory();
 
-    // ---------------------- (1) 수정 모드, Task 선택 ----------------------
+    // ---------------------- 수정 모드, Task 선택 ----------------------
     const [selectedTask, setSelectedTask] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
 
@@ -146,6 +147,12 @@ function TodoListAllListView() {
         handleCloseModal();
     };
 
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    // "생성하기" 버튼 클릭 시 => 모달 열기
+    const handleCreateClick = () => {
+        setIsCreateModalOpen(true);
+    };
+
     // ---------------------- 더미 섹션 / Task 데이터 ----------------------
     const sections = [
         {
@@ -213,7 +220,6 @@ function TodoListAllListView() {
     const handleSearchOptionChange = (e) => {
         setSearchOption(e.target.value);
     };
-
     let displayTasks = [...allTasks];
 
     // 필터 적용
@@ -241,23 +247,31 @@ function TodoListAllListView() {
         }
     }
 
-    // ---------------------- 더보기 상태저장 ----------------------
-    // 1) 보이는 개수를 관리할 state
-    const [visibleCount, setVisibleCount] = useState(12);
 
-    // 2) 실제 렌더링할 Task 목록
+
+    // ---------------------- Load More & 접기 ----------------------
+    const initialVisibleCount = 10;
+    const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
     const visibleTasks = displayTasks.slice(0, visibleCount);
-
-    // 3) 더 보기 버튼 클릭 시
-    const handleLoadMore = () => {
-        // 예: 한 번에 10개씩 더 보여주기
-        setVisibleCount((prev) => prev + 10);
+    const handleToggleVisible = () => {
+        if (visibleCount === displayTasks.length) {
+            setVisibleCount(initialVisibleCount);
+        } else {
+            setVisibleCount(displayTasks.length);
+        }
     };
+
+    // ---------------------- fade in 애니메이션  ----------------------
+    const [gridClass, setGridClass] = useState("");
+    useEffect(() => {
+        setGridClass("visible");
+        const timer = setTimeout(() => {
+            setGridClass("");
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [visibleCount]);
 
     // ---------------------- 버튼 이벤트 ----------------------
-    const handleCreateClick = () => {
-        history.push("/todo/write");
-    };
     const handleAllListViewClick = () => {
         history.push("/todo/list-all");
     };
@@ -279,7 +293,7 @@ function TodoListAllListView() {
                         </button>
                         {/* 수정 버튼 */}
                         <button className="btn btn-edit" onClick={handleEditClick}>
-                            {isEditMode ? "수정 취소" : "수정"}
+                        {isEditMode ? "수정 취소" : "수정"}
                         </button>
                         <button className="btn btn-delete">삭제</button>
                     </div>
@@ -346,42 +360,46 @@ function TodoListAllListView() {
                 </div>
 
                 {/* 실제 렌더링할 Task 목록: visibleTasks */}
-                <div className={`all-tasks-grid ${isEditMode ? "edit-mode" : ""}`}>
-                    {visibleTasks.map((task) => {
-                        // 완료됨 여부 확인
-                        const isCompleted = task.sectionTitle === "✅ 완료됨";
-                        return (
-                            <div
-                                key={task.id}
-                                className={`all-list-task-card ${isCompleted ? "completed-task-card" : ""}`}
-                                onClick={() => {
-                                    if (isEditMode) {
-                                        // 수정 모드 => 수정 모달 열기
-                                        setSelectedTask(task);
-                                    } else {
-                                        // 일반 모드 => 상세 모달 열기
-                                        handleTaskClick(task);
-                                    }
-                                }}
-                            >
-                                <div className="task-section-badge" style={{ backgroundColor: task.sectionColor }}>
-                                    {task.sectionTitle}
-                                </div>
-                                <div className="all-list-task-title">{task.title}</div>
-                                <div className="all-list-task-desc">{task.description}</div>
-                            </div>
-                        );
-                    })}
+                <div className={`all-tasks-grid ${gridClass} ${isEditMode ? "edit-mode" : ""}`}>
+                    <TransitionGroup component={null}>
+                        {visibleTasks.map((task) => {
+                            const isCompleted = task.sectionTitle === "✅ 완료됨";
+                            return (
+                                <CSSTransition key={task.id} timeout={500} classNames="task">
+                                    <div
+                                        className={`all-list-task-card ${isCompleted ? "completed-task-card" : ""}`}
+                                        onClick={() => {
+                                            if (isEditMode) {
+                                                setSelectedTask(task);
+                                            } else {
+                                                handleTaskClick(task);
+                                            }
+                                        }}
+                                    >
+                                        <div
+                                            className="task-section-badge"
+                                            style={{backgroundColor: task.sectionColor}}
+                                        >
+                                            {task.sectionTitle}
+                                        </div>
+                                        <div className="all-list-task-title">{task.title}</div>
+                                        <div className="all-list-task-desc">{task.description}</div>
+                                    </div>
+                                </CSSTransition>
+                            );
+                        })}
+                    </TransitionGroup>
                 </div>
 
-                {visibleCount < displayTasks.length && (
-                    <div style={{ textAlign: "center", marginTop: "10px", marginRight:"200px" }}>
-                        <button onClick={handleLoadMore} className="btn btn-edit">
-                            더 보기
+                {displayTasks.length > initialVisibleCount && (
+                    <div style={{textAlign: "center", marginTop: "20px"}}>
+                        <button onClick={handleToggleVisible} className="btn btn-edit-all">
+                            {visibleCount === displayTasks.length ? "접기" : "더 보기"}
                         </button>
                     </div>
                 )}
             </div>
+
 
             {/* ---------------------- 일반 모달 (상세 보기) ---------------------- */}
             {selectedTask && !isEditMode && (
@@ -403,7 +421,7 @@ function TodoListAllListView() {
                         {/* 섹션 (섹션 색상 적용) */}
                         <div className="detail-row">
                             <div className="detail-icon">
-                                <i className="fas fa-folder-open" />
+                                <i className="fas fa-folder-open"/>
                             </div>
                             <div className="detail-text">
                                 <span className="detail-label">섹션</span>
@@ -422,7 +440,7 @@ function TodoListAllListView() {
                             {/* 제목 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-file-alt" />
+                                    <i className="fas fa-file-alt"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">제목</span>
@@ -433,7 +451,7 @@ function TodoListAllListView() {
                             {/* 설명 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-info-circle" />
+                                    <i className="fas fa-info-circle"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">설명</span>
@@ -444,7 +462,7 @@ function TodoListAllListView() {
                             {/* 마감일 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-calendar-alt" />
+                                    <i className="far fa-calendar-alt"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">마감일</span>
@@ -457,7 +475,7 @@ function TodoListAllListView() {
                             {/* 우선순위 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-exclamation-circle" />
+                                    <i className="fas fa-exclamation-circle"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">우선순위</span>
@@ -468,7 +486,7 @@ function TodoListAllListView() {
                             {/* 담당자 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-user" />
+                                    <i className="fas fa-user"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">담당자</span>
@@ -479,7 +497,7 @@ function TodoListAllListView() {
                             {/* 메모 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-sticky-note" />
+                                    <i className="far fa-sticky-note"/>
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">메모</span>
@@ -522,7 +540,7 @@ function TodoListAllListView() {
                                 </p>
                                 <p>
                                     <strong>설명:</strong>
-                                    <span dangerouslySetInnerHTML={{ __html: editContent }} />
+                                    <span dangerouslySetInnerHTML={{__html: editContent}}/>
                                 </p>
                                 <p>
                                     <strong>마감일:</strong>
@@ -560,7 +578,7 @@ function TodoListAllListView() {
                                 <label>작업 내용</label>
                                 <div
                                     className="content-preview form-preview1"
-                                    dangerouslySetInnerHTML={{ __html: editContent }}
+                                    dangerouslySetInnerHTML={{__html: editContent}}
                                 />
                                 <button className="editor-open-btn" onClick={openEditor}>
                                     에디터 열기
@@ -592,7 +610,7 @@ function TodoListAllListView() {
                             {/* 우선순위 */}
                             <div className="form-field1">
                                 <label>우선순위</label>
-                                <PriorityDropdown priority={editPriority} onChange={(val) => setEditPriority(val)} />
+                                <PriorityDropdown priority={editPriority} onChange={(val) => setEditPriority(val)}/>
                             </div>
 
                             {/* 담당자 */}
@@ -624,7 +642,7 @@ function TodoListAllListView() {
                                     <p className="file-instruction1">
                                         이 영역을 드래그하거나 <span>클릭</span>하여 업로드
                                     </p>
-                                    <input type="file" multiple className="file-input" onChange={handleFileChange} />
+                                    <input type="file" multiple className="file-input" onChange={handleFileChange}/>
                                 </div>
                                 <div className="file-list1">
                                     {uploadedFiles.map((file, idx) => (
@@ -652,7 +670,7 @@ function TodoListAllListView() {
                 </div>
             )}
 
-            {/* Quill 에디터 모달 (수정 폼에서 "에디터 열기" 클릭 시) */}
+            {/* Quill 에디터 모달*/}
             {isEditorOpen && (
                 <div className="editor-modal-overlay">
                     <div className="editor-modal">
@@ -668,7 +686,7 @@ function TodoListAllListView() {
                             onChange={setTempHTML}
                             modules={quillModules}
                             formats={quillFormats}
-                            style={{ height: "300px", marginBottom: "20px" }}
+                            style={{height: "300px", marginBottom: "20px"}}
                         />
                         <div className="editor-footer">
                             <button className="btn btn-edit" onClick={closeEditor}>
@@ -680,6 +698,12 @@ function TodoListAllListView() {
                         </div>
                     </div>
                 </div>
+            )}
+            {/**생성하기 버튼 클릭 모달 오픈*/}
+            {isCreateModalOpen && (
+                <TodoCreateModal
+                    onClose={() => setIsCreateModalOpen(false)}
+                />
             )}
         </>
     );
