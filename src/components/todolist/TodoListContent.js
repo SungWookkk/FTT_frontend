@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
 import { Task } from "./Task";
@@ -158,7 +158,6 @@ const TodoListContent = () => {
         setTempHTML(editContent);
         setIsEditorOpen(true);
     };
-    const closeEditor = () => setIsEditorOpen(false);
     const saveEditorContent = () => {
         setEditContent(tempHTML);
         setIsEditorOpen(false);
@@ -290,10 +289,6 @@ const TodoListContent = () => {
         history.push("/todo/list-all");
     };
 
-    // "작업 추가 생성" 버튼 (예시)
-    const handleAddTask = () => {
-        alert("이 버튼은 이제 사용 안 해요! (예시)");
-    };
 
     return (
         <div className="dashboard-content">
@@ -388,8 +383,8 @@ const TodoListContent = () => {
                                             </div>
                                         )}
 
-                                        {/* 기존 "작업 추가 생성" 버튼 */}
-                                        <span className="add-task" onClick={handleAddTask}>
+                                        {/* 작업 추가 생성 버튼 */}
+                                        <span className="add-task" onClick={handleOpenCreateModal}>
                       + 작업 추가 생성
                     </span>
                                     </div>
@@ -698,5 +693,3 @@ const TodoListContent = () => {
 };
 
 export default TodoListContent;
-
-{/*CI/CD 날리기*/}

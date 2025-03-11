@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PriorityDropdown from "./PriorityDropdown";
@@ -42,7 +42,7 @@ const TodoCreateModal = ({ onClose }) => {
     const [memo, setMemo] = useState("");
     const [daysLeft, setDaysLeft] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
-
+    const fileInputRef = useRef(null);
     // Quill Editor
     const [isEditorOpen, setIsEditorOpen] = useState(false);
     const [tempHTML, setTempHTML] = useState(content);
@@ -63,8 +63,11 @@ const TodoCreateModal = ({ onClose }) => {
             setUploadedFiles((prev) => [...prev, ...Array.from(files)]);
         }
     };
+    const handleRemoveFile = (idx) => {
+        setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
+    };
 
-    // 마감일 계산
+    // ----------------------  마감일 계산 ----------------------
     const handleDueDateChange = (date) => {
         setDueDate(date);
         if (!date) {
@@ -279,6 +282,7 @@ const TodoCreateModal = ({ onClose }) => {
                             <label>파일 첨부</label>
                             <div
                                 className="file-drop-area"
+                                onClick={() => fileInputRef.current.click()}
                                 onDragOver={handleDragOver}
                                 onDrop={handleDrop}
                             >
@@ -289,6 +293,7 @@ const TodoCreateModal = ({ onClose }) => {
                                     type="file"
                                     multiple
                                     className="file-input"
+                                    ref={fileInputRef}
                                     onChange={handleFileChange}
                                 />
                             </div>
@@ -296,6 +301,12 @@ const TodoCreateModal = ({ onClose }) => {
                                 {uploadedFiles.map((file, idx) => (
                                     <div className="file-item" key={idx}>
                                         <span className="file-name">{file.name}</span>
+                                        <button
+                                            className="file-remove-btn"
+                                            onClick={() => handleRemoveFile(idx)}
+                                        >
+                                            X
+                                        </button>
                                     </div>
                                 ))}
                             </div>
