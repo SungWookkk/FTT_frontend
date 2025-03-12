@@ -193,14 +193,68 @@ const TodoCreateModal = ({ onClose }) => {
                             {uploadedFiles.length > 0 && (
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-paperclip"/>
+                                        <i className="fas fa-paperclip" />
                                     </div>
                                     <div className="detail-text">
-                                        <span className="detail-label">첨부파일</span>
-                                        <span className="detail-value">{uploadedFiles.map((file, idx) => (<div key={idx}>{file.name}</div>))}</span>
+                                        <span className="detail-label">등록된 파일 목록</span>
+
+                                        {/* 썸네일들 감싸는 래퍼 */}
+                                        <div className="file-thumbnails-preview">
+                                            {uploadedFiles.map((file, idx) => {
+                                                const isImage = file.type.startsWith("image/");
+                                                const extension = file.name.split(".").pop().toLowerCase();
+                                                // 확장자별 아이콘
+                                                const fileIconMap = {
+                                                    pdf: "fa-file-pdf",
+                                                    doc: "fa-file-word",
+                                                    docx: "fa-file-word",
+                                                    xls: "fa-file-excel",
+                                                    xlsx: "fa-file-excel",
+                                                    ppt: "fa-file-powerpoint",
+                                                    pptx: "fa-file-powerpoint",
+                                                    zip: "fa-file-archive",
+                                                    rar: "fa-file-archive",
+                                                    // ...
+                                                    default: "fa-file",
+                                                };
+                                                const iconClass = fileIconMap[extension] || fileIconMap.default;
+
+                                                // 이미지라면 ObjectURL 생성
+                                                const fileUrl = isImage ? URL.createObjectURL(file) : null;
+
+                                                return (
+                                                    <div className="file-thumbnail" key={idx}>
+                                                        {/* 삭제 버튼 */}
+                                                        <button
+                                                            className="file-remove-btn"
+                                                            onClick={() => handleRemoveFile(idx)}
+                                                        >
+                                                            X
+                                                        </button>
+
+                                                        {/* 이미지 vs 문서 아이콘 */}
+                                                        {isImage ? (
+                                                            <img
+                                                                src={fileUrl}
+                                                                alt={file.name}
+                                                                className="file-thumbnail-image"
+                                                            />
+                                                        ) : (
+                                                            <div className="file-icon">
+                                                                <i className={`fas ${iconClass}`} />
+                                                            </div>
+                                                        )}
+
+                                                        <div className="file-thumbnail-info"><span className="file-thumbnail-name" title={file.name} >{file.name}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
                             )}
+
                         </div>
                     </div>
 
@@ -209,7 +263,7 @@ const TodoCreateModal = ({ onClose }) => {
                         <h3>입력 폼</h3>
 
                         <div className="form-field">
-                            <label>작업 이름</label>
+                        <label>작업 이름</label>
                             <input
                                 type="text"
                                 placeholder="예: 프로젝트 보고서 작성..."
@@ -278,6 +332,7 @@ const TodoCreateModal = ({ onClose }) => {
                             />
                         </div>
 
+                        {/* 파일 첨부 영역 */}
                         <div className="form-field">
                             <label>파일 첨부</label>
                             <div
@@ -297,19 +352,7 @@ const TodoCreateModal = ({ onClose }) => {
                                     onChange={handleFileChange}
                                 />
                             </div>
-                            <div className="file-list">
-                                {uploadedFiles.map((file, idx) => (
-                                    <div className="file-item" key={idx}>
-                                        <span className="file-name">{file.name}</span>
-                                        <button
-                                            className="file-remove-btn"
-                                            onClick={() => handleRemoveFile(idx)}
-                                        >
-                                            X
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+
                         </div>
 
                         <div className="form-footer">
