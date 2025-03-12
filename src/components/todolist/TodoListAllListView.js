@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import "../todolist/css/TodoListContent.css";
 import { useHistory } from "react-router-dom";
 import "../todolist/css/TodoListAllListView.css";
@@ -68,6 +68,7 @@ function TodoListAllListView() {
     const [editAssignee, setEditAssignee] = useState("");
     const [editMemo, setEditMemo] = useState("");
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    const fileInputRef = useRef(null);
 
     // ---------------------- Quill 에디터 모달 ----------------------
     const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -421,7 +422,7 @@ function TodoListAllListView() {
                         {/* 섹션 (섹션 색상 적용) */}
                         <div className="detail-row">
                             <div className="detail-icon">
-                                <i className="fas fa-folder-open"/>
+                                <i className="fas fa-folder-open" />
                             </div>
                             <div className="detail-text">
                                 <span className="detail-label">섹션</span>
@@ -440,7 +441,7 @@ function TodoListAllListView() {
                             {/* 제목 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-file-alt"/>
+                                    <i className="fas fa-file-alt" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">제목</span>
@@ -451,7 +452,7 @@ function TodoListAllListView() {
                             {/* 설명 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-info-circle"/>
+                                    <i className="fas fa-info-circle" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">설명</span>
@@ -462,20 +463,20 @@ function TodoListAllListView() {
                             {/* 마감일 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-calendar-alt"/>
+                                    <i className="far fa-calendar-alt" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">마감일</span>
                                     <span className="detail-value">
-                    {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
-                  </span>
+              {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
+            </span>
                                 </div>
                             </div>
 
                             {/* 우선순위 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-exclamation-circle"/>
+                                    <i className="fas fa-exclamation-circle" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">우선순위</span>
@@ -486,7 +487,7 @@ function TodoListAllListView() {
                             {/* 담당자 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-user"/>
+                                    <i className="fas fa-user" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">담당자</span>
@@ -497,13 +498,71 @@ function TodoListAllListView() {
                             {/* 메모 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-sticky-note"/>
+                                    <i className="far fa-sticky-note" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">메모</span>
                                     <span className="detail-value">{editMemo || "메모 없음"}</span>
                                 </div>
                             </div>
+
+                            {/* 첨부파일 */}
+                            {uploadedFiles.length > 0 && (
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-paperclip" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">등록된 파일 목록</span>
+                                        <div className="file-thumbnails-preview">
+                                            {uploadedFiles.map((file, idx) => {
+                                                const isImage = file.type.startsWith("image/");
+                                                const extension = file.name.split(".").pop().toLowerCase();
+                                                // 확장자별 아이콘 매핑
+                                                const fileIconMap = {
+                                                    pdf: "fa-file-pdf",
+                                                    doc: "fa-file-word",
+                                                    docx: "fa-file-word",
+                                                    xls: "fa-file-excel",
+                                                    xlsx: "fa-file-excel",
+                                                    ppt: "fa-file-powerpoint",
+                                                    pptx: "fa-file-powerpoint",
+                                                    zip: "fa-file-archive",
+                                                    rar: "fa-file-archive",
+                                                    default: "fa-file",
+                                                };
+                                                const iconClass = fileIconMap[extension] || fileIconMap.default;
+                                                const fileUrl = isImage ? URL.createObjectURL(file) : null;
+                                                return (
+                                                    <div className="file-thumbnail" key={idx}>
+                                                        {/* 삭제 버튼 */}
+                                                        <button
+                                                            className="file-remove-btn"
+                                                            onClick={() => handleRemoveFile(idx)}
+                                                        >
+                                                            X
+                                                        </button>
+                                                        {isImage ? (
+                                                            <img
+                                                                src={fileUrl}
+                                                                alt={file.name}
+                                                                className="file-thumbnail-image"
+                                                            />
+                                                        ) : (
+                                                            <div className="file-icon">
+                                                                <i className={`fas ${iconClass}`} />
+                                                            </div>
+                                                        )}
+                                                        <div className="file-thumbnail-info">
+                                                            <span className="file-thumbnail-name" title={file.name}>{file.name}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <button className="modal-close-button" onClick={handleCloseModal}>
@@ -512,6 +571,8 @@ function TodoListAllListView() {
                     </div>
                 </div>
             )}
+
+
 
             {/* ---------------------- 수정 모달 (좌: 상세 / 우: 폼) ---------------------- */}
             {selectedTask && isEditMode && (
@@ -532,29 +593,150 @@ function TodoListAllListView() {
                             </div>
 
                             <div className="modal-body">
-                                <p>
-                                    <strong>섹션:</strong> {selectedTask.sectionTitle}
-                                </p>
-                                <p>
-                                    <strong>제목:</strong> {editTaskName}
-                                </p>
-                                <p>
-                                    <strong>설명:</strong>
-                                    <span dangerouslySetInnerHTML={{__html: editContent}}/>
-                                </p>
-                                <p>
-                                    <strong>마감일:</strong>
-                                    {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
-                                </p>
-                                <p>
-                                    <strong>우선순위:</strong> {editPriority}
-                                </p>
-                                <p>
-                                    <strong>담당자:</strong> {editAssignee}
-                                </p>
-                                <p>
-                                    <strong>메모:</strong> {editMemo}
-                                </p>
+                                {/* 섹션 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-folder-open" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">섹션</span>
+                                        <span className="detail-value">{selectedTask.sectionTitle}</span>
+                                    </div>
+                                </div>
+
+                                {/* 제목 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-file-alt" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">제목</span>
+                                        <span className="detail-value">{editTaskName}</span>
+                                    </div>
+                                </div>
+
+                                {/* 설명 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-info-circle" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">설명</span>
+                                        <span className="detail-value" dangerouslySetInnerHTML={{ __html: editContent }} />
+                                    </div>
+                                </div>
+
+                                {/* 마감일 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="far fa-calendar-alt" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">마감일</span>
+                                        <span className="detail-value">
+        {editDueDate ? new Date(editDueDate).toLocaleDateString() : "미설정"}
+      </span>
+                                    </div>
+                                </div>
+
+                                {/* 우선순위 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-exclamation-circle" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">우선순위</span>
+                                        <span className={`detail-value priority-${editPriority}`}>{editPriority}</span>
+                                    </div>
+                                </div>
+
+                                {/* 담당자 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-user" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">담당자</span>
+                                        <span className="detail-value">{editAssignee || "미지정"}</span>
+                                    </div>
+                                </div>
+
+                                {/* 메모 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="far fa-sticky-note" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">메모</span>
+                                        <span className="detail-value">{editMemo || "메모 없음"}</span>
+                                    </div>
+                                </div>
+
+                                {/* 첨부파일 */}
+                                {uploadedFiles.length > 0 && (
+                                    <div className="detail-row">
+                                        <div className="detail-icon">
+                                            <i className="fas fa-paperclip" />
+                                        </div>
+                                        <div className="detail-text">
+                                            <span className="detail-label">등록된 파일 목록</span>
+
+                                            {/* 썸네일들 감싸는 래퍼 */}
+                                            <div className="file-thumbnails-preview">
+                                                {uploadedFiles.map((file, idx) => {
+                                                    const isImage = file.type.startsWith("image/");
+                                                    const extension = file.name.split(".").pop().toLowerCase();
+                                                    // 확장자별 아이콘
+                                                    const fileIconMap = {
+                                                        pdf: "fa-file-pdf",
+                                                        doc: "fa-file-word",
+                                                        docx: "fa-file-word",
+                                                        xls: "fa-file-excel",
+                                                        xlsx: "fa-file-excel",
+                                                        ppt: "fa-file-powerpoint",
+                                                        pptx: "fa-file-powerpoint",
+                                                        zip: "fa-file-archive",
+                                                        rar: "fa-file-archive",
+                                                        // ...
+                                                        default: "fa-file",
+                                                    };
+                                                    const iconClass = fileIconMap[extension] || fileIconMap.default;
+
+                                                    // 이미지라면 ObjectURL 생성
+                                                    const fileUrl = isImage ? URL.createObjectURL(file) : null;
+
+                                                    return (
+                                                        <div className="file-thumbnail" key={idx}>
+                                                            {/* 삭제 버튼 */}
+                                                            <button
+                                                                className="file-remove-btn"
+                                                                onClick={() => handleRemoveFile(idx)}
+                                                            >
+                                                                X
+                                                            </button>
+
+                                                            {/* 이미지 vs 문서 아이콘 */}
+                                                            {isImage ? (
+                                                                <img
+                                                                    src={fileUrl}
+                                                                    alt={file.name}
+                                                                    className="file-thumbnail-image"
+                                                                />
+                                                            ) : (
+                                                                <div className="file-icon">
+                                                                    <i className={`fas ${iconClass}`} />
+                                                                </div>
+                                                            )}
+
+                                                            <div className="file-thumbnail-info"><span className="file-thumbnail-name" title={file.name} >{file.name}</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -635,24 +817,25 @@ function TodoListAllListView() {
                                 />
                             </div>
 
-                            {/* 파일 첨부 */}
-                            <div className="form-field1">
+                            {/* 파일 첨부 영역 */}
+                            <div className="form-field">
                                 <label>파일 첨부</label>
-                                <div className="file-drop-area" onDragOver={handleDragOver} onDrop={handleDrop}>
-                                    <p className="file-instruction1">
+                                <div
+                                    className="file-drop-area"
+                                    onClick={() => fileInputRef.current.click()}
+                                    onDragOver={handleDragOver}
+                                    onDrop={handleDrop}
+                                >
+                                    <p className="file-instruction">
                                         이 영역을 드래그하거나 <span>클릭</span>하여 업로드
                                     </p>
-                                    <input type="file" multiple className="file-input" onChange={handleFileChange}/>
-                                </div>
-                                <div className="file-list1">
-                                    {uploadedFiles.map((file, idx) => (
-                                        <div className="file-item" key={idx}>
-                                            <span className="file-name">{file.name}</span>
-                                            <button className="file-remove-btn" onClick={() => handleRemoveFile(idx)}>
-                                                X
-                                            </button>
-                                        </div>
-                                    ))}
+                                    <input
+                                        type="file"
+                                        multiple
+                                        className="file-input"
+                                        ref={fileInputRef}
+                                        onChange={handleFileChange}
+                                    />
                                 </div>
                             </div>
 

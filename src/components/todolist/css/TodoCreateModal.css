@@ -211,26 +211,7 @@
 .file-input {
     display: none;
 }
-.file-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fafafa;
-    border: 1px solid #e8eaed;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 13px;
-    color: #4f5762;
-}
-.file-item:hover {
-    background: #f2f1fe;
-}
-.file-name {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
 
 /* 폼 하단 버튼 */
 .form-footer {

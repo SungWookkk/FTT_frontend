@@ -39,7 +39,7 @@ const TodoDrawerWithPreview = () => {
     const [daysLeft, setDaysLeft] = useState(null);
     const [memo, setMemo] = useState("");
     const [assignee, setAssignee] = useState("");
-
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     // 드로어 열림 여부
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -61,6 +61,15 @@ const TodoDrawerWithPreview = () => {
         setContent(tempHTML);
         setIsEditorOpen(false);
     };
+    const handleRemoveFile = (idx) => {
+        setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
+    };
+    // 파일 첨부
+    const handleFileChange = (e) => {
+        if (!e.target.files) return;
+        const newFiles = [...uploadedFiles, ...Array.from(e.target.files)];
+        setUploadedFiles(newFiles);
+    };
 
     // 마감일 계산
     const handleDueDateChange = (date) => {
@@ -75,6 +84,7 @@ const TodoDrawerWithPreview = () => {
         const diff = Math.floor((date - now) / (1000 * 60 * 60 * 24));
         setDaysLeft(diff);
     };
+
 
     // 저장 버튼
     const handleDetailSave = () => {
