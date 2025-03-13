@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PriorityDropdown from "./PriorityDropdown";
@@ -7,9 +7,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko";
 import "../todolist/css/TodoCreateModal.css";
 import "../todolist/css/TodoDrawerWithPreview.css";
+import axios from "axios";
 
 registerLocale("ko", ko);
 
+// Quill 에디터 설정
 const quillModules = {
     toolbar: [
         [{ header: [1, 2, 3, false] }],
@@ -32,8 +34,8 @@ const quillFormats = [
     "image",
 ];
 
-const TodoCreateModal = ({ onClose }) => {
-    // form state
+const TodoCreateModal = ({ onClose, onTaskCreated }) => {
+    // 작업 생성 폼 상태
     const [taskName, setTaskName] = useState("");
     const [content, setContent] = useState("<p>작업 내용을 입력하세요...</p>");
     const [priority, setPriority] = useState("보통");
@@ -43,18 +45,17 @@ const TodoCreateModal = ({ onClose }) => {
     const [daysLeft, setDaysLeft] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const fileInputRef = useRef(null);
-    // Quill Editor
+
+    // Quill 에디터 모달 상태
     const [isEditorOpen, setIsEditorOpen] = useState(false);
     const [tempHTML, setTempHTML] = useState(content);
 
-
-    // 파일 첨부
+    // 파일 첨부 처리
     const handleFileChange = (e) => {
         if (!e.target.files) return;
         const newFiles = [...uploadedFiles, ...Array.from(e.target.files)];
         setUploadedFiles(newFiles);
     };
-
     const handleDragOver = (e) => e.preventDefault();
     const handleDrop = (e) => {
         e.preventDefault();
@@ -67,7 +68,7 @@ const TodoCreateModal = ({ onClose }) => {
         setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
     };
 
-    // ----------------------  마감일 계산 ----------------------
+    // 마감일 변경 시 남은 일수 계산
     const handleDueDateChange = (date) => {
         setDueDate(date);
         if (!date) {
@@ -80,7 +81,7 @@ const TodoCreateModal = ({ onClose }) => {
         setDaysLeft(diff);
     };
 
-    // Quill 열기/닫기
+    // Quill 에디터 열기/닫기
     const openEditor = () => {
         setTempHTML(content);
         setIsEditorOpen(true);
@@ -91,8 +92,9 @@ const TodoCreateModal = ({ onClose }) => {
         setIsEditorOpen(false);
     };
 
-    // 저장
+    // Task 저장: 백엔드와 통신
     const handleSave = () => {
+        // 1) 콘솔 디버깅
         console.log("작업 이름:", taskName);
         console.log("작업 내용:", content);
         console.log("우선순위:", priority);
@@ -100,42 +102,72 @@ const TodoCreateModal = ({ onClose }) => {
         console.log("담당자:", assignee);
         console.log("메모:", memo);
         console.log("첨부파일:", uploadedFiles);
-        onClose();
+
+        // 2) 백엔드로 Task 생성 요청 (파일 업로드 제외)
+        const token = localStorage.getItem("token");
+        const payload = {
+            title: taskName,
+            description: content,
+            priority: priority,
+            dueDate: dueDate,
+            assignee: assignee,
+            memo: memo,
+            // 파일 업로드는 별도 구현 필요
+        };
+
+        axios.post("/api/tasks", payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                // 서버에서 생성된 Task 객체 반환
+                const createdTask = response.data;
+                alert("새 작업이 생성되었습니다!");
+                if (onTaskCreated) {
+                    onTaskCreated(createdTask);
+                }
+                // 모달 닫기
+                onClose();
+            })
+            .catch((error) => {
+                console.error("작업 생성 실패:", error);
+                alert("작업 생성에 실패했습니다.");
+            });
     };
 
     return (
         <div className="drawer-modal-overlay" onClick={onClose}>
             <div className="drawer-modal-content" onClick={(e) => e.stopPropagation()}>
                 <h2>새 작업 작성</h2>
-
                 <div className="drawer-content-wrapper">
                     <div className="preview-panel">
                         <h3>작업 생성 (미리보기)</h3>
-                        {/* 상단 헤더 (오렌지 라인) */}
                         <div
                             className="section-header3"
                             style={{
                                 borderBottom: "4px solid #ffa500",
-                                padding: "8px 0", // 예시로 약간의 여백
+                                padding: "8px 0",
                             }}
                         >
-                            {/* 여기서 taskName을 표시 */}
-                            <span style={{fontSize: "16px", fontWeight: "bold", marginLeft: "8px"}}>{taskName || "제목..."}</span>
+                            <span
+                                style={{ fontSize: "16px", fontWeight: "bold", marginLeft: "8px" }}
+                            >
+                                {taskName || "제목..."}
+                            </span>
                         </div>
-                        {/* detail-items-container */}
+
                         <div className="detail-items-container">
-
-
                             {/* 작업 내용 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-info-circle"/>
+                                    <i className="fas fa-info-circle" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">작업 내용</span>
                                     <span
                                         className="detail-value"
-                                        dangerouslySetInnerHTML={{__html: content}}
+                                        dangerouslySetInnerHTML={{ __html: content }}
                                     />
                                 </div>
                             </div>
@@ -143,34 +175,41 @@ const TodoCreateModal = ({ onClose }) => {
                             {/* 우선순위 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-exclamation-circle"/>
+                                    <i className="fas fa-exclamation-circle" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">우선순위</span>
-                                    <span className={`detail-value priority-${priority}`}>{priority}</span>
+                                    <span className={`detail-value priority-${priority}`}>
+                                        {priority}
+                                    </span>
                                 </div>
                             </div>
 
                             {/* 마감일 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-calendar-alt"/>
+                                    <i className="far fa-calendar-alt" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">마감일</span>
-                                    <span
-                                        className="detail-value">{dueDate ? new Date(dueDate).toLocaleDateString() : "미설정"}{daysLeft > 0
-                                        ? ` || 남은 일수: ${daysLeft}일 (D-${daysLeft})`
-                                        : daysLeft === 0
-                                            ? " || 오늘이 마감일입니다."
-                                            : `  || 마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}</span>
+                                    <span className="detail-value">
+                                        {dueDate
+                                            ? new Date(dueDate).toLocaleDateString()
+                                            : "미설정"}
+                                        {daysLeft > 0
+                                            ? ` || 남은 일수: ${daysLeft}일 (D-${daysLeft})`
+                                            : daysLeft === 0
+                                                ? " || 오늘이 마감일입니다."
+                                                : daysLeft !== null &&
+                                                `  || 마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
+                                    </span>
                                 </div>
                             </div>
 
                             {/* 담당자 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="fas fa-user"/>
+                                    <i className="fas fa-user" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">담당자</span>
@@ -181,7 +220,7 @@ const TodoCreateModal = ({ onClose }) => {
                             {/* 메모 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
-                                    <i className="far fa-sticky-note"/>
+                                    <i className="far fa-sticky-note" />
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">메모</span>
@@ -197,13 +236,13 @@ const TodoCreateModal = ({ onClose }) => {
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">등록된 파일 목록</span>
-
-                                        {/* 썸네일들 감싸는 래퍼 */}
                                         <div className="file-thumbnails-preview">
                                             {uploadedFiles.map((file, idx) => {
                                                 const isImage = file.type.startsWith("image/");
-                                                const extension = file.name.split(".").pop().toLowerCase();
-                                                // 확장자별 아이콘
+                                                const extension = file.name
+                                                    .split(".")
+                                                    .pop()
+                                                    .toLowerCase();
                                                 const fileIconMap = {
                                                     pdf: "fa-file-pdf",
                                                     doc: "fa-file-word",
@@ -214,25 +253,20 @@ const TodoCreateModal = ({ onClose }) => {
                                                     pptx: "fa-file-powerpoint",
                                                     zip: "fa-file-archive",
                                                     rar: "fa-file-archive",
-                                                    // ...
                                                     default: "fa-file",
                                                 };
-                                                const iconClass = fileIconMap[extension] || fileIconMap.default;
-
-                                                // 이미지라면 ObjectURL 생성
+                                                const iconClass =
+                                                    fileIconMap[extension] || fileIconMap.default;
                                                 const fileUrl = isImage ? URL.createObjectURL(file) : null;
 
                                                 return (
                                                     <div className="file-thumbnail" key={idx}>
-                                                        {/* 삭제 버튼 */}
                                                         <button
                                                             className="file-remove-btn"
                                                             onClick={() => handleRemoveFile(idx)}
                                                         >
                                                             X
                                                         </button>
-
-                                                        {/* 이미지 vs 문서 아이콘 */}
                                                         {isImage ? (
                                                             <img
                                                                 src={fileUrl}
@@ -244,8 +278,13 @@ const TodoCreateModal = ({ onClose }) => {
                                                                 <i className={`fas ${iconClass}`} />
                                                             </div>
                                                         )}
-
-                                                        <div className="file-thumbnail-info"><span className="file-thumbnail-name" title={file.name} >{file.name}</span>
+                                                        <div className="file-thumbnail-info">
+                                                            <span
+                                                                className="file-thumbnail-name"
+                                                                title={file.name}
+                                                            >
+                                                                {file.name}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 );
@@ -254,16 +293,15 @@ const TodoCreateModal = ({ onClose }) => {
                                     </div>
                                 </div>
                             )}
-
                         </div>
                     </div>
 
-                    {/* 오른쪽 입력 폼 패널 */}
+                    {/* 입력 폼 패널 */}
                     <div className="form-panel">
                         <h3>입력 폼</h3>
 
                         <div className="form-field">
-                        <label>작업 이름</label>
+                            <label>작업 이름</label>
                             <input
                                 type="text"
                                 placeholder="예: 프로젝트 보고서 작성..."
@@ -332,7 +370,6 @@ const TodoCreateModal = ({ onClose }) => {
                             />
                         </div>
 
-                        {/* 파일 첨부 영역 */}
                         <div className="form-field">
                             <label>파일 첨부</label>
                             <div
@@ -352,7 +389,6 @@ const TodoCreateModal = ({ onClose }) => {
                                     onChange={handleFileChange}
                                 />
                             </div>
-
                         </div>
 
                         <div className="form-footer">
