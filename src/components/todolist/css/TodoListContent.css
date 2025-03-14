@@ -625,3 +625,10 @@
 .task-view-container.edit-mode .task:hover {
     background-color: #fff9f2;
 }
+
+.no-tasks-msg {
+    color: #888;         /* 글자색 예시 */
+    font-size: 14px;     /* 폰트 크기 예시 */
+    margin: 16px 0;      /* 위아래 여백 */
+    text-align: center;  /* 가운데 정렬 */
+}

@@ -88,48 +88,46 @@ const TodoListContent = () => {
     // ─────────────────────────────────────────────────────────
     const getSections = () => {
         const now = new Date();
+        // 마감임박을 3일로 설정 (예: 3일 이하이면 마감 임박)
         const threeDays = 3 * 24 * 60 * 60 * 1000;
 
         // 1) "✅ 완료됨": status === "DONE"
         const doneTasks = allTasks.filter((t) => t.status === "DONE");
 
-        // 2) "⏳ 마감 임박": dueDate가 존재하고, 남은 시간이 3일 이하이며, status !== "DONE"
+        // 2) "⏳ 마감 임박":
+        //    - status !== "DONE"
+        //    - dueDate가 존재
+        //    - 남은 시간이 threeDays 이하
         const dueSoonTasks = allTasks.filter(
             (t) =>
+                t.status !== "DONE" &&
                 t.dueDate &&
-                new Date(t.dueDate) - now <= threeDays &&
-                t.status !== "DONE"
+                new Date(t.dueDate) - now <= threeDays
         );
 
-        // 3) "📍 최근 작성": ID 내림차순 상위 5개
-        const recentTasks = [...allTasks].sort((a, b) => b.id - a.id).slice(0, 5);
+        // 3) "📍 최근 작성":
+        //    - 일단 완료된(DONE) 작업은 제외
+        //    - 마감 임박(dueSoon)에 포함된 작업도 제외 (중복 방지)
+        //    - ID 내림차순 정렬 후 상위 5개
+        const usedInAbove = new Set([...doneTasks, ...dueSoonTasks]);
+        const recentCandidates = allTasks.filter(
+            (t) => !usedInAbove.has(t) && t.status !== "DONE"
+        );
 
-        // 4) "🔥 남은 To Do": 위 3가지(완료됨, 마감 임박, 최근 작성)에 속하지 않는 나머지
-        //   혹은 status === "TODO" 로 분류
-        const usedInAbove = new Set([...doneTasks, ...dueSoonTasks, ...recentTasks]);
-        const todoTasks = allTasks.filter((t) => !usedInAbove.has(t));
+        const recentTasks = recentCandidates
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 5);
+
+        // 4) "🔥 남은 To Do":
+        //    - 이미 위 섹션(완료됨, 마감임박, 최근작성)에 포함되지 않은 나머지
+        const usedInAbove2 = new Set([...doneTasks, ...dueSoonTasks, ...recentTasks]);
+        const todoTasks = allTasks.filter((t) => !usedInAbove2.has(t));
 
         return [
-            {
-                title: "📍 최근 작성",
-                color: "#ffa500",
-                tasks: recentTasks,
-            },
-            {
-                title: "⏳ 마감 임박",
-                color: "#e74c3c",
-                tasks: dueSoonTasks,
-            },
-            {
-                title: "🔥 남은 To Do",
-                color: "#3498db",
-                tasks: todoTasks,
-            },
-            {
-                title: "✅ 완료됨",
-                color: "#27ae60",
-                tasks: doneTasks,
-            },
+            { title: "📍 최근 작성", color: "#ffa500", tasks: recentTasks },
+            { title: "⏳ 마감 임박", color: "#e74c3c", tasks: dueSoonTasks },
+            { title: "🔥 남은 To Do", color: "#3498db", tasks: todoTasks },
+            { title: "✅ 완료됨", color: "#27ae60", tasks: doneTasks },
         ];
     };
 
@@ -366,12 +364,17 @@ const TodoListContent = () => {
         setTransitionClass(direction === "next" ? "slide-out-left" : "slide-out-right");
         setDetailTransitionClass(direction === "next" ? "slide-out-left-detail" : "slide-out-right-detail");
 
-        // 300ms 후에 섹션 교체
         setTimeout(() => {
             const updatedSections = getSections();
             setSelectedSectionIndex(newIndex);
             setSelectedSection(updatedSections[newIndex]);
-            setSelectedSectionTasks([updatedSections[newIndex].tasks[0]]);
+
+              const newTasks = updatedSections[newIndex].tasks;
+               if (newTasks && newTasks.length > 0) {
+                     setSelectedSectionTasks([newTasks[0]]);
+                   } else {
+                     setSelectedSectionTasks([]); // 섹션에 Task가 없으면 빈 배열
+                   }
 
             setTransitionClass(direction === "next" ? "slide-in-right" : "slide-in-left");
             setDetailTransitionClass(direction === "next" ? "slide-in-right-detail" : "slide-in-left-detail");
@@ -396,6 +399,44 @@ const TodoListContent = () => {
         const newIndex = (selectedSectionIndex + 1) % updatedSections.length;
         animateSectionChange(newIndex, "next");
     };
+
+
+    // ─────────────────────────────────────────────────────────
+    //  "완료" 버튼 클릭 → status="DONE"으로 변경
+    // ─────────────────────────────────────────────────────────
+    const handleMarkDone = () => {
+        // 선택된 섹션의 첫 번째 Task (상세 보기 중인 Task)
+        if (!selectedSectionTasks || selectedSectionTasks.length === 0) {
+            alert("완료할 작업이 없습니다.");
+            return;
+        }
+        const targetTask = selectedSectionTasks[0];
+
+        const token = localStorage.getItem("token");
+        axios
+            .put(
+                `/api/tasks/${targetTask.id}`,
+                {
+                    ...targetTask,
+                    status: "DONE", // 상태를 DONE으로 변경
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
+            .then((res) => {
+                const updated = res.data;
+                // 전체 목록에서도 해당 Task를 갱신
+                setAllTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+                alert(`"${updated.title}" 작업이 완료되었습니다!`);
+                // 우측 상세 보기에서도 갱신
+                setSelectedSectionTasks([updated]);
+            })
+            .catch((err) => {
+                console.error("완료 설정 실패:", err);
+            });
+    };
+
 
     return (
         <div className="dashboard-content">
@@ -468,8 +509,9 @@ const TodoListContent = () => {
                             <div className="task-section" key={index}>
                                 <div
                                     className="section-header"
-                                    style={{ borderBottom: `5px solid ${section.color}` }}>
-                                    <div className="section-header-content"><span className="section-title">{section.title} {section.tasks.length}</span>
+                                    style={{borderBottom: `5px solid ${section.color}`}}>
+                                    <div className="section-header-content"><span
+                                        className="section-title">{section.title} {section.tasks.length}</span>
 
                                         {/* 인디케이터 - 현재 섹션 위치 표시 */}
                                         {selectedSection && selectedSection.title === section.title && (
@@ -495,14 +537,18 @@ const TodoListContent = () => {
                                     className={`task-list ${expandedSections[index] ? "expanded" : ""}`}
                                     ref={(el) => (moreTasksRefs.current[index] = el)}
                                 >
-                                    {visibleTasks.map((task) => (
+                                     {visibleTasks.length > 0 ? (
+                                      visibleTasks.map((task) => (
                                         <Task
                                             key={task.id}
                                             title={task.title}
                                             description={task.description}
                                             onClick={() => handleSelectSection(section, task)}
-                                        />
-                                    ))}
+                                          />
+                                        ))
+                                      ) : (
+                                        <p className="no-tasks-msg">이 섹션에 작업이 없습니다.</p>
+                                      )}
                                 </div>
 
                                 {section.tasks.length > 6 && (
@@ -518,12 +564,22 @@ const TodoListContent = () => {
                     })}
                 </div>
 
-                {/* 오른쪽 상세 영역: 단일 Task 정보 */}
+                {/* 오른쪽 상세 영역 */}
                 {selectedSection && selectedSectionTasks.length > 0 && (
                     <div className={`selected-task-details ${detailTransitionClass}`}>
-                        <button className="btn-back-top-right" onClick={handleBackToAll}>
-                            ← 뒤로 가기
-                        </button>
+                        {/* 버튼 간격 넉넉히: gap: 20px, marginBottom: 20px */}
+                        <div style={{display: "flex", gap: "20px", marginBottom: "20px"}}>
+                            <button className="btn-back-top-right" onClick={handleBackToAll}>
+                                ← 뒤로 가기
+                            </button>
+                            <button
+                                className="btn-back-top-right"
+                                style={{ backgroundColor: "#f2f9f2", color: "#2a2e34" }}
+                                onClick={handleMarkDone}
+                            >
+                                완료
+                            </button>
+                        </div>
 
                         <div
                             className="section-header"
@@ -534,9 +590,7 @@ const TodoListContent = () => {
                             }}
                         >
                             <div className="section-header-content">
-                <span className="section-title">
-                  {selectedSection.title} - Task 상세
-                </span>
+                                <span className="section-title">{selectedSection.title} - Task 상세</span>
                             </div>
                         </div>
 
@@ -544,9 +598,30 @@ const TodoListContent = () => {
                             {selectedSectionTasks.map((task) => (
                                 <li key={task.id}>
                                     <strong>제목:</strong> {task.title} <br />
-                                    <strong>설명:</strong> {task.description} <br />
+
+                                    {/* 설명은 Quill HTML일 수 있으므로 dangerouslySetInnerHTML로 렌더링 */}
+                                    <strong>설명:</strong>{" "}
+                                    <div
+                                        style={{ margin: "4px 0" }}
+                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                    />
+
+                                    {/* 우선순위 */}
+                                    <strong>우선순위:</strong> {task.priority || "없음"} <br />
+
+                                    {/* 마감일 */}
+                                    <strong>마감일:</strong>{" "}
+                                    {task.dueDate
+                                        ? new Date(task.dueDate).toLocaleDateString()
+                                        : "미설정"}
                                     <br />
-                                    <strong>이 하위는 백엔드 설계 후 추가 예정</strong>
+
+                                    {/* 담당자 */}
+                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br />
+
+                                    {/* 메모 */}
+                                    <strong>메모:</strong> {task.memo || "없음"} <br />
+                                    <br />
                                 </li>
                             ))}
                         </ul>
@@ -566,19 +641,6 @@ const TodoListContent = () => {
                 )}
             </div>
 
-            {selectedSectionTasks && selectedSectionTasks.length > 0 ? (
-                selectedSectionTasks.map((task) => {
-                    if (!task) return null; // 혹시 undefined면 null 렌더링
-                    return (
-                        <li key={task.id}>
-                            <strong>제목:</strong> {task.title} <br />
-                            ...
-                        </li>
-                    );
-                })
-            ) : (
-                <p>이 섹션에 작업이 없습니다.</p>
-            )}
             {/* 생성하기 모달 - 열려 있을 때만 표시 */}
             {isCreateModalOpen && (
                 <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated} />

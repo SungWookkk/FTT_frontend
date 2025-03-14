@@ -3,11 +3,16 @@ import "../todolist/css/Task.css";
 
 export const Task = ({ title, description, onClick }) => {
     return (
-        <div className="task" onClick={onClick}> {/* 클릭하면 해당 섹션 보기 */}
+        <div className="task" onClick={onClick}>
             <div className="task-checkbox-placeholder"></div>
             <div className="task-content">
                 <div className="task-name">{title}</div>
-                <p className="description">{description}</p>
+
+                {/* description을 HTML로 렌더링 */}
+                <div
+                    className="description"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                />
             </div>
         </div>
     );
