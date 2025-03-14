@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
-import { useHistory } from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import { Task } from "./Task";
 import TodoCreateModal from "./TodoCreateModal";
 import "../todolist/css/TodoCreateModal.css";
@@ -43,7 +43,7 @@ const quillFormats = [
 
 const TodoListContent = () => {
     const history = useHistory();
-
+    const location = useLocation();
     // ========== 생성 모달 ==========
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const handleOpenCreateModal = () => setIsCreateModalOpen(true);
@@ -137,9 +137,7 @@ const TodoListContent = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         axios
-            .get("/api/tasks", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            .get("/api/tasks", { headers: { Authorization: `Bearer ${token}` } })
             .then((response) => {
                 const tasksData = Array.isArray(response.data)
                     ? response.data
@@ -149,8 +147,19 @@ const TodoListContent = () => {
             .catch((error) => {
                 console.error("Task 목록 불러오기 실패:", error);
             });
-    }, []);
+    }, [location.pathname]); // 경로가 바뀔 때마다 재실행
 
+    useEffect(() => {
+        // selectedSectionTasks가 비어있지 않다면
+        if (selectedSectionTasks.length > 0) {
+            const currentTaskId = selectedSectionTasks[0].id;
+            const updatedTask = allTasks.find(t => t.id === currentTaskId);
+            // 만약 allTasks에서 찾은 Task가 실제로 변경이 있는 경우에만 갱신
+            if (updatedTask && updatedTask !== selectedSectionTasks[0]) {
+                setSelectedSectionTasks([updatedTask]);
+            }
+        }
+    }, [allTasks, selectedSectionTasks]);
     // ─────────────────────────────────────────────────────────
     //  Task 클릭 (수정 모드/일반 모드)
     // ─────────────────────────────────────────────────────────
@@ -574,7 +583,7 @@ const TodoListContent = () => {
                             </button>
                             <button
                                 className="btn-back-top-right"
-                                style={{ backgroundColor: "#f2f9f2", color: "#2a2e34" }}
+                                style={{backgroundColor: "#f2f9f2", color: "#2a2e34"}}
                                 onClick={handleMarkDone}
                             >
                                 완료
@@ -597,31 +606,44 @@ const TodoListContent = () => {
                         <ul>
                             {selectedSectionTasks.map((task) => (
                                 <li key={task.id}>
-                                    <strong>제목:</strong> {task.title} <br />
+                                    <strong>제목:</strong> {task.title} <br/>
 
                                     {/* 설명은 Quill HTML일 수 있으므로 dangerouslySetInnerHTML로 렌더링 */}
                                     <strong>설명:</strong>{" "}
                                     <div
-                                        style={{ margin: "4px 0" }}
-                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                        style={{margin: "4px 0"}}
+                                        dangerouslySetInnerHTML={{__html: task.description}}
                                     />
 
                                     {/* 우선순위 */}
-                                    <strong>우선순위:</strong> {task.priority || "없음"} <br />
+                                    <strong>우선순위:</strong> {task.priority || "없음"} <br/>
 
                                     {/* 마감일 */}
                                     <strong>마감일:</strong>{" "}
                                     {task.dueDate
                                         ? new Date(task.dueDate).toLocaleDateString()
                                         : "미설정"}
-                                    <br />
+                                    <br/>
 
                                     {/* 담당자 */}
-                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br />
+                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br/>
 
                                     {/* 메모 */}
-                                    <strong>메모:</strong> {task.memo || "없음"} <br />
-                                    <br />
+                                    <strong>메모:</strong> {task.memo || "없음"} <br/>
+
+                                    <strong>첨부파일:</strong>{" "}
+                                    {task.files && task.files.length > 0 ? (
+                                        <ul>
+                                            {task.files.map((file) => (
+                                                <li key={file.id}>
+                                                    {file.originalFilename}
+                                                    <a href={`/api/tasks/${task.id}/files/${file.id}`}>다운로드</a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <span>없음</span>
+                                    )}
                                 </li>
                             ))}
                         </ul>

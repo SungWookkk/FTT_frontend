@@ -116,19 +116,56 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
         };
 
         axios.post("/api/tasks", payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            headers: { Authorization: `Bearer ${token}` },
+        })
             .then((response) => {
-                // 서버에서 생성된 Task 객체 반환
                 const createdTask = response.data;
-                alert("새 작업이 생성되었습니다!");
-                if (onTaskCreated) {
-                    onTaskCreated(createdTask);
+                if (uploadedFiles.length > 0) {
+                    // 각 파일에 대해 FormData 생성 후 업로드 API 호출
+                    const uploadPromises = uploadedFiles.map((file) => {
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        return axios.post(
+                            `/api/tasks/${createdTask.id}/files`,
+                            formData,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            }
+                        );
+                    });
+                    // 모든 파일 업로드 완료 후, 최신 Task 정보를 다시 GET 합니다.
+                    Promise.all(uploadPromises)
+                        .then(() => {
+                            axios.get(`/api/tasks/${createdTask.id}`, {
+                                headers: { Authorization: `Bearer ${token}` },
+                            })
+                                .then((res) => {
+                                    const updatedTask = res.data;
+                                    alert("새 작업 및 첨부 파일이 등록되었습니다!");
+                                    if (onTaskCreated) {
+                                        onTaskCreated(updatedTask);
+                                    }
+                                    onClose();
+                                })
+                                .catch((error) => {
+                                    console.error("업데이트된 Task 조회 실패:", error);
+                                    alert("파일은 업로드되었으나, 작업 정보를 갱신하지 못했습니다.");
+                                });
+                        })
+                        .catch((error) => {
+                            console.error("파일 업로드 실패:", error);
+                            alert("작업은 생성되었으나, 파일 업로드에 실패했습니다.");
+                        });
+                } else {
+                    alert("새 작업이 생성되었습니다!");
+                    if (onTaskCreated) {
+                        onTaskCreated(createdTask);
+                    }
+                    onClose();
                 }
-                // 모달 닫기
-                onClose();
             })
             .catch((error) => {
                 console.error("작업 생성 실패:", error);
