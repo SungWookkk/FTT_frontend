@@ -137,17 +137,38 @@ const TodoListContent = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         axios
-            .get("/api/tasks", { headers: { Authorization: `Bearer ${token}` } })
+            .get("/api/tasks", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
             .then((response) => {
                 const tasksData = Array.isArray(response.data)
                     ? response.data
                     : response.data.tasks;
-                setAllTasks(tasksData || []);
+
+                // 병합 로직 (일부 필드만 들어오면 localTask 유지)
+                setAllTasks((prevAllTasks) => {
+                    return tasksData.map((serverTask) => {
+                        const localTask = prevAllTasks.find((t) => t.id === serverTask.id);
+                        if (!localTask) return serverTask;
+
+                        return {
+                            ...localTask,
+                            // 서버가 null/빈 문자열이라면 localTask의 값을 유지하는 식
+                            title: serverTask.title || localTask.title,
+                            description: serverTask.description || localTask.description,
+                            // ...
+                            files:
+                                serverTask.files && serverTask.files.length > 0
+                                    ? serverTask.files
+                                    : localTask.files || [],
+                        };
+                    });
+                });
             })
             .catch((error) => {
                 console.error("Task 목록 불러오기 실패:", error);
             });
-    }, [location.pathname]); // 경로가 바뀔 때마다 재실행
+    }, [location.pathname]);
 
     useEffect(() => {
         // selectedSectionTasks가 비어있지 않다면
@@ -323,6 +344,14 @@ const TodoListContent = () => {
         now.setHours(0, 0, 0, 0);
         const diff = Math.floor((date - now) / (1000 * 60 * 60 * 24));
         setEditDaysLeft(diff);
+    };
+// ─────────────────────────────────────────────────────────
+    // 우선순위마다 색상/라벨을 매핑
+    // ─────────────────────────────────────────────────────────
+    const priorityOptionsMap = {
+        "중요": { label: "중요", color: "#F6C1B5" },
+        "보통": { label: "보통", color: "#F6F0B5" },
+        "낮음": { label: "낮음", color: "#D1F6B5" },
     };
 
     // ─────────────────────────────────────────────────────────
@@ -576,11 +605,11 @@ const TodoListContent = () => {
                 {/* 오른쪽 상세 영역 */}
                 {selectedSection && selectedSectionTasks.length > 0 && (
                     <div className={`selected-task-details ${detailTransitionClass}`}>
-                        {/* 버튼 간격 넉넉히: gap: 20px, marginBottom: 20px */}
                         <div style={{display: "flex", gap: "20px", marginBottom: "20px"}}>
                             <button className="btn-back-top-right" onClick={handleBackToAll}>
                                 ← 뒤로 가기
                             </button>
+                            {/* 완료 버튼 추가 */}
                             <button
                                 className="btn-back-top-right"
                                 style={{backgroundColor: "#f2f9f2", color: "#2a2e34"}}
@@ -589,6 +618,7 @@ const TodoListContent = () => {
                                 완료
                             </button>
                         </div>
+
 
                         <div
                             className="section-header"
@@ -604,48 +634,119 @@ const TodoListContent = () => {
                         </div>
 
                         <ul>
-                            {selectedSectionTasks.map((task) => (
-                                <li key={task.id}>
-                                    <strong>제목:</strong> {task.title} <br/>
+                            {selectedSectionTasks.map((task) => {
+                                // 우선순위 색상/라벨 찾기 (없으면 기본값)
+                                const priorityObj = priorityOptionsMap[task.priority] || {
+                                    label: task.priority || "없음",
+                                    color: "#f2f2f2",
+                                };
 
-                                    {/* 설명은 Quill HTML일 수 있으므로 dangerouslySetInnerHTML로 렌더링 */}
-                                    <strong>설명:</strong>{" "}
-                                    <div
-                                        style={{margin: "4px 0"}}
-                                        dangerouslySetInnerHTML={{__html: task.description}}
-                                    />
+                                return (
+                                    <li key={task.id}>
+                                        {/* === 제목 === */}
+                                        <strong>제목:</strong>
+                                        <div
+                                            style={{
+                                                marginLeft: "80px",
+                                                marginTop: "4px",
+                                                marginBottom: "12px",
+                                                fontWeight: "bold",
+                                                fontSize: "15px",
+                                                color: "#2a2e34",
+                                            }}
+                                        >
+                                            {task.title}
+                                        </div>
 
-                                    {/* 우선순위 */}
-                                    <strong>우선순위:</strong> {task.priority || "없음"} <br/>
+                                        {/* === 설명 === */}
+                                        <strong>설명:</strong>
+                                        <div
+                                            style={{
+                                                marginLeft: "80px",
+                                                marginTop: "4px",
+                                                marginBottom: "16px",
+                                                lineHeight: "1.5"
+                                            }}
+                                            dangerouslySetInnerHTML={{__html: task.description}}
+                                        />
 
-                                    {/* 마감일 */}
-                                    <strong>마감일:</strong>{" "}
-                                    {task.dueDate
-                                        ? new Date(task.dueDate).toLocaleDateString()
-                                        : "미설정"}
-                                    <br/>
+                                        {/* === 우선순위 === */}
+                                        <strong>우선순위:</strong>
+                                        <div style={{marginLeft: "80px", marginTop: "4px"}}>
+                                            {/* PriorityDropdown에서 쓰던 pill 스타일 재사용 */}
+                                            <div
+                                                className="priority-pill"
+                                                style={{backgroundColor: priorityObj.color, minWidth: "80px"}}
+                                            >
+                                                {priorityObj.label}
+                                            </div>
+                                        </div>
 
-                                    {/* 담당자 */}
-                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br/>
+                                        {/* === 마감일 === */}
+                                        <strong>마감일:</strong>{" "}
+                                        <span style={{marginLeft: "8px"}}>
+              {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "미설정"}
+            </span>
+                                        <br/>
 
-                                    {/* 메모 */}
-                                    <strong>메모:</strong> {task.memo || "없음"} <br/>
+                                        {/* === 담당자 === */}
+                                        <strong>담당자:</strong>{" "}
+                                        <span style={{marginLeft: "8px"}}>{task.assignee || "미지정"}</span>
+                                        <br/>
 
-                                    <strong>첨부파일:</strong>{" "}
-                                    {task.files && task.files.length > 0 ? (
-                                        <ul>
-                                            {task.files.map((file) => (
-                                                <li key={file.id}>
-                                                    {file.originalFilename}
-                                                    <a href={`/api/tasks/${task.id}/files/${file.id}`}>다운로드</a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <span>없음</span>
-                                    )}
-                                </li>
-                            ))}
+                                        {/* === 메모 === */}
+                                        <strong>메모:</strong>{" "}
+                                        <span style={{marginLeft: "8px"}}>{task.memo || "없음"}</span>
+                                        <br/>
+
+                                        {/* === 첨부파일 === */}
+                                        <strong>첨부파일:</strong>{" "}
+                                        {task.files && task.files.length > 0 ? (
+                                            <div className="file-thumbnails-preview"
+                                                 style={{marginLeft: "80px", marginTop: "8px"}}>
+                                                {task.files.map((file) => {
+                                                    const extension = file.originalFilename.split(".").pop().toLowerCase();
+                                                    const isImage = ["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes(extension);
+
+                                                    return (
+                                                        <div className="file-thumbnail" key={file.id}>
+                                                            {isImage ? (
+                                                                <img
+                                                                    src={`/api/tasks/${task.id}/files/${file.id}`}
+                                                                    alt={file.originalFilename}
+                                                                    className="file-thumbnail-image"
+                                                                />
+                                                            ) : (
+                                                                <div className="file-icon">
+                                                                    <i className="fas fa-file"/>
+                                                                </div>
+                                                            )}
+                                                            <div className="file-thumbnail-info">
+                        <span className="file-thumbnail-name" title={file.originalFilename}>
+                          {file.originalFilename}
+                        </span>
+                                                            </div>
+                                                            <a
+                                                                href={`/api/tasks/${task.id}/files/${file.id}`}
+                                                                style={{
+                                                                    marginTop: "4px",
+                                                                    fontSize: "13px",
+                                                                    color: "#5f55ee",
+                                                                    textDecoration: "underline",
+                                                                }}
+                                                            >
+                                                                다운로드
+                                                            </a>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <span>없음</span>
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 )}
@@ -665,7 +766,7 @@ const TodoListContent = () => {
 
             {/* 생성하기 모달 - 열려 있을 때만 표시 */}
             {isCreateModalOpen && (
-                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated} />
+                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated}/>
             )}
 
             {/* 수정 모달 (좌: 미리보기 / 우: 폼) */}
@@ -703,7 +804,7 @@ const TodoListContent = () => {
                                         minHeight: 80,
                                         background: "#fff",
                                     }}
-                                    dangerouslySetInnerHTML={{ __html: editContent }}
+                                    dangerouslySetInnerHTML={{__html: editContent}}
                                 />
                                 <p>
                                     <strong>마감일:</strong>{" "}

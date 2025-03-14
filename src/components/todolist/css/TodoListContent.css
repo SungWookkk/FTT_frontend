@@ -401,12 +401,45 @@
     list-style: none;
     padding: 0;
 }
-.selected-task-details li {
-    margin-bottom: 30px;
-    padding: 10px;
-    background: white;
-    border-radius: 5px;
-    width: 500px;
+
+.selected-task-details ul li {
+    /* 카드 형태 */
+    margin-bottom: 24px;
+    padding: 16px 20px;
+
+    /* 부드러운 그라디언트 배경 & 테두리 & 모서리 */
+    background: linear-gradient(135deg, #ffffff 0%, #fafaff 100%);
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+
+    /* 살짝 큰 그림자 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    /* 마우스 오버 시 부드러운 상승 효과 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.selected-task-details ul li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 라벨(strong)과 내용 구분 */
+.selected-task-details ul li strong {
+    display: inline-block;
+    min-width: 80px;
+    color: #5f55ee;       /* 라벨에 포인트 컬러 */
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 4px;
+}
+
+/* Quill 설명(div) 들여쓰기/색상 */
+.selected-task-details ul li div[style*="margin: 4px 0"] {
+    margin-left: 86px;    /* 라벨보다 살짝 크게 들여쓰기 */
+    margin-top: 4px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    color: #2a2e34;
 }
 /* "뒤로 가기" 버튼 - 오른쪽 상단 고정 */
 .btn-back-top-right {
@@ -631,4 +664,94 @@
     font-size: 14px;     /* 폰트 크기 예시 */
     margin: 16px 0;      /* 위아래 여백 */
     text-align: center;  /* 가운데 정렬 */
+}
+.file-thumbnails-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.file-thumbnail {
+    width: 90px;
+    min-height: 110px;
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.file-thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+/* 이미지 파일 미리보기 */
+.file-thumbnail-image {
+    width: 85px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+/* 이미지가 아닐 때(아이콘) */
+.file-icon {
+    font-size: 36px;
+    color: #999;
+    margin-top: 10px;
+    margin-bottom: 6px;
+}
+
+/* 파일명/확장자 등 표시 영역 */
+.file-thumbnail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+.file-thumbnail-name {
+    margin-top: 2px;
+    font-size: 13px;
+    color: #4f5762;
+    display: block;
+    white-space: normal;
+    word-break: break-all;
+    overflow: visible;
+    text-overflow: unset;
+}
+
+/* (선택) 확장자 뱃지 */
+.file-extension-badge {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* (선택) 삭제 버튼이 필요하다면 */
+.file-remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.file-remove-btn:hover {
+    background-color: #c0392b;
 }
