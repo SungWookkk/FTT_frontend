@@ -272,12 +272,10 @@
 /*  작업 제목 - 카드 박스 상단에 고정 */
 .task-title {
     position: relative;
-    top: -60px;
-    left: -20px;
+    padding-bottom: 5px;
     color: #adb3bd;
     font-size: 13px;
     font-weight: 700;
-    padding-left: 5px;
     white-space: nowrap;
 }
 

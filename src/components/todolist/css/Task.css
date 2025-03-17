@@ -58,3 +58,19 @@
     text-overflow: ellipsis;
     white-space: normal;
 }
+
+/* 삭제 모드(빨간 점선) */
+.task-delete-mode {
+    border: 2px dashed #f95656;
+    transition: background-color 0.2s ease;
+}
+
+/* 삭제 모드 + 마우스 호버 시, 좀 더 옅은 붉은 배경 */
+.task-delete-mode:hover {
+    background-color: #ffe6e6;
+}
+
+/* 이미 삭제 선택된 상태(파스텔 붉은 배경 고정) */
+.task-delete-selected {
+    background-color: #ffe6e6 !important;
+}

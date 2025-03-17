@@ -1,16 +1,29 @@
+// Task.js
 import React from "react";
 import "../todolist/css/Task.css";
 
-export const Task = ({ title, description, onClick }) => {
-    return (
-        <div className="task" onClick={onClick}>
-            <div className="task-checkbox-placeholder"></div>
-            <div className="task-content">
-                <div className="task-name">{title}</div>
+export const Task = ({
+                         title,
+                         description,
+                         onClick,
+                         isDeleteMode = false,
+                         isSelectedForDelete = false,
+                     }) => {
+    // 삭제 모드, 선택 여부에 따라 클래스 추가
+    const classNames = [
+        "task",
+        isDeleteMode ? "task-delete-mode" : "",
+        isSelectedForDelete ? "task-delete-selected" : "",
+    ]
+        .join(" ")
+        .trim();
 
-                {/* description을 HTML로 렌더링 */}
+    return (
+        <div className={classNames} onClick={onClick}>
+            <div className="task-content">
+                <div className="task-title">{title}</div>
                 <div
-                    className="description"
+                    className="task-description"
                     dangerouslySetInnerHTML={{ __html: description }}
                 />
             </div>

@@ -67,6 +67,12 @@ const TodoListContent = () => {
     const [tempHTML, setTempHTML] = useState(editContent);
 
     // ─────────────────────────────────────────────────────────
+    // 삭제 모드 상태
+    // ─────────────────────────────────────────────────────────
+    const [isDeleteMode, setIsDeleteMode] = useState(false);
+    const [selectedDeleteTasks, setSelectedDeleteTasks] = useState([]);
+
+    // ─────────────────────────────────────────────────────────
     // 백엔드에서 가져온 Task 전체 목록
     // ─────────────────────────────────────────────────────────
     const [allTasks, setAllTasks] = useState([]);
@@ -171,8 +177,18 @@ const TodoListContent = () => {
     const handleSelectSection = (section, task) => {
         const currentSections = getSections();
         const idx = currentSections.findIndex((s) => s.title === section.title);
-
-        if (isEditMode) {
+        if (isDeleteMode) {
+            // 삭제 모드에서는, 클릭 시 "선택/해제"를 토글
+            const alreadySelected = selectedDeleteTasks.some((t) => t.id === task.id);
+            if (alreadySelected) {
+                // 이미 선택된 Task라면 해제
+                setSelectedDeleteTasks((prev) => prev.filter((t) => t.id !== task.id));
+            } else {
+                // 선택되지 않았다면 추가
+                setSelectedDeleteTasks((prev) => [...prev, task]);
+            }
+        }
+        else if (isEditMode) {
             // 수정 모드 → 수정 모달 열기
             openEditModalWithTask({
                 ...task,
@@ -191,12 +207,22 @@ const TodoListContent = () => {
     // "수정" 버튼
     // ─────────────────────────────────────────────────────────
     const handleEditClick = () => {
+        // 만약 이미 '삭제 모드'였다면, 먼저 삭제 모드를 꺼준다
+        if (isDeleteMode) {
+            setIsDeleteMode(false);
+            setSelectedDeleteTasks([]);
+        }
+
+        // 그 다음 수정 모드 on/off
         setIsEditMode((prev) => !prev);
+
+        // 수정 모드가 꺼질 때는 선택된 Task나 폼 상태도 리셋
         if (isEditMode) {
             setSelectedTask(null);
             resetEditForm();
         }
     };
+
 
     // ─────────────────────────────────────────────────────────
     // 수정 모달 열기
@@ -463,6 +489,66 @@ const TodoListContent = () => {
             });
     };
 
+    // ─────────────────────────────────────────────────────────
+    // 삭제 모드 로직
+    // ─────────────────────────────────────────────────────────
+    // 삭제 버튼 클릭 시 호출될 핸들러
+    const handleDeleteModeClick = () => {
+        // 만약 이미 '수정 모드'였다면, 먼저 수정 모드를 꺼준다
+        if (isEditMode) {
+            setIsEditMode(false);
+            setSelectedTask(null);
+            resetEditForm();
+        }
+
+        // 그 다음 삭제 모드 on/off
+        if (isDeleteMode) {
+            // 이미 삭제 모드라면 → 취소 (일반 모드)
+            setIsDeleteMode(false);
+            setSelectedDeleteTasks([]);
+        } else {
+            // 일반 모드라면 → 삭제 모드
+            setIsDeleteMode(true);
+        }
+    };
+    const handleDeleteConfirm = () => {
+        // 선택된 Task가 없는 경우
+        if (selectedDeleteTasks.length === 0) {
+            alert("1개 이상의 Task를 선택 해주세요!");
+            return;
+        }
+
+        // 선택된 Task가 있으면, 서버에 DELETE 요청
+        const token = localStorage.getItem("token");
+
+        // Promise.all: 여러 건 동시 삭제
+        Promise.all(
+            selectedDeleteTasks.map((task) =>
+                axios.delete(`/api/tasks/${task.id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+            )
+        )
+            .then(() => {
+                alert("선택된 작업이 삭제되었습니다!");
+
+                //  프론트엔드 상태에서도 삭제
+                setAllTasks((prev) =>
+                    prev.filter(
+                        (t) => !selectedDeleteTasks.some((sel) => sel.id === t.id)
+                    )
+                );
+
+                //  삭제 모드 종료 + 선택 목록 초기화
+                setSelectedDeleteTasks([]);
+                setIsDeleteMode(false);
+            })
+            .catch((error) => {
+                console.error("삭제 실패:", error);
+            });
+    };
+
+
     return (
         <div className="dashboard-content">
             {/* 작업공간 헤더 */}
@@ -477,18 +563,36 @@ const TodoListContent = () => {
                     <button className="btn btn-edit" onClick={handleEditClick}>
                         {isEditMode ? "수정 취소" : "수정"}
                     </button>
-                    <button className="btn btn-delete">삭제</button>
+
+                    {/* 삭제/삭제 취소 토글 버튼 */}
+                    <button className="btn btn-delete" onClick={handleDeleteModeClick}>
+                        {isDeleteMode ? "삭제 취소" : "삭제"}
+                    </button>
+
+                    {/*  삭제 모드일 때만 '삭제하기' 버튼 노출 */}
+                    {isDeleteMode && (
+                        <button
+                            className="btn btn-delete-confirm"
+                            onClick={handleDeleteConfirm}
+                            style={{marginLeft: "8px"}}
+                        >
+                            삭제하기
+                        </button>
+                    )}
                 </div>
             </div>
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div className="list-tab-container">
-                    <div className="tab-item active">내 목록</div>
-                    <div className="tab-item" onClick={handleAllListViewClick}>
-                        전체 목록
+                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
+                    <div className="list-tab-container">
+                        <div className="tab-item active">내 목록</div>
+                        <div className="tab-item" onClick={handleAllListViewClick}>
+                            전체 목록
+                        </div>
+                        <div className="tab-item">팀</div>
                     </div>
-                    <div className="tab-item">팀</div>
+
                 </div>
             </div>
 
@@ -510,6 +614,12 @@ const TodoListContent = () => {
                     <p>수정할 작업을 선택하세요!</p>
                 </div>
             )}
+            {/*삭제모드 배너*/}
+            {isDeleteMode && (
+                <div className="edit-mode-banner">
+                    <p>삭제할 작업을 선택하세요!</p>
+                </div>
+            )}
 
             {/* 작업 리스트 & 상세 정보 표시 */}
             <div className={`task-view-container ${transitionClass} ${isEditMode ? "edit-mode" : ""}`}>
@@ -527,7 +637,7 @@ const TodoListContent = () => {
                             <div className="task-section" key={index}>
                                 <div
                                     className="section-header"
-                                    style={{ borderBottom: `5px solid ${section.color}` }}
+                                    style={{borderBottom: `5px solid ${section.color}`}}
                                 >
                                     <div className="section-header-content">
                     <span className="section-title">
@@ -562,6 +672,9 @@ const TodoListContent = () => {
                                                 title={task.title}
                                                 description={task.description}
                                                 onClick={() => handleSelectSection(section, task)}
+                                                //  삭제 모드 여부 + 현재 Task가 삭제 선택 목록에 들어있는지 여부
+                                                isDeleteMode={isDeleteMode}
+                                                isSelectedForDelete={selectedDeleteTasks.some((t) => t.id === task.id)}
                                             />
                                         ))
                                     ) : (
@@ -582,17 +695,11 @@ const TodoListContent = () => {
                 {/* 오른쪽 상세 영역 */}
                 {selectedSection && selectedSectionTasks.length > 0 && (
                     <div className={`selected-task-details ${detailTransitionClass}`}>
-                        <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-                            <button className="btn-back-top-right" onClick={handleBackToAll}>
-                                ← 뒤로 가기
-                            </button>
-                            <button
-                                className="btn-back-top-right"
-                                style={{ backgroundColor: "#f2f9f2", color: "#2a2e34" }}
-                                onClick={handleMarkDone}
-                            >
-                                완료
-                            </button>
+                        <div style={{display: "flex", gap: "20px", marginBottom: "20px"}}>
+                            <div className="top-right-buttons">
+                                <button className="btn-back" onClick={handleBackToAll}>← 뒤로 가기</button>
+                                <button className="btn-done" onClick={handleMarkDone}>완료</button>
+                            </div>
                         </div>
 
                         <div
@@ -613,20 +720,20 @@ const TodoListContent = () => {
                         <ul>
                             {selectedSectionTasks.map((task) => (
                                 <li key={task.id}>
-                                    <strong>제목:</strong> {task.title} <br />
+                                    <strong>제목:</strong> {task.title} <br/>
                                     <strong>설명:</strong>{" "}
                                     <div
-                                        style={{ margin: "4px 0" }}
-                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                        style={{margin: "4px 0"}}
+                                        dangerouslySetInnerHTML={{__html: task.description}}
                                     />
-                                    <strong>우선순위:</strong> {task.priority || "없음"} <br />
+                                    <strong>우선순위:</strong> {task.priority || "없음"} <br/>
                                     <strong>마감일:</strong>{" "}
                                     {task.dueDate
                                         ? new Date(task.dueDate).toLocaleDateString()
                                         : "미설정"}
-                                    <br />
-                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br />
-                                    <strong>메모:</strong> {task.memo || "없음"} <br />
+                                    <br/>
+                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br/>
+                                    <strong>메모:</strong> {task.memo || "없음"} <br/>
                                     <strong>첨부파일:</strong>{" "}
                                     {task.files && task.files.length > 0 ? (
                                         <ul>
@@ -663,7 +770,7 @@ const TodoListContent = () => {
 
             {/* 생성하기 모달 */}
             {isCreateModalOpen && (
-                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated} />
+                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated}/>
             )}
 
             {/* ─────────────────────────────────────────────────────────
@@ -691,7 +798,7 @@ const TodoListContent = () => {
                                 {/* 섹션 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-folder-open" />
+                                        <i className="fas fa-folder-open"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">섹션</span>
@@ -702,7 +809,7 @@ const TodoListContent = () => {
                                 {/* 작업 이름 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-file-alt" />
+                                        <i className="fas fa-file-alt"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">작업 이름</span>
@@ -713,13 +820,13 @@ const TodoListContent = () => {
                                 {/* 작업 내용 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-info-circle" />
+                                        <i className="fas fa-info-circle"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">설명</span>
                                         <span
                                             className="detail-value"
-                                            dangerouslySetInnerHTML={{ __html: editContent }}
+                                            dangerouslySetInnerHTML={{__html: editContent}}
                                         />
                                     </div>
                                 </div>
@@ -727,7 +834,7 @@ const TodoListContent = () => {
                                 {/* 마감일 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="far fa-calendar-alt" />
+                                        <i className="far fa-calendar-alt"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">마감일</span>
@@ -742,7 +849,7 @@ const TodoListContent = () => {
                                 {/* 우선순위 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-exclamation-circle" />
+                                        <i className="fas fa-exclamation-circle"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">우선순위</span>
@@ -755,7 +862,7 @@ const TodoListContent = () => {
                                 {/* 담당자 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="fas fa-user" />
+                                        <i className="fas fa-user"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">담당자</span>
@@ -766,7 +873,7 @@ const TodoListContent = () => {
                                 {/* 메모 */}
                                 <div className="detail-row">
                                     <div className="detail-icon">
-                                        <i className="far fa-sticky-note" />
+                                        <i className="far fa-sticky-note"/>
                                     </div>
                                     <div className="detail-text">
                                         <span className="detail-label">메모</span>
@@ -778,7 +885,7 @@ const TodoListContent = () => {
                                 {uploadedFiles.length > 0 && (
                                     <div className="detail-row">
                                         <div className="detail-icon">
-                                            <i className="fas fa-paperclip" />
+                                            <i className="fas fa-paperclip"/>
                                         </div>
                                         <div className="detail-text">
                                             <span className="detail-label">등록된 파일 목록</span>
@@ -817,7 +924,7 @@ const TodoListContent = () => {
                                                                 />
                                                             ) : (
                                                                 <div className="file-icon">
-                                                                    <i className={`fas ${iconClass}`} />
+                                                                    <i className={`fas ${iconClass}`}/>
                                                                 </div>
                                                             )}
                                                             <div className="file-thumbnail-info">
@@ -855,8 +962,8 @@ const TodoListContent = () => {
                                 <label>작업 내용</label>
                                 <div
                                     className="content-preview form-preview1"
-                                    style={{ minHeight: 60 }}
-                                    dangerouslySetInnerHTML={{ __html: editContent }}
+                                    style={{minHeight: 60}}
+                                    dangerouslySetInnerHTML={{__html: editContent}}
                                 />
                                 <button className="editor-open-btn" onClick={openEditor}>
                                     에디터 열기
@@ -875,7 +982,7 @@ const TodoListContent = () => {
                                     className="custom-date-input1"
                                 />
                                 {editDaysLeft !== null && (
-                                    <div style={{ marginTop: 4, color: "green" }}>
+                                    <div style={{marginTop: 4, color: "green"}}>
                                         {editDaysLeft > 0
                                             ? `D-${editDaysLeft}`
                                             : editDaysLeft === 0
@@ -949,7 +1056,7 @@ const TodoListContent = () => {
                                                             />
                                                         ) : (
                                                             <div className="file-icon">
-                                                                <i className="fas fa-file" />
+                                                                <i className="fas fa-file"/>
                                                             </div>
                                                         )}
                                                         <div className="file-thumbnail-info">
@@ -978,11 +1085,11 @@ const TodoListContent = () => {
                             </div>
 
                             {/* 하단 버튼 */}
-                            <div className="drawer-footer" style={{ marginTop: 16, textAlign: "right" }}>
+                            <div className="drawer-footer" style={{marginTop: 16, textAlign: "right"}}>
                                 <button
                                     className="btn btn-delete"
                                     onClick={handleCloseEditModal}
-                                    style={{ marginRight: 8 }}
+                                    style={{marginRight: 8}}
                                 >
                                     취소
                                 </button>
@@ -1023,11 +1130,11 @@ const TodoListContent = () => {
                                     position: "relative",
                                 }}
                             >
-                                <div className="editor-header" style={{ marginBottom: 10 }}>
+                                <div className="editor-header" style={{marginBottom: 10}}>
                                     <h2>사용자 커스텀 편집</h2>
                                     <button
                                         onClick={() => setIsEditorOpen(false)}
-                                        style={{ float: "right", fontSize: 20 }}
+                                        style={{float: "right", fontSize: 20}}
                                     >
                                         ×
                                     </button>
@@ -1038,10 +1145,10 @@ const TodoListContent = () => {
                                     onChange={setTempHTML}
                                     modules={quillModules}
                                     formats={quillFormats}
-                                    style={{ height: "300px", marginBottom: "20px" }}
+                                    style={{height: "300px", marginBottom: "20px"}}
                                 />
-                                <div className="editor-footer" style={{ textAlign: "right" }}>
-                                    <button onClick={() => setIsEditorOpen(false)} style={{ marginRight: 8 }}>
+                                <div className="editor-footer" style={{textAlign: "right"}}>
+                                    <button onClick={() => setIsEditorOpen(false)} style={{marginRight: 8}}>
                                         취소
                                     </button>
                                     <button onClick={saveEditorContent}>확인</button>
