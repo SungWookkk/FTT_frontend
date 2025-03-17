@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../todolist/css/TodoListContent.css";
-import {useHistory, useLocation} from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Task } from "./Task";
 import TodoCreateModal from "./TodoCreateModal";
 import "../todolist/css/TodoCreateModal.css";
@@ -37,23 +37,22 @@ const quillFormats = [
     "image",
 ];
 
-// ─────────────────────────────────────────────────────────
-//   섹션 동적 분류 함수
-// ─────────────────────────────────────────────────────────
-
 const TodoListContent = () => {
     const history = useHistory();
     const location = useLocation();
-    // ========== 생성 모달 ==========
+
+    // ─────────────────────────────────────────────────────────
+    // 생성 모달 열림/닫힘
+    // ─────────────────────────────────────────────────────────
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const handleOpenCreateModal = () => setIsCreateModalOpen(true);
     const handleCloseCreateModal = () => setIsCreateModalOpen(false);
 
-    // ==========  수정 모드 & 수정 모달 ==========
+    // ─────────────────────────────────────────────────────────
+    // 수정 모드 & 수정 모달
+    // ─────────────────────────────────────────────────────────
     const [isEditMode, setIsEditMode] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null); // 수정할 Task 선택 시 저장
-
-    // 수정 폼 상태
+    const [selectedTask, setSelectedTask] = useState(null); // 수정할 Task 선택
     const [editTaskName, setEditTaskName] = useState("");
     const [editContent, setEditContent] = useState("");
     const [editDueDate, setEditDueDate] = useState(null);
@@ -68,7 +67,7 @@ const TodoListContent = () => {
     const [tempHTML, setTempHTML] = useState(editContent);
 
     // ─────────────────────────────────────────────────────────
-    //  백엔드에서 가져온 Task 전체 목록
+    // 백엔드에서 가져온 Task 전체 목록
     // ─────────────────────────────────────────────────────────
     const [allTasks, setAllTasks] = useState([]);
 
@@ -84,20 +83,16 @@ const TodoListContent = () => {
     const [detailTransitionClass, setDetailTransitionClass] = useState("");
 
     // ─────────────────────────────────────────────────────────
-    //  4개 섹션(📍, ⏳, 🔥, ✅)으로 분류하기 위한 함수
+    // 섹션 분류 함수 (📍, ⏳, 🔥, ✅)
     // ─────────────────────────────────────────────────────────
     const getSections = () => {
         const now = new Date();
-        // 마감임박을 3일로 설정 (예: 3일 이하이면 마감 임박)
-        const threeDays = 3 * 24 * 60 * 60 * 1000;
+        const threeDays = 3 * 24 * 60 * 60 * 1000; // 3일(마감임박 기준)
 
-        // 1) "✅ 완료됨": status === "DONE"
+        // 1) 완료됨
         const doneTasks = allTasks.filter((t) => t.status === "DONE");
 
-        // 2) "⏳ 마감 임박":
-        //    - status !== "DONE"
-        //    - dueDate가 존재
-        //    - 남은 시간이 threeDays 이하
+        // 2) 마감 임박
         const dueSoonTasks = allTasks.filter(
             (t) =>
                 t.status !== "DONE" &&
@@ -105,21 +100,14 @@ const TodoListContent = () => {
                 new Date(t.dueDate) - now <= threeDays
         );
 
-        // 3) "📍 최근 작성":
-        //    - 일단 완료된(DONE) 작업은 제외
-        //    - 마감 임박(dueSoon)에 포함된 작업도 제외 (중복 방지)
-        //    - ID 내림차순 정렬 후 상위 5개
+        // 3) 최근 작성
         const usedInAbove = new Set([...doneTasks, ...dueSoonTasks]);
         const recentCandidates = allTasks.filter(
             (t) => !usedInAbove.has(t) && t.status !== "DONE"
         );
+        const recentTasks = recentCandidates.sort((a, b) => b.id - a.id).slice(0, 5);
 
-        const recentTasks = recentCandidates
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 5);
-
-        // 4) "🔥 남은 To Do":
-        //    - 이미 위 섹션(완료됨, 마감임박, 최근작성)에 포함되지 않은 나머지
+        // 4) 남은 To Do
         const usedInAbove2 = new Set([...doneTasks, ...dueSoonTasks, ...recentTasks]);
         const todoTasks = allTasks.filter((t) => !usedInAbove2.has(t));
 
@@ -132,7 +120,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  백엔드에서 Task 목록을 가져옴
+    // 백엔드에서 Task 목록 가져오기
     // ─────────────────────────────────────────────────────────
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -145,18 +133,14 @@ const TodoListContent = () => {
                     ? response.data
                     : response.data.tasks;
 
-                // 병합 로직 (일부 필드만 들어오면 localTask 유지)
+                // 병합 로직
                 setAllTasks((prevAllTasks) => {
                     return tasksData.map((serverTask) => {
                         const localTask = prevAllTasks.find((t) => t.id === serverTask.id);
                         if (!localTask) return serverTask;
-
                         return {
                             ...localTask,
-                            // 서버가 null/빈 문자열이라면 localTask의 값을 유지하는 식
-                            title: serverTask.title || localTask.title,
-                            description: serverTask.description || localTask.description,
-                            // ...
+                            ...serverTask,
                             files:
                                 serverTask.files && serverTask.files.length > 0
                                     ? serverTask.files
@@ -171,21 +155,20 @@ const TodoListContent = () => {
     }, [location.pathname]);
 
     useEffect(() => {
-        // selectedSectionTasks가 비어있지 않다면
+        // selectedSectionTasks가 비어있지 않다면 갱신
         if (selectedSectionTasks.length > 0) {
             const currentTaskId = selectedSectionTasks[0].id;
-            const updatedTask = allTasks.find(t => t.id === currentTaskId);
-            // 만약 allTasks에서 찾은 Task가 실제로 변경이 있는 경우에만 갱신
+            const updatedTask = allTasks.find((t) => t.id === currentTaskId);
             if (updatedTask && updatedTask !== selectedSectionTasks[0]) {
                 setSelectedSectionTasks([updatedTask]);
             }
         }
     }, [allTasks, selectedSectionTasks]);
+
     // ─────────────────────────────────────────────────────────
-    //  Task 클릭 (수정 모드/일반 모드)
+    // Task 클릭 시 (수정모드/일반모드)
     // ─────────────────────────────────────────────────────────
     const handleSelectSection = (section, task) => {
-        // 섹션 인덱스 찾기
         const currentSections = getSections();
         const idx = currentSections.findIndex((s) => s.title === section.title);
 
@@ -205,7 +188,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  "수정" 버튼
+    // "수정" 버튼
     // ─────────────────────────────────────────────────────────
     const handleEditClick = () => {
         setIsEditMode((prev) => !prev);
@@ -216,7 +199,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  수정 모달 열기
+    // 수정 모달 열기
     // ─────────────────────────────────────────────────────────
     const openEditModalWithTask = (task) => {
         setEditTaskName(task.title || "");
@@ -235,12 +218,12 @@ const TodoListContent = () => {
         setEditPriority(task.priority || "보통");
         setEditAssignee(task.assignee || "");
         setEditMemo(task.memo || "");
-        setUploadedFiles([]);
+        setUploadedFiles([]); // 새로 업로드할 파일 목록
         setSelectedTask(task);
     };
 
     // ─────────────────────────────────────────────────────────
-    //  수정 모달 닫기
+    // 수정 모달 닫기
     // ─────────────────────────────────────────────────────────
     const handleCloseEditModal = () => {
         setSelectedTask(null);
@@ -248,23 +231,13 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  수정 폼 저장 (백엔드로 전송 - PUT)
+    // 수정 폼 저장 (PUT)
     // ─────────────────────────────────────────────────────────
     const handleSaveEditForm = () => {
-        console.log("=== 수정 폼 저장 ===");
-        console.log("작업 이름:", editTaskName);
-        console.log("작업 내용(HTML):", editContent);
-        console.log("마감일:", editDueDate);
-        console.log("우선순위:", editPriority);
-        console.log("담당자:", editAssignee);
-        console.log("메모:", editMemo);
-        console.log("업로드된 파일:", uploadedFiles);
-
         if (!selectedTask) {
             alert("선택된 Task가 없습니다.");
             return;
         }
-
         const token = localStorage.getItem("token");
         axios
             .put(
@@ -276,7 +249,6 @@ const TodoListContent = () => {
                     priority: editPriority,
                     assignee: editAssignee,
                     memo: editMemo,
-                    // 파일 첨부 로직은 추후 구현
                 },
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -284,11 +256,8 @@ const TodoListContent = () => {
             )
             .then((response) => {
                 alert(`"${editTaskName}" 작업이 수정되었습니다!`);
-                // 수정된 Task를 allTasks 상태에 반영
                 const updated = response.data;
-                setAllTasks((prev) =>
-                    prev.map((t) => (t.id === updated.id ? updated : t))
-                );
+                setAllTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
                 handleCloseEditModal();
             })
             .catch((error) => {
@@ -297,7 +266,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  수정 폼 초기화
+    // 수정 폼 초기화
     // ─────────────────────────────────────────────────────────
     const resetEditForm = () => {
         setEditTaskName("");
@@ -312,7 +281,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  파일 첨부 (수정 모달)
+    // 파일 첨부 (수정 모달)
     // ─────────────────────────────────────────────────────────
     const handleFileChangeEdit = (e) => {
         if (!e.target.files) return;
@@ -332,7 +301,7 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  마감일 계산 (수정 모달)
+    // 마감일 계산 (수정 모달)
     // ─────────────────────────────────────────────────────────
     const handleDueDateChangeEdit = (date) => {
         setEditDueDate(date);
@@ -345,17 +314,9 @@ const TodoListContent = () => {
         const diff = Math.floor((date - now) / (1000 * 60 * 60 * 24));
         setEditDaysLeft(diff);
     };
-// ─────────────────────────────────────────────────────────
-    // 우선순위마다 색상/라벨을 매핑
-    // ─────────────────────────────────────────────────────────
-    const priorityOptionsMap = {
-        "중요": { label: "중요", color: "#F6C1B5" },
-        "보통": { label: "보통", color: "#F6F0B5" },
-        "낮음": { label: "낮음", color: "#D1F6B5" },
-    };
 
     // ─────────────────────────────────────────────────────────
-    //  Quill 에디터 (수정 모달 내)
+    // Quill 에디터 (수정 모달 내)
     // ─────────────────────────────────────────────────────────
     const openEditor = () => {
         setTempHTML(editContent);
@@ -367,15 +328,14 @@ const TodoListContent = () => {
     };
 
     // ─────────────────────────────────────────────────────────
-    //  생성 모달에서 새 Task 생성 시
+    // 생성 모달에서 새 Task 생성 시
     // ─────────────────────────────────────────────────────────
     const handleTaskCreated = (newTask) => {
-        // 백엔드에서 생성된 Task를 allTasks에 추가
         setAllTasks((prev) => [...prev, newTask]);
     };
 
     // ─────────────────────────────────────────────────────────
-    //  뒤로 가기(섹션)
+    // 뒤로 가기(섹션)
     // ─────────────────────────────────────────────────────────
     const handleBackToAll = () => {
         setSelectedSectionIndex(null);
@@ -397,25 +357,29 @@ const TodoListContent = () => {
         }));
     };
 
-    // 섹션 간 애니메이션
+    // 섹션 애니메이션
     const animateSectionChange = (newIndex, direction) => {
         setTransitionClass(direction === "next" ? "slide-out-left" : "slide-out-right");
-        setDetailTransitionClass(direction === "next" ? "slide-out-left-detail" : "slide-out-right-detail");
+        setDetailTransitionClass(
+            direction === "next" ? "slide-out-left-detail" : "slide-out-right-detail"
+        );
 
         setTimeout(() => {
             const updatedSections = getSections();
             setSelectedSectionIndex(newIndex);
             setSelectedSection(updatedSections[newIndex]);
 
-              const newTasks = updatedSections[newIndex].tasks;
-               if (newTasks && newTasks.length > 0) {
-                     setSelectedSectionTasks([newTasks[0]]);
-                   } else {
-                     setSelectedSectionTasks([]); // 섹션에 Task가 없으면 빈 배열
-                   }
+            const newTasks = updatedSections[newIndex].tasks;
+            if (newTasks && newTasks.length > 0) {
+                setSelectedSectionTasks([newTasks[0]]);
+            } else {
+                setSelectedSectionTasks([]);
+            }
 
             setTransitionClass(direction === "next" ? "slide-in-right" : "slide-in-left");
-            setDetailTransitionClass(direction === "next" ? "slide-in-right-detail" : "slide-in-left-detail");
+            setDetailTransitionClass(
+                direction === "next" ? "slide-in-right-detail" : "slide-in-left-detail"
+            );
 
             setTimeout(() => {
                 setTransitionClass("");
@@ -427,10 +391,10 @@ const TodoListContent = () => {
     const handlePrevSection = () => {
         if (selectedSectionIndex === null) return;
         const updatedSections = getSections();
-        const newIndex = (selectedSectionIndex - 1 + updatedSections.length) % updatedSections.length;
+        const newIndex =
+            (selectedSectionIndex - 1 + updatedSections.length) % updatedSections.length;
         animateSectionChange(newIndex, "prev");
     };
-
     const handleNextSection = () => {
         if (selectedSectionIndex === null) return;
         const updatedSections = getSections();
@@ -438,12 +402,10 @@ const TodoListContent = () => {
         animateSectionChange(newIndex, "next");
     };
 
-
     // ─────────────────────────────────────────────────────────
-    //  "완료" 버튼 클릭 → status="DONE"으로 변경
+    // "완료" 버튼 클릭 → status="DONE"
     // ─────────────────────────────────────────────────────────
     const handleMarkDone = () => {
-        // 선택된 섹션의 첫 번째 Task (상세 보기 중인 Task)
         if (!selectedSectionTasks || selectedSectionTasks.length === 0) {
             alert("완료할 작업이 없습니다.");
             return;
@@ -456,7 +418,7 @@ const TodoListContent = () => {
                 `/api/tasks/${targetTask.id}`,
                 {
                     ...targetTask,
-                    status: "DONE", // 상태를 DONE으로 변경
+                    status: "DONE",
                 },
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -464,10 +426,8 @@ const TodoListContent = () => {
             )
             .then((res) => {
                 const updated = res.data;
-                // 전체 목록에서도 해당 Task를 갱신
                 setAllTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
                 alert(`"${updated.title}" 작업이 완료되었습니다!`);
-                // 우측 상세 보기에서도 갱신
                 setSelectedSectionTasks([updated]);
             })
             .catch((err) => {
@@ -475,6 +435,33 @@ const TodoListContent = () => {
             });
     };
 
+    // ─────────────────────────────────────────────────────────
+    // 파일 삭제 (이미 서버에 있는 파일)
+    // ─────────────────────────────────────────────────────────
+    const handleFileRemove = (taskId, fileId) => {
+        const token = localStorage.getItem("token");
+        axios
+            .delete(`/api/tasks/${taskId}/files/${fileId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then(() => {
+                // 서버 삭제 성공 시, allTasks에서 해당 파일만 제거
+                setAllTasks((prevTasks) =>
+                    prevTasks.map((t) => {
+                        if (t.id === taskId) {
+                            return {
+                                ...t,
+                                files: t.files.filter((file) => file.id !== fileId),
+                            };
+                        }
+                        return t;
+                    })
+                );
+            })
+            .catch((err) => {
+                console.error("파일 삭제 실패:", err);
+            });
+    };
 
     return (
         <div className="dashboard-content">
@@ -484,16 +471,12 @@ const TodoListContent = () => {
                     <span className="title-text">To Do List - 작업 공간</span>
                 </div>
                 <div className="header-button-group">
-                    {/* 생성 모달 열기 */}
                     <button className="btn btn-create" onClick={handleOpenCreateModal}>
                         생성하기
                     </button>
-
-                    {/* 수정 버튼 */}
                     <button className="btn btn-edit" onClick={handleEditClick}>
                         {isEditMode ? "수정 취소" : "수정"}
                     </button>
-
                     <button className="btn btn-delete">삭제</button>
                 </div>
             </div>
@@ -533,12 +516,9 @@ const TodoListContent = () => {
                 {/* 왼쪽 목록 */}
                 <div className={`task-sections ${transitionClass} ${isEditMode ? "edit-mode" : ""}`}>
                     {getSections().map((section, index) => {
-                        // 선택된 섹션이 있으면, title이 다른 섹션은 숨김
                         if (selectedSection && section.title !== selectedSection.title) {
                             return null;
                         }
-
-                        // "더보기" 기능
                         const visibleTasks = expandedSections[index]
                             ? section.tasks
                             : section.tasks.slice(0, 6);
@@ -547,27 +527,27 @@ const TodoListContent = () => {
                             <div className="task-section" key={index}>
                                 <div
                                     className="section-header"
-                                    style={{borderBottom: `5px solid ${section.color}`}}>
-                                    <div className="section-header-content"><span
-                                        className="section-title">{section.title} {section.tasks.length}</span>
-
-                                        {/* 인디케이터 - 현재 섹션 위치 표시 */}
+                                    style={{ borderBottom: `5px solid ${section.color}` }}
+                                >
+                                    <div className="section-header-content">
+                    <span className="section-title">
+                      {section.title} {section.tasks.length}
+                    </span>
                                         {selectedSection && selectedSection.title === section.title && (
                                             <div className="indicator-container">
                                                 {getSections().map((_, i) => (
                                                     <span
                                                         key={i}
                                                         className={
-                                                            "indicator-dot " +
-                                                            (selectedSectionIndex === i ? "active" : "")
+                                                            "indicator-dot " + (selectedSectionIndex === i ? "active" : "")
                                                         }
                                                     />
                                                 ))}
                                             </div>
                                         )}
-
-                                        {/* 작업 추가 생성 버튼 */}
-                                        <span className="add-task" onClick={handleOpenCreateModal}>+ 작업 추가 생성</span>
+                                        <span className="add-task" onClick={handleOpenCreateModal}>
+                      + 작업 추가 생성
+                    </span>
                                     </div>
                                 </div>
 
@@ -575,25 +555,22 @@ const TodoListContent = () => {
                                     className={`task-list ${expandedSections[index] ? "expanded" : ""}`}
                                     ref={(el) => (moreTasksRefs.current[index] = el)}
                                 >
-                                     {visibleTasks.length > 0 ? (
-                                      visibleTasks.map((task) => (
-                                        <Task
-                                            key={task.id}
-                                            title={task.title}
-                                            description={task.description}
-                                            onClick={() => handleSelectSection(section, task)}
-                                          />
+                                    {visibleTasks.length > 0 ? (
+                                        visibleTasks.map((task) => (
+                                            <Task
+                                                key={task.id}
+                                                title={task.title}
+                                                description={task.description}
+                                                onClick={() => handleSelectSection(section, task)}
+                                            />
                                         ))
-                                      ) : (
+                                    ) : (
                                         <p className="no-tasks-msg">이 섹션에 작업이 없습니다.</p>
-                                      )}
+                                    )}
                                 </div>
 
                                 {section.tasks.length > 6 && (
-                                    <div
-                                        className="more-tasks-btn"
-                                        onClick={() => handleToggleTasks(index)}
-                                    >
+                                    <div className="more-tasks-btn" onClick={() => handleToggleTasks(index)}>
                                         {expandedSections[index] ? "▲ 접기" : "▼ 더보기"}
                                     </div>
                                 )}
@@ -605,20 +582,18 @@ const TodoListContent = () => {
                 {/* 오른쪽 상세 영역 */}
                 {selectedSection && selectedSectionTasks.length > 0 && (
                     <div className={`selected-task-details ${detailTransitionClass}`}>
-                        <div style={{display: "flex", gap: "20px", marginBottom: "20px"}}>
+                        <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
                             <button className="btn-back-top-right" onClick={handleBackToAll}>
                                 ← 뒤로 가기
                             </button>
-                            {/* 완료 버튼 추가 */}
                             <button
                                 className="btn-back-top-right"
-                                style={{backgroundColor: "#f2f9f2", color: "#2a2e34"}}
+                                style={{ backgroundColor: "#f2f9f2", color: "#2a2e34" }}
                                 onClick={handleMarkDone}
                             >
                                 완료
                             </button>
                         </div>
-
 
                         <div
                             className="section-header"
@@ -629,124 +604,46 @@ const TodoListContent = () => {
                             }}
                         >
                             <div className="section-header-content">
-                                <span className="section-title">{selectedSection.title} - Task 상세</span>
+                <span className="section-title">
+                  {selectedSection.title} - Task 상세
+                </span>
                             </div>
                         </div>
 
                         <ul>
-                            {selectedSectionTasks.map((task) => {
-                                // 우선순위 색상/라벨 찾기 (없으면 기본값)
-                                const priorityObj = priorityOptionsMap[task.priority] || {
-                                    label: task.priority || "없음",
-                                    color: "#f2f2f2",
-                                };
-
-                                return (
-                                    <li key={task.id}>
-                                        {/* === 제목 === */}
-                                        <strong>제목:</strong>
-                                        <div
-                                            style={{
-                                                marginLeft: "80px",
-                                                marginTop: "4px",
-                                                marginBottom: "12px",
-                                                fontWeight: "bold",
-                                                fontSize: "15px",
-                                                color: "#2a2e34",
-                                            }}
-                                        >
-                                            {task.title}
-                                        </div>
-
-                                        {/* === 설명 === */}
-                                        <strong>설명:</strong>
-                                        <div
-                                            style={{
-                                                marginLeft: "80px",
-                                                marginTop: "4px",
-                                                marginBottom: "16px",
-                                                lineHeight: "1.5"
-                                            }}
-                                            dangerouslySetInnerHTML={{__html: task.description}}
-                                        />
-
-                                        {/* === 우선순위 === */}
-                                        <strong>우선순위:</strong>
-                                        <div style={{marginLeft: "80px", marginTop: "4px"}}>
-                                            {/* PriorityDropdown에서 쓰던 pill 스타일 재사용 */}
-                                            <div
-                                                className="priority-pill"
-                                                style={{backgroundColor: priorityObj.color, minWidth: "80px"}}
-                                            >
-                                                {priorityObj.label}
-                                            </div>
-                                        </div>
-
-                                        {/* === 마감일 === */}
-                                        <strong>마감일:</strong>{" "}
-                                        <span style={{marginLeft: "8px"}}>
-              {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "미설정"}
-            </span>
-                                        <br/>
-
-                                        {/* === 담당자 === */}
-                                        <strong>담당자:</strong>{" "}
-                                        <span style={{marginLeft: "8px"}}>{task.assignee || "미지정"}</span>
-                                        <br/>
-
-                                        {/* === 메모 === */}
-                                        <strong>메모:</strong>{" "}
-                                        <span style={{marginLeft: "8px"}}>{task.memo || "없음"}</span>
-                                        <br/>
-
-                                        {/* === 첨부파일 === */}
-                                        <strong>첨부파일:</strong>{" "}
-                                        {task.files && task.files.length > 0 ? (
-                                            <div className="file-thumbnails-preview"
-                                                 style={{marginLeft: "80px", marginTop: "8px"}}>
-                                                {task.files.map((file) => {
-                                                    const extension = file.originalFilename.split(".").pop().toLowerCase();
-                                                    const isImage = ["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes(extension);
-
-                                                    return (
-                                                        <div className="file-thumbnail" key={file.id}>
-                                                            {isImage ? (
-                                                                <img
-                                                                    src={`/api/tasks/${task.id}/files/${file.id}`}
-                                                                    alt={file.originalFilename}
-                                                                    className="file-thumbnail-image"
-                                                                />
-                                                            ) : (
-                                                                <div className="file-icon">
-                                                                    <i className="fas fa-file"/>
-                                                                </div>
-                                                            )}
-                                                            <div className="file-thumbnail-info">
-                        <span className="file-thumbnail-name" title={file.originalFilename}>
-                          {file.originalFilename}
-                        </span>
-                                                            </div>
-                                                            <a
-                                                                href={`/api/tasks/${task.id}/files/${file.id}`}
-                                                                style={{
-                                                                    marginTop: "4px",
-                                                                    fontSize: "13px",
-                                                                    color: "#5f55ee",
-                                                                    textDecoration: "underline",
-                                                                }}
-                                                            >
-                                                                다운로드
-                                                            </a>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        ) : (
-                                            <span>없음</span>
-                                        )}
-                                    </li>
-                                );
-                            })}
+                            {selectedSectionTasks.map((task) => (
+                                <li key={task.id}>
+                                    <strong>제목:</strong> {task.title} <br />
+                                    <strong>설명:</strong>{" "}
+                                    <div
+                                        style={{ margin: "4px 0" }}
+                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                    />
+                                    <strong>우선순위:</strong> {task.priority || "없음"} <br />
+                                    <strong>마감일:</strong>{" "}
+                                    {task.dueDate
+                                        ? new Date(task.dueDate).toLocaleDateString()
+                                        : "미설정"}
+                                    <br />
+                                    <strong>담당자:</strong> {task.assignee || "미지정"} <br />
+                                    <strong>메모:</strong> {task.memo || "없음"} <br />
+                                    <strong>첨부파일:</strong>{" "}
+                                    {task.files && task.files.length > 0 ? (
+                                        <ul>
+                                            {task.files.map((file) => (
+                                                <li key={file.id}>
+                                                    {file.originalFilename}
+                                                    <a href={`/api/tasks/${task.id}/files/${file.id}`}>
+                                                        다운로드
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <span>없음</span>
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 )}
@@ -764,16 +661,18 @@ const TodoListContent = () => {
                 )}
             </div>
 
-            {/* 생성하기 모달 - 열려 있을 때만 표시 */}
+            {/* 생성하기 모달 */}
             {isCreateModalOpen && (
-                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated}/>
+                <TodoCreateModal onClose={handleCloseCreateModal} onTaskCreated={handleTaskCreated} />
             )}
 
-            {/* 수정 모달 (좌: 미리보기 / 우: 폼) */}
+            {/* ─────────────────────────────────────────────────────────
+          수정 모달 (좌: 미리보기 / 우: 폼)
+      ───────────────────────────────────────────────────────── */}
             {selectedTask && isEditMode && (
                 <div className="modal-overlay" onClick={handleCloseEditModal}>
                     <div className="modal-edit-content" onClick={(e) => e.stopPropagation()}>
-                        {/* 좌측: 상세 정보 (실시간 미리보기) */}
+                        {/* ───────────── 왼쪽: 미리보기 패널 (detail-row 구조) ───────────── */}
                         <div className="edit-left-panel">
                             <div
                                 className="section-header1"
@@ -787,46 +686,156 @@ const TodoListContent = () => {
                                 </div>
                             </div>
 
+                            {/* 여기서부터 detail-row 구조 적용 */}
                             <div className="modal-body">
-                                <p>
-                                    <strong>섹션:</strong> {selectedTask.sectionTitle}
-                                </p>
-                                <p>
-                                    <strong>작업 이름:</strong> {editTaskName}
-                                </p>
-                                <p>
-                                    <strong>작업 내용:</strong>
-                                </p>
-                                <div
-                                    style={{
-                                        border: "1px solid #ddd",
-                                        padding: 8,
-                                        minHeight: 80,
-                                        background: "#fff",
-                                    }}
-                                    dangerouslySetInnerHTML={{__html: editContent}}
-                                />
-                                <p>
-                                    <strong>마감일:</strong>{" "}
-                                    {editDueDate ? editDueDate.toLocaleDateString() : "미설정"}
-                                </p>
-                                <p>
-                                    <strong>우선순위:</strong> {editPriority}
-                                </p>
-                                <p>
-                                    <strong>담당자:</strong> {editAssignee}
-                                </p>
-                                <p>
-                                    <strong>메모:</strong> {editMemo}
-                                </p>
-                                <p>
-                                    <strong>첨부파일:</strong>{" "}
-                                    {uploadedFiles.map((f) => f.name).join(", ")}
-                                </p>
+                                {/* 섹션 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-folder-open" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">섹션</span>
+                                        <span className="detail-value">{selectedTask.sectionTitle}</span>
+                                    </div>
+                                </div>
+
+                                {/* 작업 이름 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-file-alt" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">작업 이름</span>
+                                        <span className="detail-value">{editTaskName}</span>
+                                    </div>
+                                </div>
+
+                                {/* 작업 내용 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-info-circle" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">설명</span>
+                                        <span
+                                            className="detail-value"
+                                            dangerouslySetInnerHTML={{ __html: editContent }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 마감일 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="far fa-calendar-alt" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">마감일</span>
+                                        <span className="detail-value">
+                      {editDueDate
+                          ? new Date(editDueDate).toLocaleDateString()
+                          : "미설정"}
+                    </span>
+                                    </div>
+                                </div>
+
+                                {/* 우선순위 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-exclamation-circle" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">우선순위</span>
+                                        <span className={`detail-value priority-${editPriority}`}>
+                      {editPriority}
+                    </span>
+                                    </div>
+                                </div>
+
+                                {/* 담당자 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="fas fa-user" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">담당자</span>
+                                        <span className="detail-value">{editAssignee || "미지정"}</span>
+                                    </div>
+                                </div>
+
+                                {/* 메모 */}
+                                <div className="detail-row">
+                                    <div className="detail-icon">
+                                        <i className="far fa-sticky-note" />
+                                    </div>
+                                    <div className="detail-text">
+                                        <span className="detail-label">메모</span>
+                                        <span className="detail-value">{editMemo || "메모 없음"}</span>
+                                    </div>
+                                </div>
+
+                                {/* 첨부파일 */}
+                                {uploadedFiles.length > 0 && (
+                                    <div className="detail-row">
+                                        <div className="detail-icon">
+                                            <i className="fas fa-paperclip" />
+                                        </div>
+                                        <div className="detail-text">
+                                            <span className="detail-label">등록된 파일 목록</span>
+                                            <div className="file-thumbnails-preview">
+                                                {uploadedFiles.map((file, idx) => {
+                                                    const isImage = file.type.startsWith("image/");
+                                                    const extension = file.name.split(".").pop().toLowerCase();
+                                                    const fileIconMap = {
+                                                        pdf: "fa-file-pdf",
+                                                        doc: "fa-file-word",
+                                                        docx: "fa-file-word",
+                                                        xls: "fa-file-excel",
+                                                        xlsx: "fa-file-excel",
+                                                        ppt: "fa-file-powerpoint",
+                                                        pptx: "fa-file-powerpoint",
+                                                        zip: "fa-file-archive",
+                                                        rar: "fa-file-archive",
+                                                        default: "fa-file",
+                                                    };
+                                                    const iconClass = fileIconMap[extension] || fileIconMap.default;
+                                                    const fileUrl = isImage ? URL.createObjectURL(file) : null;
+
+                                                    return (
+                                                        <div className="file-thumbnail" key={idx}>
+                                                            <button
+                                                                className="file-remove-btn"
+                                                                onClick={() => handleRemoveFileEdit(idx)}
+                                                            >
+                                                                X
+                                                            </button>
+                                                            {isImage ? (
+                                                                <img
+                                                                    src={fileUrl}
+                                                                    alt={file.name}
+                                                                    className="file-thumbnail-image"
+                                                                />
+                                                            ) : (
+                                                                <div className="file-icon">
+                                                                    <i className={`fas ${iconClass}`} />
+                                                                </div>
+                                                            )}
+                                                            <div className="file-thumbnail-info">
+                                <span className="file-thumbnail-name" title={file.name}>
+                                  {file.name}
+                                </span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* 우측: 수정 폼 */}
+                        {/* ───────────── 오른쪽: 수정 폼 ───────────── */}
                         <div className="form-panel1">
                             <h3>작업 수정 폼</h3>
 
@@ -907,14 +916,10 @@ const TodoListContent = () => {
                                 />
                             </div>
 
-                            {/* 파일 첨부 */}
+                            {/* 파일 첨부 (수정 모달 내) */}
                             <div className="form-field1">
                                 <label>파일 첨부</label>
-                                <div
-                                    className="file-drop-area"
-                                    onDragOver={handleDragOverEdit}
-                                    onDrop={handleDropEdit}
-                                >
+                                <div className="file-drop-area" onDragOver={handleDragOverEdit} onDrop={handleDropEdit}>
                                     <p className="file-instruction1">
                                         이 영역을 드래그하거나 <span>클릭</span>하여 업로드
                                     </p>
@@ -925,24 +930,60 @@ const TodoListContent = () => {
                                         onChange={handleFileChangeEdit}
                                     />
                                 </div>
+
                                 <div className="file-list1">
-                                    {uploadedFiles.map((file, idx) => (
-                                        <div className="file-item" key={idx}>
-                                            <span className="file-name">{file.name}</span>
-                                            <button
-                                                className="file-remove-btn"
-                                                onClick={() => handleRemoveFileEdit(idx)}
-                                            >
-                                                X
-                                            </button>
+                                    {/* 서버에 이미 첨부된 파일들 */}
+                                    {selectedTask && selectedTask.files && selectedTask.files.length > 0 && (
+                                        <div className="file-thumbnails-preview">
+                                            {selectedTask.files.map((file) => {
+                                                const extension = file.originalFilename.split(".").pop().toLowerCase();
+                                                const isImage = ["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes(extension);
+
+                                                return (
+                                                    <div className="file-thumbnail" key={file.id}>
+                                                        {isImage ? (
+                                                            <img
+                                                                src={`/api/tasks/${selectedTask.id}/files/${file.id}`}
+                                                                alt={file.originalFilename}
+                                                                className="file-thumbnail-image"
+                                                            />
+                                                        ) : (
+                                                            <div className="file-icon">
+                                                                <i className="fas fa-file" />
+                                                            </div>
+                                                        )}
+                                                        <div className="file-thumbnail-info">
+                              <span className="file-thumbnail-name" title={file.originalFilename}>
+                                {file.originalFilename}
+                              </span>
+                                                        </div>
+                                                        <a
+                                                            className="file-download-link"
+                                                            href={`/api/tasks/${selectedTask.id}/files/${file.id}`}
+                                                        >
+                                                            다운로드
+                                                        </a>
+                                                        <button
+                                                            className="file-remove-btn"
+                                                            onClick={() => handleFileRemove(selectedTask.id, file.id)}
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
 
                             {/* 하단 버튼 */}
                             <div className="drawer-footer" style={{ marginTop: 16, textAlign: "right" }}>
-                                <button className="btn btn-delete" onClick={handleCloseEditModal} style={{ marginRight: 8 }}>
+                                <button
+                                    className="btn btn-delete"
+                                    onClick={handleCloseEditModal}
+                                    style={{ marginRight: 8 }}
+                                >
                                     취소
                                 </button>
                                 <button className="btn btn-create" onClick={handleSaveEditForm}>

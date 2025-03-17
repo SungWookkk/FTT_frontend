@@ -20,7 +20,6 @@
     text-align: center;
     margin-right: 120px;
 }
-/* 알림 텍스트 스타일 */
 .alert-text-todo1 {
     font-size: 13.7px;
     font-family: "Inter", sans-serif;
@@ -31,24 +30,20 @@
     text-align: center;
     margin-right: 140.5px;
 }
-/* 일반 텍스트 */
 .alert-text-todo .normal-text {
     font-weight: 400;
 }
-/* 강조 텍스트 */
 .alert-text-todo .highlight-text {
     font-weight: 700;
 }
-/* 일반 텍스트 */
 .alert-text-todo1 .normal-text {
     font-weight: 400;
 }
-/* 강조 텍스트 */
 .alert-text-todo1 .highlight-text {
     font-weight: 700;
 }
 
-/* 목록 선택 탭 스타일 개선 */
+/* 목록 선택 탭 */
 .list-tap {
     height: 47px;
     width: 100%;
@@ -117,7 +112,6 @@
     transition: background-color 0.3s ease;
     white-space: nowrap;
 }
-/* 생성 버튼 */
 .btn-create {
     background-color: #f2f1fe;
     color: #4f5762;
@@ -126,14 +120,12 @@
 .btn-create:hover {
     background-color: #e2e6f6;
 }
-/* 수정 버튼 */
 .btn-edit {
     color: #4f5762;
 }
 .btn-edit:hover {
     background-color: #dce1e7;
 }
-/* 삭제 버튼 */
 .btn-delete {
     background-color: #f95656;
     color: #ffffff;
@@ -142,7 +134,6 @@
 .btn-delete:hover {
     background-color: #e04040;
 }
-/* 뒤로 가기 버튼 */
 .btn-back {
     background-color: #f2f1fe;
     color: #4f5762;
@@ -165,12 +156,9 @@
     gap: 50px;
     transition: opacity 0.3s ease;
 }
-
-
 .task-sections.fade-change {
     opacity: 0.3;
 }
-
 .task-section {
     width: 310px;
     display: flex;
@@ -181,54 +169,33 @@
     position: relative;
     transition: transform 0.3s ease;
 }
-/* 왼쪽으로 사라지는 애니메이션 */
 .slide-out-left {
     transform: translateX(-50px);
     animation: slideOutLeft 0.3s forwards;
 }
-
 @keyframes slideOutLeft {
-    0% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
+    0% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(-50px); }
 }
 .slide-out-right {
     animation: slideOutRight 0.3s forwards;
 }
 @keyframes slideOutRight {
-    0% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(50px);
-    }
+    0% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(50px); }
 }
 .slide-in-left {
     animation: slideInLeft 0.3s forwards;
 }
 @keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 .section-header {
     padding: 10px 0;
     width: 310px;
     margin-bottom: 10px;
 }
-{/*전체 목록 모달 언더라인인*/}
 .section-header1 {
     padding: 10px 0;
     width: 350px;
@@ -265,11 +232,11 @@
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 12px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: box-shadow 0.3s ease;
 }
 .task-card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 .task-content {
     display: flex;
@@ -288,8 +255,6 @@
     white-space: nowrap;
     overflow: hidden;
 }
-
-/* "더보기" 버튼 */
 .more-tasks-btn {
     margin-top: 10px;
     color: #5f55ee;
@@ -312,85 +277,52 @@
     position: relative; /* 화살표 절대배치용 */
 }
 
-/* 선택된 Task 상세 정보 (오른쪽) */
+/* 오른쪽 상세 영역 */
 .selected-task-details {
     flex: 1;
     width: 350px;
     max-width: 1000px;
-    height: 550px;
+    height: 650px;
     margin-left: 70px;
     overflow-y: auto;
     background-color: #ffffff;
     padding: 40px;
     border-radius: 8px;
     border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative;
 }
 @keyframes fadeInDetail {
-    0% {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 .slide-out-left-detail {
     animation: slideOutLeftDetail 0.5s forwards;
 }
 @keyframes slideOutLeftDetail {
-    0% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
+    0% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(-50px); }
 }
-
 .slide-out-right-detail {
     animation: slideOutRightDetail 0.5s forwards;
 }
 @keyframes slideOutRightDetail {
-    0% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(50px);
-    }
+    0% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(50px); }
 }
-
 .slide-in-left-detail {
     animation: slideInLeftDetail 0.5s forwards;
 }
 @keyframes slideInLeftDetail {
-    0% {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
-
 .slide-in-right-detail {
     animation: slideInRightDetail 0.5s forwards;
 }
 @keyframes slideInRightDetail {
-    0% {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 .selected-task-details h3 {
     margin-bottom: 15px;
@@ -401,65 +333,34 @@
     list-style: none;
     padding: 0;
 }
-
 .selected-task-details ul li {
-    /* 카드 형태 */
     margin-bottom: 24px;
     padding: 16px 20px;
-
-    /* 부드러운 그라디언트 배경 & 테두리 & 모서리 */
-    background: linear-gradient(135deg, #ffffff 0%, #fafaff 100%);
-    border: 1px solid #e8eaed;
     border-radius: 12px;
-
-    /* 살짝 큰 그림자 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-
-    /* 마우스 오버 시 부드러운 상승 효과 */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .selected-task-details ul li:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
-
 /* 라벨(strong)과 내용 구분 */
 .selected-task-details ul li strong {
     display: inline-block;
     min-width: 80px;
-    color: #5f55ee;       /* 라벨에 포인트 컬러 */
+    color: #5f55ee;
     font-weight: 600;
     margin-right: 6px;
     margin-bottom: 4px;
 }
-
-/* Quill 설명(div) 들여쓰기/색상 */
 .selected-task-details ul li div[style*="margin: 4px 0"] {
-    margin-left: 86px;    /* 라벨보다 살짝 크게 들여쓰기 */
+    margin-left: 86px;
     margin-top: 4px;
     margin-bottom: 12px;
     line-height: 1.5;
     color: #2a2e34;
 }
-/* "뒤로 가기" 버튼 - 오른쪽 상단 고정 */
-.btn-back-top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #f2f1fe;
-    color: #4f5762;
-    border: 1px solid #d3d3d3;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.btn-back-top-right:hover {
-    background-color: #e2e6f6;
-}
 
-/* 오른쪽 상세 패널 내부에서, 이전/다음 버튼을 상단에 배치 */
+/* 화살표 */
 .section-nav-arrows {
     position: absolute;
     top: 20px;
@@ -467,7 +368,29 @@
     display: flex;
     gap: 10px;
 }
-
+.top-right-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+}
+.btn-back:hover {
+    background-color: #e2e6f6;
+}
+.btn-done {
+    background-color: #f2f9f2;
+    color: #2a2e34;
+    border: 1px solid #d3d3d3;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn-done:hover {
+    background-color: #e2e6f6;
+}
 .nav-arrow {
     background-color: #f2f1fe;
     border: 1px solid #d3d3d3;
@@ -481,54 +404,44 @@
 .nav-arrow:hover {
     background-color: #e2e6f6;
 }
-/* 왼쪽/오른쪽 화살표 */
-.arrow-nav-left{
-    position: absolute;
-    top: 300px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: none;
-    border: none;
-    color: #4f5762;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    z-index: 10;
-}
-
-.arrow-nav-right {
-    position: absolute;
-    top: 300px;
-    left: 420px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: none;
-    border: none;
-    color: #4f5762;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    z-index: 10;
-}
 .arrow-nav-left {
+    position: absolute;
+    top: 300px;
     left: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    color: #4f5762;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
 }
 .arrow-nav-right {
+    position: absolute;
+    top: 300px;
     right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    color: #4f5762;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
 }
-
 .arrow-nav-left:hover,
 .arrow-nav-right:hover {
     background-color: #e2e6f6;
 }
-/* 부모 컨테이너에서 페이드 전환 */
 .task-view-container.fade-change {
     opacity: 0.3;
     transition: opacity 0.3s ease;
 }
-
 /* 모달 오버레이 (배경) */
 .modal-overlay {
     position: fixed;
@@ -539,8 +452,7 @@
     background-color: rgba(0,0,0,0.3);
     z-index: 999;
 }
-
-/* 모달 창(박스) */
+/* 모달 창 */
 .modal-content {
     position: fixed;
     top: 50%;
@@ -553,14 +465,10 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     z-index: 1000;
 }
-
-/* 모달 내부 */
 .modal-inner {
     position: relative;
     padding: 30px;
 }
-
-/* 닫기 버튼 (×) */
 .modal-close-btn {
     position: absolute;
     top: 15px;
@@ -570,67 +478,6 @@
     font-size: 24px;
     cursor: pointer;
 }
-
-/* 이전/다음 섹션 화살표 */
-.modal-arrow-left,
-.modal-arrow-right {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #444;
-    transition: color 0.2s ease;
-}
-.modal-arrow-left {
-    left: 15px;
-}
-.modal-arrow-right {
-    right: 15px;
-}
-.modal-arrow-left:hover,
-.modal-arrow-right:hover {
-    color: #000;
-}
-
-/* 모달 헤더 */
-.modal-section-header {
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-.modal-section-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #2a2e34;
-}
-
-/* Task 상세 */
-.modal-task-detail {
-    line-height: 1.6;
-}
-/* 인디케이터 컨테이너 */
-.indicator-container {
-    display: flex;
-    gap: 5px;
-    margin-left: 10px;
-}
-
-/* 동그라미 기본 */
-.indicator-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #dcdcdc;
-    transition: background-color 0.3s ease;
-}
-
-/* 활성 동그라미 */
-.indicator-dot.active {
-    background-color: #5f55ee;
-}
-
 /* 수정 모드 배너 */
 .edit-mode-banner {
     background-color: #fff4e6;
@@ -649,7 +496,6 @@
     position: relative;
     right: 85px;
 }
-
 .task-view-container.edit-mode .task {
     border: 2px dashed #f39c12;
     cursor: pointer;
@@ -658,20 +504,110 @@
 .task-view-container.edit-mode .task:hover {
     background-color: #fff9f2;
 }
-
 .no-tasks-msg {
-    color: #888;         /* 글자색 예시 */
-    font-size: 14px;     /* 폰트 크기 예시 */
-    margin: 16px 0;      /* 위아래 여백 */
-    text-align: center;  /* 가운데 정렬 */
+    color: #888;
+    font-size: 14px;
+    margin: 16px 0;
+    text-align: center;
 }
+
+/* (수정 모달) 왼쪽 패널 + detail-row */
+.modal-edit-content {
+    width: 1000px;
+    max-width: 95%;
+    max-height: 92%;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    display: flex; /* 좌우 2분할 */
+    gap: 0;
+    overflow: hidden;
+    position: relative;
+    top: 50%;
+    left: 30%;
+    overflow-y: auto;
+
+    transform: translate(-50%, -50%);
+}
+@keyframes fadeInModal {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.edit-left-panel {
+    width: 40%;
+    padding: 30px;
+    flex: 1 1 0;
+    border-right: 1px solid #ddd;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.modal-body {
+    /* 기존 p태그가 아닌, detail-row 기반으로 */
+}
+.detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+.detail-icon i {
+    font-size: 18px;
+    color: #3498db;
+}
+.detail-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.detail-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #888;
+    margin-bottom: 2px;
+}
+.detail-value {
+    font-size: 0.95rem;
+    color: #2a2e34;
+    line-height: 1.4;
+    background-color: #ffffff;
+    border: 1px solid #e8eaed;
+    border-radius: 10px;
+    padding: 4px 8px;
+    text-align: center;
+}
+/* 우선순위 색상 */
+.priority-중요 {
+    background-color: #F6C1B5;
+    width: 200px;
+    color: #2a2e34;
+    border-radius: 8px;
+}
+.priority-보통 {
+    background-color: #F6F0B5;
+    color: #2a2e34;
+    width: 200px;
+    border-radius: 8px;
+}
+.priority-낮음 {
+    background-color: #D1F6B5;
+    width: 200px;
+    color: #2a2e34;
+    border-radius: 8px;
+}
+.detail-value-high {
+    color: #e74c3c;
+    font-weight: bold;
+}
+/* 파일 썸네일 */
 .file-thumbnails-preview {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     margin-top: 8px;
 }
-
 .file-thumbnail {
     width: 90px;
     min-height: 110px;
@@ -690,7 +626,6 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
-/* 이미지 파일 미리보기 */
 .file-thumbnail-image {
     width: 85px;
     height: 65px;
@@ -699,16 +634,12 @@
     margin-top: 8px;
     margin-bottom: 4px;
 }
-
-/* 이미지가 아닐 때(아이콘) */
 .file-icon {
     font-size: 36px;
     color: #999;
     margin-top: 10px;
     margin-bottom: 6px;
 }
-
-/* 파일명/확장자 등 표시 영역 */
 .file-thumbnail-info {
     display: flex;
     flex-direction: column;
@@ -716,27 +647,14 @@
     width: 100%;
     text-align: center;
 }
-
 .file-thumbnail-name {
     margin-top: 2px;
     font-size: 13px;
     color: #4f5762;
-    display: block;
-    white-space: normal;
     word-break: break-all;
-    overflow: visible;
-    text-overflow: unset;
 }
-
-/* (선택) 확장자 뱃지 */
-.file-extension-badge {
-    margin-top: 2px;
-    font-size: 12px;
-    color: #999;
-}
-
-/* (선택) 삭제 버튼이 필요하다면 */
 .file-remove-btn {
+    display: none;
     position: absolute;
     top: 6px;
     right: 6px;
@@ -751,6 +669,9 @@
     text-align: center;
     cursor: pointer;
     transition: background-color 0.2s ease;
+}
+.file-thumbnail:hover .file-remove-btn {
+    display: block;
 }
 .file-remove-btn:hover {
     background-color: #c0392b;
