@@ -557,3 +557,28 @@
 .file-remove-btn:hover {
     background-color: #c0392b;
 }
+
+/* 삭제 모드(빨간 점선) */
+.task-delete-mode {
+    border: 2px dashed #f95656;
+    transition: background-color 0.2s ease;
+}
+
+/* 삭제 모드 + 마우스 호버 시, 옅은 붉은 배경 */
+.task-delete-mode:hover {
+    background-color: #ffe6e6;
+}
+
+/* 이미 삭제 선택된 상태(파스텔 붉은 배경 고정) */
+.task-delete-selected {
+    background-color: #ffe6e6 !important;
+}
+
+.no-tasks-msg1 {
+    color: #888;
+    font-size: 14px;
+    margin: 16px 0;
+    text-align: center;
+    position: relative;
+    left: 425px;
+}
