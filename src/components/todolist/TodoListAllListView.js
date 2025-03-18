@@ -50,7 +50,7 @@ function TodoListAllListView() {
     useEffect(() => {
         const token = localStorage.getItem("token"); // 토큰 사용시
         axios
-            .get("/api/tasks", {
+            .get("/api/tasks/my-tasks", {
                 headers: {
                     Authorization: `Bearer ${token}`, // 필요에 따라 수정
                 },
@@ -72,8 +72,6 @@ function TodoListAllListView() {
      * - status === "DONE" => "✅ 완료됨"
      * - 마감임박 => "⏳ 마감 임박"
      * - 나머지 => "🔥 남은 To Do"
-     * - 등등...
-     * 실제 로직은 필요/취향에 따라 수정하세요.
      */
     const mapSectionInfo = (task) => {
         let sectionTitle = "🔥 남은 To Do";

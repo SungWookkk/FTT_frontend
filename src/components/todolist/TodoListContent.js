@@ -131,7 +131,7 @@ const TodoListContent = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         axios
-            .get("/api/tasks", {
+            .get("/api/tasks/my-tasks", {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
