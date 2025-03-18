@@ -91,31 +91,31 @@ const TodoListContent = () => {
     // ─────────────────────────────────────────────────────────
     // 섹션 분류 함수 (📍, ⏳, 🔥, ✅)
     // ─────────────────────────────────────────────────────────
+    // 기존 getSections 함수 대신
     const getSections = () => {
         const now = new Date();
-        const threeDays = 3 * 24 * 60 * 60 * 1000; // 3일(마감임박 기준)
+        const threeDays = 3 * 24 * 60 * 60 * 1000; // 3일 기준
 
-        // 1) 완료됨
+        // "완료됨" 섹션: status === "DONE"
         const doneTasks = allTasks.filter((t) => t.status === "DONE");
 
-        // 2) 마감 임박
-        const dueSoonTasks = allTasks.filter(
-            (t) =>
-                t.status !== "DONE" &&
-                t.dueDate &&
-                new Date(t.dueDate) - now <= threeDays
-        );
+        //  "마감 임박" 섹션: status !== "DONE" + dueDate가 3일 이하 남음
+        const dueSoonTasks = allTasks.filter((t) => {
+            if (t.status === "DONE") return false;
+            if (!t.dueDate) return false;
+            return new Date(t.dueDate) - now <= threeDays;
+        });
 
-        // 3) 최근 작성
-        const usedInAbove = new Set([...doneTasks, ...dueSoonTasks]);
-        const recentCandidates = allTasks.filter(
-            (t) => !usedInAbove.has(t) && t.status !== "DONE"
-        );
-        const recentTasks = recentCandidates.sort((a, b) => b.id - a.id).slice(0, 5);
+        // "최근 작성" 섹션: status !== "DONE" + createdAt으로부터 3일 이내
+        const recentTasks = allTasks.filter((t) => {
+            if (t.status === "DONE") return false;
+            if (!t.createdAt) return false;
+            const createdTime = new Date(t.createdAt);
+            return now - createdTime <= threeDays; // 3일 이내
+        });
 
-        // 4) 남은 To Do
-        const usedInAbove2 = new Set([...doneTasks, ...dueSoonTasks, ...recentTasks]);
-        const todoTasks = allTasks.filter((t) => !usedInAbove2.has(t));
+        // "남은 To Do" 섹션: status !== "DONE"
+        const todoTasks = allTasks.filter((t) => t.status !== "DONE");
 
         return [
             { title: "📍 최근 작성", color: "#ffa500", tasks: recentTasks },
