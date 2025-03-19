@@ -105,6 +105,7 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
 
         // 2) 백엔드로 Task 생성 요청 (파일 업로드 제외)
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
         const payload = {
             title: taskName,
             description: content,
@@ -112,7 +113,7 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
             dueDate: dueDate,
             assignee: assignee,
             memo: memo,
-            // 파일 업로드는 별도 구현 필요
+            userId: userId
         };
 
         axios.post("/api/tasks", payload, {
