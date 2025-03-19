@@ -53,7 +53,11 @@ function TodoListAllListView() {
             .get("/api/tasks/my-tasks", {
                 headers: {
                     Authorization: `Bearer ${token}`, // 필요에 따라 수정
+                    params: { userId: localStorage.getItem("userId") },
                 },
+            })
+            axios.get("/api/tasks", {
+                headers: { Authorization: `Bearer ${token}`}
             })
             .then((res) => {
                 // 서버 응답 구조에 맞게 파싱

@@ -130,9 +130,11 @@ const TodoListContent = () => {
     // ─────────────────────────────────────────────────────────
     useEffect(() => {
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
         axios
             .get("/api/tasks/my-tasks", {
                 headers: { Authorization: `Bearer ${token}` },
+                params: { userId },
             })
             .then((response) => {
                 const tasksData = Array.isArray(response.data)

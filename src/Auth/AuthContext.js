@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
             // 서버 응답에서 필요한 데이터 추출
             const { token, userName, userId: id, userRole } = response.data;
-
+            localStorage.setItem("userId", userId); // userId 저장
             // localStorage에 인증 정보 저장
             localStorage.setItem("token", token);
             localStorage.setItem("userName", userName);
