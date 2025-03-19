@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./css/SidebarFavorites.css";
+import TodoCreateModal from "../todolist/TodoCreateModal";
 
 const SidebarFavorites = () => {
     const location = useLocation();
+
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     return (
         <div className="sidebar-favorites">
@@ -41,16 +44,27 @@ const SidebarFavorites = () => {
                     </Link>
 
                     {/* 2) To Do List 작성 */}
-                    <Link
-                        to="/todo/write"
-                        className={
-                            location.pathname === "/todo/write"
-                                ? "workspace-list-item active"
-                                : "workspace-list-item"
-                        }
-                    >
-                        To Do List 작성
-                    </Link>
+                    <div>
+                        {/* 모달을 여는 버튼 또는 클릭 가능한 요소 */}
+                        <div
+                            className="workspace-list-item"
+                            onClick={() => setIsCreateModalOpen(true)}
+                            style={{cursor: "pointer"}}
+                        >
+                            To Do List 작성
+                        </div>
+
+                        {/* 모달 열림 여부에 따라 TodoCreateModal 렌더링 */}
+                        {isCreateModalOpen && (
+                            <TodoCreateModal
+                                onClose={() => setIsCreateModalOpen(false)}
+                                onTaskCreated={(newTask) => {
+                                    // 새 작업 생성 후 추가 작업 처리
+                                    console.log("새 작업 생성됨:", newTask);
+                                }}
+                            />
+                        )}
+                    </div>
 
                     {/* 3) 작업 폴더 생성 */}
                     <Link

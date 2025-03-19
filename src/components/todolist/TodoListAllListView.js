@@ -147,7 +147,7 @@ function TodoListAllListView() {
 
     // ---------------------- 수정 폼 상태 ----------------------
     const [editTaskName, setEditTaskName] = useState("");
-    const [editContent, setEditContent] = useState("<p>작업 내용을 입력하세요...</p>");
+    const [editContent, setEditContent] = useState("");
     const [editDueDate, setEditDueDate] = useState(null);
     const [editDaysLeft, setEditDaysLeft] = useState(null);
     const [editPriority, setEditPriority] = useState("보통");
@@ -224,7 +224,7 @@ function TodoListAllListView() {
     useEffect(() => {
         if (selectedTask) {
             setEditTaskName(selectedTask.title || "");
-            setEditContent(selectedTask.description || "<p>작업 내용을 입력하세요...</p>");
+            setEditContent(selectedTask.description || "");
             setEditDueDate(selectedTask.dueDate ? new Date(selectedTask.dueDate) : null);
             // D-Day 계산
             if (selectedTask.dueDate) {
@@ -242,14 +242,14 @@ function TodoListAllListView() {
             setEditMemo(selectedTask.memo || "");
             // 만약 서버에서 기존 첨부파일 목록을 주면, uploadedFiles에 넣어둘 수도 있음
             setUploadedFiles([]);
-            setTempHTML(selectedTask.description || "<p>작업 내용을 입력하세요...</p>");
+            setTempHTML(selectedTask.description || "");
         }
     }, [selectedTask]);
 
     // 폼 초기화
     const resetEditForm = () => {
         setEditTaskName("");
-        setEditContent("<p>작업 내용을 입력하세요...</p>");
+        setEditContent("");
         setEditDueDate(null);
         setEditDaysLeft(null);
         setEditPriority("보통");
