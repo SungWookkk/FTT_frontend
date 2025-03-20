@@ -1,9 +1,86 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./css/DashboardContent.css";
 import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
 import arrow1 from "../../Auth/css/img/arrow1.svg";
+import {useLocation} from "react-router-dom";
+import axios from "axios";
+
 
 const DashboardContent = () => {
+
+    const [username, setUsername] = useState("");
+    const [allTasks, setAllTasks] = useState([]);
+    const location = useLocation();
+
+
+    useEffect(() => {
+        // 로그인 시 localStorage에 저장한 username 불러오기
+        const storedUsername = localStorage.getItem("userName");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
+
+    // ---------------------- 백엔드에서 Task 목록 가져오기 ----------------------
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        axios
+            .get("/api/tasks/my-tasks", {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { userId },
+            })
+            .then((response) => {
+                const tasksData = Array.isArray(response.data)
+                    ? response.data
+                    : response.data.tasks;
+
+                // allTasks 상태에 저장
+                setAllTasks(tasksData);
+            })
+            .catch((error) => {
+                console.error("Task 목록 불러오기 실패:", error);
+            });
+    }, [location.pathname]);
+
+    // ---------------------- 마감 임박 & 남은 ToDo 분류 ----------------------
+    // 3일 이하 남은 것을 "마감 임박"으로 간주
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const threeDays = 3 * 24 * 60 * 60 * 1000;
+
+    // 마감 임박 (status !== 'DONE' + dueDate가 3일 이하 남음)
+    const dueSoonTasks = allTasks.filter((task) => {
+        if (task.status === "DONE") return false;
+        if (!task.dueDate) return false;
+        return new Date(task.dueDate) - now <= threeDays && new Date(task.dueDate) - now >= 0;
+    });
+
+    // 남은 To Do (status !== 'DONE' 이면서, 마감임박 아닌 것)
+    const todoTasks = allTasks.filter((task) => {
+        if (task.status === "DONE") return false;
+        // 이미 dueSoonTasks로 분류된 건 제외
+        const isDueSoon = dueSoonTasks.some((ds) => ds.id === task.id);
+        return !isDueSoon;
+    });
+
+    // ---------------------- D-Day 계산 함수 ----------------------
+    const calculateDday = (dueDate) => {
+        if (!dueDate) return "마감일 없음";
+        const target = new Date(dueDate);
+        target.setHours(0, 0, 0, 0);
+        const diff = Math.floor((target - now) / (1000 * 60 * 60 * 24));
+        if (diff > 0) return `D-${diff}`;
+        if (diff === 0) return "D-Day";
+        return `D+${Math.abs(diff)}`;
+    };
+
+    // **2개만 표시**하도록 slice(0, 2)
+    const dueSoonToShow = dueSoonTasks.slice(0, 2);
+    const todoToShow = todoTasks.slice(0, 2);
+
+
     return (
         <div className="dashboard-content">
             {/* 대시보드 헤더 */}
@@ -29,7 +106,7 @@ const DashboardContent = () => {
             </div>
 
             {/* 메인 작업 컨테이너 */}
-            <div className="info-title">짱구가 좋은 성욱 님의 정보</div>
+            <div className="info-title">{username} 님의 정보</div>
             <div className="info-underline"></div>
             <div className="main-task-container">
                 {/* 좌측 - 사용자 정보 및 진행률 */}
@@ -37,7 +114,7 @@ const DashboardContent = () => {
                     <div className="info-header">
                         <div className="profile-container">
                         <img className="profile-img" src={badge} alt="프로필 이미지"/>
-                        <span className="user-name"><strong>짱구가 좋은 성욱</strong></span>
+                        <span className="user-name"><strong>{username}</strong></span>
                         </div>
                         <span className="user-text">님의 현재 뱃지 등급은</span>
                         <div className="badge-icon"></div>
@@ -56,55 +133,74 @@ const DashboardContent = () => {
                 </div>
 
 
-                {/* 우측 - 기존 작업 컨테이너 */}
-                <div className="task-container">
-                    {/* 오늘의 작업 */}
-                    <div className="task-box today-task">
-                        <div className="title-underline"></div>
-
-                        <div className="task-title">오늘의 작업!</div>
-                        <div className="task-card1">
-                            <div className="task-color red-gradient"></div>
-                            <div className="task-content">
-                                <div className="task-name">옆의 색상은 </div>
-                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
+                {/* 우측 - 두 섹션 (마감 임박 / 남은 To Do) */}
+                <div className="task-sections1">
+                    {/* ⏳ 마감 임박 */}
+                    <div className="task-section">
+                        <div
+                            className="section-header"
+                            style={{ borderBottom: "5px solid #e74c3c" }}
+                        >
+                            <div className="section-header-content">
+                                <span className="section-title">⏳ 마감 임박</span>
                             </div>
-                            <div className="task-deadline">D-1</div>
                         </div>
-
-                        <div className="task-card1">
-                            <div className="task-color blue-gradient"></div>
-                            <div className="task-content">
-                                <div className="task-name">옆의 색상은 </div>
-                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
-                            </div>
-                            <div className="task-deadline">D-3</div>
+                        <div className="task-list">
+                            {dueSoonToShow.length === 0 ? (
+                                <p className="task-desc">Task를 생성해 일정을 관리해봐요!</p>
+                            ) : (
+                                dueSoonToShow.map((task) => (
+                                    <div className="task-card1" key={task.id}>
+                                        <div className="task-content">
+                                            <div className="task-name">{task.title}</div>
+                                            <div
+                                                className="task-desc"
+                                                dangerouslySetInnerHTML={{ __html: task.description }}
+                                            />
+                                        </div>
+                                        <div className="task-deadline">
+                                            {calculateDday(task.dueDate)}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
 
-                    {/* 작성한 작업 */}
-                    <div className="task-box written-task">
-                        <div className="title-underline"></div>
-                        <div className="task-title">작성한 작업!</div>
-                        <div className="task-card1">
-                            <div className="task-color red-gradient"></div>
-                            <div className="task-content">
-                                <div className="task-name">옆의 색상은 </div>
-                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
+                    {/* 🔥 남은 To Do */}
+                    <div className="task-section">
+                        <div
+                            className="section-header"
+                            style={{ borderBottom: "5px solid #3498db" }}
+                        >
+                            <div className="section-header-content">
+                                <span className="section-title">🔥 남은 To Do</span>
                             </div>
-                            <div className="task-deadline">D-1</div>
                         </div>
-
-                        <div className="task-card1">
-                            <div className="task-color blue-gradient"></div>
-                            <div className="task-content">
-                                <div className="task-name">옆의 색상은 </div>
-                                <div className="task-desc">마감 임박에 맞춰 변할 예정</div>
-                            </div>
-                            <div className="task-deadline">D-3</div>
+                        <div className="task-list">
+                            {todoToShow.length === 0 ? (
+                                <p className="task-desc">Task를 생성해 일정을 관리해봐요!</p>
+                            ) : (
+                                todoToShow.map((task) => (
+                                    <div className="task-card1" key={task.id}>
+                                        <div className="task-content">
+                                            <div className="task-name">{task.title}</div>
+                                            <div
+                                                className="task-desc"
+                                                dangerouslySetInnerHTML={{ __html: task.description }}
+                                            />
+                                        </div>
+                                        <div className="task-deadline">
+                                            {calculateDday(task.dueDate)}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
+
+
                 {/* 데이터 통계 섹션 */}
                 <div className="data-statistics">
                     <div className="data-title">데이터 통계</div>

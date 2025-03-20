@@ -9,9 +9,18 @@ import CommunityIcon from "../../../src/Auth/css/img/community.svg";
 import plus from "../../../src/Auth/css/img/plus.svg";
 import userinfo from "../../../src/Auth/css/img/userinfo.svg";
 import SidebarFavorites from "./SidebarFavorites";
+import {useEffect, useState} from "react";
 const Sidebar = () => {
     const location = useLocation(); // 현재 활성화된 URL을 가져옴
+    const [userName, setUserName] = useState();
 
+    useEffect(() => {
+        // 로그인 시 localStorage에 저장한 username 불러오기
+        const storedUsername = localStorage.getItem("userName");
+        if (storedUsername) {
+            setUserName(storedUsername);
+        }
+    }, []);
     return (
         <div className="sidebar-container">
             <SidebarBackground />
@@ -19,7 +28,7 @@ const Sidebar = () => {
             {/* 사용자 정보 영역 */}
             <div className="sidebar-user">
                 <img className="user-icon" src={userinfo} alt="User Icon" />
-                <span className="user-name">박성욱의 워크스페이스</span>
+                <span className="user-name">{userName}의 공간</span>
             </div>
 
             <nav className="sidebar-content">
