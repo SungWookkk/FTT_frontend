@@ -169,20 +169,6 @@
     height: 2px;
 }
 
-/* 좌측 사용자 정보 박스 */
-.user-info-box {
-    width: 100%;
-    max-width: 700px;
-    height: 175px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
 
 /*  사용자 정보 제목 */
 .info-title {

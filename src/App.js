@@ -12,6 +12,7 @@ import TodoListWritePage from "./components/todolist/TodoListWritePage";
 import TodoListAllListViewPage from "./components/todolist/TodoListAllListViewPage";
 import TodoFolderCreatePage from "./components/todolist/TodoFolderCreatePage";
 import TodoFolderAllPage from "./components/todolist/TodoFolderAllPage";
+import StatisticsPage from "./components/statistics/StatisticsPage";
 
 const App = () => {
     return (
@@ -26,11 +27,16 @@ const App = () => {
                         <Route path="/dashboard" component={Dashboard}/>
                         <Route path="/community" component={CommunityBestPosts}/>
                         <Route path="/dasboard" component={Dashboard}/>
+
+                        {/*TodoList 관련*/}
                         <Route exact path="/todo" component={TodoList} />
                         <Route path="/todo/write" component={TodoListWritePage} />
                         <Route path="/todo/list-all" component={TodoListAllListViewPage} />
                         <Route path="/todo/folder/create" component={TodoFolderCreatePage} />
                         <Route path="/todo/folder/all" component={TodoFolderAllPage} />
+
+                        {/*통계 관련 */}
+                        <Route path="/statistics" component={StatisticsPage} />
 
                     </Switch>
                 </div>

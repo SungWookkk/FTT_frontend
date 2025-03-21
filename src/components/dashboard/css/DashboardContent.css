@@ -113,7 +113,6 @@
 .user-info-box {
     width: 100%;
     max-width: 700px;
-    height: 175px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -306,211 +305,6 @@
 
 
 
-
-/* 데이터 통계 제목 */
-.data-title {
-    color: #adb3bd;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 5px;
-    margin-top: 30px;
-    padding-left: 10px;
-}
-
-/* 구분선 */
-.data-underline {
-    margin-left: 5px;
-    margin-top: 10px;
-    width: 91%;
-    height: 2px;
-    background-color: #f2f1fe;
-    border-radius: 2px;
-}
-
-/* 통계 카드 컨테이너 수정 */
-.statistics-container {
-    display: flex;
-    gap: 65px;
-    margin-top: 15px;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    padding-right: 230px;
-    position: relative;
-}
-
-/* 통계 카드 수정 */
-.stat-card {
-    width: 240px;
-    height: 150px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    box-sizing: border-box;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
-
-
-/* 카드 제목 */
-.stat-title {
-    color: #000000b2;
-    font-size: 15px;
-    font-weight: 800;
-    text-align: left;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-/* 값 자리 (빈 값) */
-.stat-value-placeholder {
-    width: 100%;
-    height: 80px;
-    border-radius: 5px;
-    background-color: #f2f1fe;
-    margin-bottom: 10px;
-}
-
-/*  그래프 자리 (빈 그래프) */
-.stat-graph-placeholder {
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
-    background-color: #f2f1fe;
-}
-/* 마지막 카드에만 화살표 추가 */
-.stat-card.last-card {
-    position: relative;
-}
-
-/* 화살표 아이콘 위치 조정 */
-.arrow-icon {
-    position: absolute;
-    right: -70px;
-    width: 30px;
-    height: 25px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-/* 화살표 호버 시 애니메이션 */
-.arrow-icon:hover {
-    transform: translateX(5px);
-}
-
-/* 그래프 섹션 스타일 */
-.graph-section {
-    margin-top: 30px;
-    padding: 0;
-    background-color: #ffffff;
-    width: 50%;
-    margin-left: 10px;
-}
-
-/* 그래프 제목 */
-.graph-title {
-    color: #adb3bd;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-/* 그래프 자리  */
-.graph-placeholder {
-    height: 300px;
-    width: 100%;
-    background-color: #f2f1fe;
-    border-radius: 5px;
-}
-.graph-underline {
-    height: 2px;
-    width: 100%;
-    background-color: #f2f1fe;
-    margin:  0 0 10px 0;
-}
-
-/* 전체 컨테이너 */
-.graph-and-design-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-top: 10px;
-    gap: 30px;
-    padding: 0 20px;
-}
-.yellow-design-section {
-    width: 30%;
-    height: 300px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    justify-content: center;
-    margin-right: 270px;
-    margin-top: 70px;
-}
-
-/* 제목 스타일 */
-.yellow-title {
-    color: #adb3bd;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-/* 진행률 바 */
-.progress-bar {
-    position: relative;
-    height: 12px;
-    border-radius: 6px;
-    background-color: #f2f1fe;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 6px;
-    text-align: center;
-    line-height: 12px;
-    color: #ffffff;
-    font-size: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* 색상별 진행률 바 */
-.badge-fill {
-    width: 70%;
-    background: linear-gradient(90deg, #ffe600 0%, #ffcc00 100%);
-}
-
-.title-fill {
-    width: 60%;
-    background: linear-gradient(90deg, #0040ff 0%, #00bfff 100%);
-}
-
-.time-fill {
-    width: 80%;
-    background: linear-gradient(90deg, #ff00ff 0%, #ff69b4 100%);
-}
-
-.progress-text {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    color: #000000;
-    font-size: 11px;
-    line-height: 12px;
-}
-
 /* 섹션 전체 컨테이너 */
 .task-sections1 {
     display: flex;
@@ -582,20 +376,30 @@
     display: flex;
     flex-direction: column;
 }
-.task-name {
-    color: #000000d9;
-    font-size: 13px;
+
+
+.task-name1 {
+    color: #2a2e34;
+    font-size: 14px;
     font-weight: 700;
-    margin-bottom: 4px;
+    line-height: 1.4;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    white-space: nowrap;
+    position: relative;
+    bottom: 3px;
 }
-.task-desc {
+.task-desc1 {
     color: #00000080;
     font-size: 11px;
     line-height: 16px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    position: relative;
+    bottom: 3px;
 }
+
 
 /* D-Day (마감일) */
 .task-deadline {

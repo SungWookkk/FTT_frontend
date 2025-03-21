@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import "./css/DashboardContent.css";
 import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
-import arrow1 from "../../Auth/css/img/arrow1.svg";
 import {useLocation} from "react-router-dom";
 import axios from "axios";
 
-
+import CalendarContainer from "./CalendarSection";
+import CalendarSection from "./CalendarSection"; // 달력 컴포넌트 임포트
 const DashboardContent = () => {
 
     const [username, setUsername] = useState("");
@@ -147,14 +147,14 @@ const DashboardContent = () => {
                         </div>
                         <div className="task-list">
                             {dueSoonToShow.length === 0 ? (
-                                <p className="task-desc">Task를 생성해 일정을 관리해봐요!</p>
+                                <p className="task-desc1">Task를 생성해 일정을 관리해봐요!</p>
                             ) : (
                                 dueSoonToShow.map((task) => (
                                     <div className="task-card1" key={task.id}>
                                         <div className="task-content">
                                             <div className="task-name">{task.title}</div>
                                             <div
-                                                className="task-desc"
+                                                className="task-desc1"
                                                 dangerouslySetInnerHTML={{ __html: task.description }}
                                             />
                                         </div>
@@ -184,9 +184,9 @@ const DashboardContent = () => {
                                 todoToShow.map((task) => (
                                     <div className="task-card1" key={task.id}>
                                         <div className="task-content">
-                                            <div className="task-name">{task.title}</div>
+                                            <div className="task-name1">{task.title}</div>
                                             <div
-                                                className="task-desc"
+                                                className="task-desc1"
                                                 dangerouslySetInnerHTML={{ __html: task.description }}
                                             />
                                         </div>
@@ -200,52 +200,9 @@ const DashboardContent = () => {
                     </div>
                 </div>
 
+                {/*이 하위에 피그마 디자인 추출한 달력 넣을 것 */}
+                <CalendarSection/>
 
-                {/* 데이터 통계 섹션 */}
-                <div className="data-statistics">
-                    <div className="data-title">데이터 통계</div>
-                    <div className="data-underline"></div>
-
-                    {/* 통계 카드 5개 생성 */}
-                    <div className="statistics-container">
-                        {["작업 처리 평균 시간", "작성한 작업", "완료한 작업", "실패한 작업", "작업에 따른 사용자 순위"].map((title, index) => (
-                            <div className={`stat-card ${index === 4 ? 'last-card' : ''}`} key={index}>
-                                <div className="stat-title">{title}</div>
-                                <div className="stat-value-placeholder"></div>
-                                {index === 4 && <img className="arrow-icon" src={arrow1} alt="Arrow" />}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                {/* 그래프 섹션 */}
-                <div className="graph-section">
-                    <div className="graph-title">작업 시작 통계</div>
-                    <div className="graph-underline"></div>
-                    <div className="graph-placeholder"></div>
-                </div>
-                {/* 피그마 디자인 코드(노란색 영역) */}
-                <div className="yellow-design-section">
-                    {/* 뱃지 */}
-                    <div className="yellow-title">뱃지</div>
-                    <div className="progress-bar badge-bar">
-                        <div className="progress-fill badge-fill"></div>
-                        <div className="progress-text">작업 진척도</div>
-                    </div>
-
-                    {/* 칭호 */}
-                    <div className="yellow-title">칭호</div>
-                    <div className="progress-bar badge-bar">
-                        <div className="progress-fill title-fill"></div>
-                        <div className="progress-text">3일 연속 작업 완료! - "3일의 기적"</div>
-                    </div>
-
-                    {/* 마감시간 */}
-                    <div className="yellow-title">마감 시간 준수</div>
-                    <div className="progress-bar badge-bar">
-                        <div className="progress-fill time-fill"></div>
-                        <div className="progress-text">마감 시간 준수! - "시간 관리의 신!"</div>
-                    </div>
-                </div>
             </div>
         </div>
     );
