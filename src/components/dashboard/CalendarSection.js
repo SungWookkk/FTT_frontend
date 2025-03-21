@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../dashboard/css/CalendarSection.css"; // 같은 폴더에 CSS 두고 import
+import "../dashboard/css/CalendarSection.css";
 
 // 예시 Task 구조
 const sampleTasks = [
@@ -9,11 +9,12 @@ const sampleTasks = [
 ];
 
 function CalendarSection() {
-    // 1) 오늘 날짜를 기본으로 사용
     const today = new Date();
     const [year, setYear] = useState(today.getFullYear());
-    const [month, setMonth] = useState(today.getMonth()); // 0=1월 ~ 11=12월
+    const [month, setMonth] = useState(today.getMonth());
     const [tasks, setTasks] = useState(sampleTasks);
+    // direction state: 'next' 또는 'prev'
+    const [direction, setDirection] = useState("next");
 
     // "오늘의 일정" 필터 (우측 패널)
     const todayISO = today.toISOString().slice(0, 10);
@@ -24,8 +25,9 @@ function CalendarSection() {
         return date >= start && date <= end;
     });
 
-    // 이전 달로 이동
+    // 이전 달로 이동 (방향: 'prev')
     const handlePrevMonth = () => {
+        setDirection("prev");
         let newMonth = month - 1;
         let newYear = year;
         if (newMonth < 0) {
@@ -36,8 +38,9 @@ function CalendarSection() {
         setMonth(newMonth);
     };
 
-    // 다음 달로 이동
+    // 다음 달로 이동 (방향: 'next')
     const handleNextMonth = () => {
+        setDirection("next");
         let newMonth = month + 1;
         let newYear = year;
         if (newMonth > 11) {
@@ -57,22 +60,18 @@ function CalendarSection() {
 
     // 달력 계산
     const firstDate = new Date(year, month, 1);
-    const lastDate = new Date(year, month + 1, 0); // 이번 달 말일
+    const lastDate = new Date(year, month + 1, 0);
     const totalDays = lastDate.getDate();
-    const startDay = firstDate.getDay(); // 0=일 ~ 6=토
+    const startDay = firstDate.getDay();
 
     const calendarCells = [];
-    // 앞쪽 공백
     for (let i = 0; i < startDay; i++) {
         calendarCells.push(null);
     }
-    // 1일부터 말일까지
     for (let d = 1; d <= totalDays; d++) {
-        const dateObj = new Date(year, month, d);
-        calendarCells.push(dateObj);
+        calendarCells.push(new Date(year, month, d));
     }
 
-    // 날짜 범위 체크
     const isWithinRange = (dateStr, startStr, endStr) => {
         const date = new Date(dateStr);
         const start = new Date(startStr);
@@ -80,14 +79,12 @@ function CalendarSection() {
         return date >= start && date <= end;
     };
 
-    // "YYYY. M" 형태
     const titleString = `${year}. ${month + 1}`;
 
     return (
         <div className="calendar-container">
             {/* 왼쪽: 달력 섹션 */}
             <div className="calendar-section">
-                {/* 헤더 영역 */}
                 <div className="calendar-header">
                     <div className="calendar-title">{titleString}</div>
                     <div className="calendar-controls">
@@ -103,7 +100,6 @@ function CalendarSection() {
                     </div>
                 </div>
 
-                {/* 요일 헤더 */}
                 <div className="weekday-row">
                     <div className="weekday-cell">SUN</div>
                     <div className="weekday-cell">MON</div>
@@ -114,20 +110,15 @@ function CalendarSection() {
                     <div className="weekday-cell">SAT</div>
                 </div>
 
-                {/* 달력 본체 */}
-                <div className="dates-grid">
+                {/* 달력 본체: direction 상태에 따라 애니메이션 클래스 적용 */}
+                <div className={`dates-grid ${direction === "prev" ? "slide-left" : "slide-right"}`}>
                     {calendarCells.map((dateObj, idx) => {
                         if (!dateObj) {
-                            // 이전 달 공백
                             return <div key={idx} className="date-cell empty"></div>;
                         }
                         const dayNum = dateObj.getDate();
                         const isoStr = dateObj.toISOString().slice(0, 10);
-
-                        // 오늘 날짜 강조
                         const isToday = isoStr === todayISO;
-
-                        // 해당 날짜에 포함되는 Task들
                         const dayTasks = tasks.filter((t) =>
                             isWithinRange(isoStr, t.start, t.end)
                         );
