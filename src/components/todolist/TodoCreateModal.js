@@ -39,7 +39,8 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
     const [taskName, setTaskName] = useState("");
     const [content, setContent] = useState("");
     const [priority, setPriority] = useState("보통");
-    const [dueDate, setDueDate] = useState(null);
+    const [startDate, setStartDate] = useState(null); // 시작일
+    const [dueDate, setDueDate] = useState(null);     // 마감일
     const [assignee, setAssignee] = useState("");
     const [memo, setMemo] = useState("");
     const [daysLeft, setDaysLeft] = useState(null);
@@ -69,17 +70,27 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
     };
 
     // 마감일 변경 시 남은 일수 계산
+    const handleStartDateChange = (date) => {
+        setStartDate(date);
+    };
+
     const handleDueDateChange = (date) => {
         setDueDate(date);
-        if (!date) {
+
+        if (date) {
+            // 시차 문제를 없애기 위해 'stripTime'으로 연/월/일만 반영
+            const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+            const now = stripTime(new Date());
+            const picked = stripTime(date);
+
+            const diff = Math.floor((picked - now) / (1000 * 60 * 60 * 24));
+            setDaysLeft(diff);
+        } else {
             setDaysLeft(null);
-            return;
         }
-        const now = new Date();
-        now.setHours(0, 0, 0, 0);
-        const diff = Math.floor((date - now) / (1000 * 60 * 60 * 24));
-        setDaysLeft(diff);
     };
+
 
     // Quill 에디터 열기/닫기
     const openEditor = () => {
@@ -110,7 +121,8 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
             title: taskName,
             description: content,
             priority: priority,
-            dueDate: dueDate,
+            startDate: startDate ? startDate.toISOString().slice(0, 10) : null,
+            dueDate: dueDate ? dueDate.toISOString().slice(0, 10) : null,
             assignee: assignee,
             memo: memo,
             userId: userId
@@ -223,24 +235,44 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
                                 </div>
                             </div>
 
-                            {/* 마감일 */}
+                            {/* 시작일 + 마감일 한 줄 */}
                             <div className="detail-row">
                                 <div className="detail-icon">
                                     <i className="far fa-calendar-alt" />
                                 </div>
-                                <div className="detail-text">
-                                    <span className="detail-label">마감일</span>
-                                    <span className="detail-value">
-                                        {dueDate
-                                            ? new Date(dueDate).toLocaleDateString()
-                                            : "미설정"}
-                                        {daysLeft > 0
-                                            ? ` || 남은 일수: ${daysLeft}일 (D-${daysLeft})`
-                                            : daysLeft === 0
-                                                ? " || 오늘이 마감일입니다."
-                                                : daysLeft !== null &&
-                                                `  || 마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
-                                    </span>
+
+                                {/* 두 날짜를 한 줄에 배치: 'detail-text' 안에서 flex */}
+                                <div className="detail-text" style={{ display: "flex", gap: "16px", width: "100%" }}>
+                                    {/* 시작일 */}
+                                    <div style={{ flex: 1 }}>
+                                        <span className="detail-label">시작일</span>
+                                        <span className="detail-value">
+        {startDate
+            ? new Date(startDate).toLocaleDateString()
+            : "미설정"
+        }
+      </span>
+                                    </div>
+
+                                    {/* 마감일 + daysLeft 로직 */}
+                                    <div style={{ flex: 1 }}>
+                                        <span className="detail-label">마감일</span>
+                                        <span className="detail-value">
+        {dueDate
+            ? new Date(dueDate).toLocaleDateString()
+            : "미설정"
+        }
+
+                                            {/* daysLeft 표시 (마감일만 해당) */}
+                                            {daysLeft > 0
+                                                ? ` || 남은 일수: ${daysLeft}일 (D-${daysLeft})`
+                                                : daysLeft === 0
+                                                    ? " || 오늘이 마감일입니다."
+                                                    : daysLeft !== null &&
+                                                    ` || 마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`
+                                            }
+      </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -367,25 +399,43 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
                             />
                         </div>
 
-                        <div className="form-field">
-                            <label>마감일</label>
-                            <DatePicker
-                                selected={dueDate}
-                                onChange={handleDueDateChange}
-                                dateFormat="yyyy-MM-dd"
-                                placeholderText="연도-월-일"
-                                locale="ko"
-                                className="custom-date-input"
-                            />
-                            {daysLeft !== null && (
-                                <div className="due-remaining">
-                                    {daysLeft > 0
-                                        ? `남은 일수: ${daysLeft}일 (D-${daysLeft})`
-                                        : daysLeft === 0
-                                            ? " || 오늘이 마감일입니다."
-                                            : `마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
-                                </div>
-                            )}
+                        <div className="form-field" style={{display: "flex", gap: "20px"}}>
+                            {/* 시작일 영역 */}
+                            <div style={{flex: 1}}>
+                                <label>시작일</label>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={handleStartDateChange} // 시작일 변경 로직
+                                    dateFormat="yyyy-MM-dd"
+                                    placeholderText="연도-월-일"
+                                    locale="ko"
+                                    className="custom-date-input"
+                                />
+                            </div>
+
+                            {/* 마감일 영역 */}
+                            <div style={{flex: 1}}>
+                                <label>마감일</label>
+                                <DatePicker
+                                    selected={dueDate}
+                                    onChange={handleDueDateChange} // 마감일 변경 로직
+                                    dateFormat="yyyy-MM-dd"
+                                    placeholderText="연도-월-일"
+                                    locale="ko"
+                                    className="custom-date-input"
+                                />
+
+                                {/* daysLeft 로직 (마감일 기준) */}
+                                {daysLeft !== null && (
+                                    <div className="due-remaining">
+                                        {daysLeft > 0
+                                            ? `남은 일수: ${daysLeft}일 (D-${daysLeft})`
+                                            : daysLeft === 0
+                                                ? " || 오늘이 마감일입니다."
+                                                : `마감일이 ${Math.abs(daysLeft)}일 지났습니다 (D+${Math.abs(daysLeft)})`}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="form-field">
