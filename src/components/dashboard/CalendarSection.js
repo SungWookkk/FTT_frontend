@@ -320,13 +320,33 @@ function DayTasksModal({ tasks, onClose, onTaskClick }) {
                         backgroundColor: sectionColor,
                         borderRadius: "4px",
                         marginRight: "8px",
-                    }}
-                />
+                    }}/>
                                 <strong>{task.title}</strong>
                             </li>
                         );
                     })}
                 </ul>
+                {/* 색상별 안내 (legend) */}
+                <div className="modal-legend">
+                    <div className="legend-item">
+            <span
+                className="legend-color"
+                style={{ backgroundColor: "#e74c3c" }}/>
+                        <span className="legend-label">마감 임박</span>
+                    </div>
+                    <div className="legend-item">
+            <span
+                className="legend-color"
+                style={{ backgroundColor: "#3498db" }}/>
+                        <span className="legend-label">남은 To Do</span>
+                    </div>
+                    <div className="legend-item">
+            <span
+                className="legend-color"
+                style={{ backgroundColor: "#27ae60" }}/>
+                        <span className="legend-label">완료됨</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
