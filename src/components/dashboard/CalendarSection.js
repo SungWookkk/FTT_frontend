@@ -189,7 +189,10 @@ function CalendarSection() {
                 </div>
 
                 {/* 달력 본체 */}
-                <div className={`dates-grid ${direction === "prev" ? "slide-left" : "slide-right"}`}>
+                <div
+                    key={`${year}-${month}`}
+                    className={`dates-grid ${direction === "prev" ? "slide-left" : "slide-right"}`}
+                >
                     {calendarCells.map((dateObj, idx) => {
                         if (!dateObj) {
                             // 이전달 공백
@@ -212,12 +215,12 @@ function CalendarSection() {
 
                                 {tasksToShow.map((task) => {
                                     // 섹션 정보
-                                    const { sectionColor } = getSectionInfo(task);
+                                    const {sectionColor} = getSectionInfo(task);
                                     return (
                                         <div
                                             key={task.id}
                                             className="task-item"
-                                            style={{ backgroundColor: sectionColor, color: "#fff" }}
+                                            style={{backgroundColor: sectionColor, color: "#fff"}}
                                             onClick={() => openTaskDetail(task)} // ← 클릭 시 상세 모달
                                         >
                                             {task.title}
@@ -242,7 +245,7 @@ function CalendarSection() {
 
             {/* 오른쪽: 오늘의 일정 + AI 패널 */}
             <div className="right-panels">
-                <div className="schedule-sidebar">
+            <div className="schedule-sidebar">
                     <h3 className="sidebar-title">오늘의 일정</h3>
                     <div className="sidebar-list">
                         {todayTasks.length === 0 ? (
