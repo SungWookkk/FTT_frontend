@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../dashboard/css/CalendarSection.css";
 
-// 예시 Task 구조
 const sampleTasks = [
     { id: 1, title: "프로젝트 기획", start: "2023-07-03", end: "2023-07-05" },
     { id: 2, title: "디자인 작업", start: "2023-07-07", end: "2023-07-07" },
@@ -12,11 +11,10 @@ function CalendarSection() {
     const today = new Date();
     const [year, setYear] = useState(today.getFullYear());
     const [month, setMonth] = useState(today.getMonth());
-    const [tasks, setTasks] = useState(sampleTasks);
-    // direction state: 'next' 또는 'prev'
+    const [tasks] = useState(sampleTasks);
     const [direction, setDirection] = useState("next");
 
-    // "오늘의 일정" 필터 (우측 패널)
+    // 오늘 일정 필터
     const todayISO = today.toISOString().slice(0, 10);
     const todayTasks = tasks.filter((t) => {
         const date = new Date(todayISO);
@@ -25,7 +23,7 @@ function CalendarSection() {
         return date >= start && date <= end;
     });
 
-    // 이전 달로 이동 (방향: 'prev')
+    // 달 이동
     const handlePrevMonth = () => {
         setDirection("prev");
         let newMonth = month - 1;
@@ -37,8 +35,6 @@ function CalendarSection() {
         setYear(newYear);
         setMonth(newMonth);
     };
-
-    // 다음 달로 이동 (방향: 'next')
     const handleNextMonth = () => {
         setDirection("next");
         let newMonth = month + 1;
@@ -50,8 +46,6 @@ function CalendarSection() {
         setYear(newYear);
         setMonth(newMonth);
     };
-
-    // Today 버튼
     const handleToday = () => {
         const now = new Date();
         setYear(now.getFullYear());
@@ -83,20 +77,14 @@ function CalendarSection() {
 
     return (
         <div className="calendar-container">
-            {/* 왼쪽: 달력 섹션 */}
+            {/* 왼쪽 달력 */}
             <div className="calendar-section">
                 <div className="calendar-header">
                     <div className="calendar-title">{titleString}</div>
                     <div className="calendar-controls">
-                        <button className="control-button" onClick={handleToday}>
-                            Today
-                        </button>
-                        <button className="control-button" onClick={handlePrevMonth}>
-                            &lt;
-                        </button>
-                        <button className="control-button" onClick={handleNextMonth}>
-                            &gt;
-                        </button>
+                        <button className="control-button" onClick={handleToday}>Today</button>
+                        <button className="control-button" onClick={handlePrevMonth}>&lt;</button>
+                        <button className="control-button" onClick={handleNextMonth}>&gt;</button>
                     </div>
                 </div>
 
@@ -110,31 +98,21 @@ function CalendarSection() {
                     <div className="weekday-cell">SAT</div>
                 </div>
 
-                {/* 달력 본체: direction 상태에 따라 애니메이션 클래스 적용 */}
                 <div className={`dates-grid ${direction === "prev" ? "slide-left" : "slide-right"}`}>
                     {calendarCells.map((dateObj, idx) => {
-                        if (!dateObj) {
-                            return <div key={idx} className="date-cell empty"></div>;
-                        }
+                        if (!dateObj) return <div key={idx} className="date-cell empty"></div>;
                         const dayNum = dateObj.getDate();
                         const isoStr = dateObj.toISOString().slice(0, 10);
-                        const isToday = isoStr === todayISO;
-                        const dayTasks = tasks.filter((t) =>
-                            isWithinRange(isoStr, t.start, t.end)
-                        );
+                        const isToday = (isoStr === todayISO);
+                        const dayTasks = tasks.filter((t) => isWithinRange(isoStr, t.start, t.end));
 
                         return (
-                            <div
-                                key={idx}
-                                className={`date-cell ${isToday ? "today-highlight" : ""}`}
-                            >
+                            <div key={idx} className={`date-cell ${isToday ? "today-highlight" : ""}`}>
                                 <div className="date-number">{dayNum}</div>
                                 {dayTasks.length > 0 && (
                                     <div className="task-list">
                                         {dayTasks.map((t) => (
-                                            <div key={t.id} className="task-item">
-                                                {t.title}
-                                            </div>
+                                            <div key={t.id} className="task-item">{t.title}</div>
                                         ))}
                                     </div>
                                 )}
@@ -144,19 +122,29 @@ function CalendarSection() {
                 </div>
             </div>
 
-            {/* 오른쪽: 일정 알림 패널 */}
-            <div className="schedule-sidebar">
-                <h3 className="sidebar-title">오늘의 일정</h3>
-                <div className="sidebar-list">
-                    {todayTasks.length === 0 ? (
-                        <div className="no-tasks">오늘은 일정이 없습니다.</div>
-                    ) : (
-                        todayTasks.map((task) => (
-                            <div key={task.id} className="sidebar-task">
-                                <div className="sidebar-task-title">{task.title}</div>
-                            </div>
-                        ))
-                    )}
+            {/* 오른쪽: 오늘의 일정 + AI 패널 (가로로 붙이기) */}
+            <div className="right-panels">
+                <div className="schedule-sidebar">
+                    <h3 className="sidebar-title">오늘의 일정</h3>
+                    <div className="sidebar-list">
+                        {todayTasks.length === 0 ? (
+                            <div className="no-tasks">오늘은 일정이 없습니다.</div>
+                        ) : (
+                            todayTasks.map((task) => (
+                                <div key={task.id} className="sidebar-task">
+                                    <div className="sidebar-task-title">{task.title}</div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* AI 기능 패널 */}
+                <div className="ai-panel">
+                    <h3 className="ai-panel-title">AI 기능</h3>
+                    <div className="ai-panel-content">
+                        <p>AI 기능이 들어갈 영역입니다.</p>
+                    </div>
                 </div>
             </div>
         </div>

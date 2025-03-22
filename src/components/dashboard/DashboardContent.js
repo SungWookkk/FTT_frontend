@@ -4,7 +4,6 @@ import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
 import {useLocation} from "react-router-dom";
 import axios from "axios";
 
-import CalendarContainer from "./CalendarSection";
 import CalendarSection from "./CalendarSection"; // 달력 컴포넌트 임포트
 const DashboardContent = () => {
 
@@ -179,7 +178,7 @@ const DashboardContent = () => {
                         </div>
                         <div className="task-list">
                             {todoToShow.length === 0 ? (
-                                <p className="task-desc">Task를 생성해 일정을 관리해봐요!</p>
+                                <p className="task-desc1">Task를 생성해 일정을 관리해봐요!</p>
                             ) : (
                                 todoToShow.map((task) => (
                                     <div className="task-card1" key={task.id}>
@@ -203,7 +202,9 @@ const DashboardContent = () => {
                 {/*이 하위에 피그마 디자인 추출한 달력 넣을 것 */}
                 <CalendarSection/>
 
+
             </div>
+
         </div>
     );
 };

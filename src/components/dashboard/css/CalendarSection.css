@@ -1,26 +1,99 @@
-/* 전체 레이아웃: 달력(왼쪽) + 일정 패널(오른쪽) */
+/* 전체 컨테이너: 달력(왼) + 오른쪽 패널 */
 .calendar-container {
     display: flex;
+    align-items: flex-start;
     gap: 16px;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     font-family: "Inter", sans-serif;
-    position: relative;
     top: 25px;
+    position: relative;
     right: 300px;
+
 }
 
-/* 왼쪽 달력 섹션 */
+/* 달력 섹션 */
 .calendar-section {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 900px;
+
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     padding: 16px;
 }
 
-/* 달력 헤더 */
+/* 오른쪽 패널 (오늘의 일정 + AI) 한 줄 배치 */
+.right-panels {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+/* "오늘의 일정" 패널 */
+.schedule-sidebar {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 16px;
+    height: 515px;
+}
+.sidebar-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2a2e34;
+}
+.sidebar-list {
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.no-tasks {
+    font-size: 13px;
+    color: #999;
+}
+.sidebar-task {
+    background-color: #f2f6ff;
+    border: 1px solid #dde5fa;
+    border-radius: 6px;
+    padding: 8px;
+}
+.sidebar-task-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2a2e34;
+}
+
+/* AI 기능 패널 */
+.ai-panel {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 16px;
+}
+.ai-panel-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2a2e34;
+}
+.ai-panel-content {
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* 달력 헤더/요일/셀/애니메이션 동일 */
 .calendar-header {
     display: flex;
     align-items: center;
@@ -50,8 +123,6 @@
 .control-button:hover {
     background-color: #e0e1fa;
 }
-
-/* 요일 헤더 */
 .weekday-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -66,23 +137,18 @@
     background-color: #f9f9fe;
     border: 1px solid #eee;
 }
-
-/* 달력 본체 */
 .dates-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     grid-auto-rows: 70px;
     border: 1px solid #eee;
 }
-
-/* 애니메이션 */
 .slide-right {
     animation: slideRight 0.4s ease forwards;
 }
 .slide-left {
     animation: slideLeft 0.4s ease forwards;
 }
-
 @keyframes slideRight {
     0% {
         opacity: 0;
@@ -93,7 +159,6 @@
         transform: translateX(0);
     }
 }
-
 @keyframes slideLeft {
     0% {
         opacity: 0;
@@ -104,8 +169,6 @@
         transform: translateX(0);
     }
 }
-
-/* 날짜 셀 */
 .date-cell {
     border: 1px solid #eee;
     position: relative;
@@ -135,46 +198,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-/* 오늘 날짜 하이라이트 */
 .today-highlight {
     background-color: #fff7e0;
-}
-
-/* 오른쪽 일정 알림 패널 */
-.schedule-sidebar {
-    width: 300px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    padding: 16px;
-    position: relative;
-}
-.sidebar-title {
-    margin: 0 0 12px 0;
-    font-size: 16px;
-    font-weight: 700;
-    color: #2a2e34;
-}
-.sidebar-list {
-    max-height: 400px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.no-tasks {
-    font-size: 13px;
-    color: #999;
-}
-.sidebar-task {
-    background-color: #f2f6ff;
-    border: 1px solid #dde5fa;
-    border-radius: 6px;
-    padding: 8px;
-}
-.sidebar-task-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #2a2e34;
 }
