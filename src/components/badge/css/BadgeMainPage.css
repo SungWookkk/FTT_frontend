@@ -1,0 +1,44 @@
+
+/* 대시보드 제목 스타일 */
+.dashboard-title .title-text {
+    color: #2a2e34;
+    font-family: "Inter-Bold", sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 16px;
+    padding-bottom: 25px;
+}
+
+/* 알림 배너 스타일 */
+.alert-banner {
+    background-color: #f2f1fe;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+    width: 100%;
+}
+/* 알림 텍스트 스타일 */
+.alert-text {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 120px;
+}
+
+/* 일반 텍스트 */
+.alert-text .normal-text {
+    font-weight: 400;
+}
+
+/* 강조 텍스트 */
+.alert-text .highlight-text {
+    font-weight: 700;
+}
