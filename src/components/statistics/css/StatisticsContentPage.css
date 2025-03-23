@@ -1,5 +1,50 @@
 
 
+/* 알림 배너 스타일 */
+.alert-banner-todo {
+    background-color: #f2f1fe;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+    width: 100%;
+}
+/* 알림 텍스트 스타일 */
+.alert-text-todo {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 120px;
+}
+.alert-text-todo1 {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin-right: 140.5px;
+}
+.alert-text-todo .normal-text {
+    font-weight: 400;
+}
+.alert-text-todo .highlight-text {
+    font-weight: 700;
+}
+.alert-text-todo1 .normal-text {
+    font-weight: 400;
+}
+.alert-text-todo1 .highlight-text {
+    font-weight: 700;
+}
+
 /* 데이터 통계 제목 */
 .data-title {
     color: #adb3bd;

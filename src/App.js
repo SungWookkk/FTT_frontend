@@ -13,6 +13,7 @@ import TodoListAllListViewPage from "./components/todolist/TodoListAllListViewPa
 import TodoFolderCreatePage from "./components/todolist/TodoFolderCreatePage";
 import TodoFolderAllPage from "./components/todolist/TodoFolderAllPage";
 import StatisticsPage from "./components/statistics/StatisticsPage";
+import BadgePage from "./components/badge/BadgePage";
 
 const App = () => {
     return (
@@ -37,6 +38,9 @@ const App = () => {
 
                         {/*통계 관련 */}
                         <Route path="/statistics" component={StatisticsPage} />
+
+                        {/*뱃지 관련*/}
+                        <Route path="/badges" component={BadgePage}/>
 
                     </Switch>
                 </div>
