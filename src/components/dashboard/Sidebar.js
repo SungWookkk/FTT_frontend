@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import "./css/Sidebar.css";
 import SidebarBackground from "./SidebarBackground";
 import DashboardIcon from "../../../src/Auth/css/img/Dashboard.svg";
@@ -13,6 +13,7 @@ import {useEffect, useState} from "react";
 const Sidebar = () => {
     const location = useLocation(); // 현재 활성화된 URL을 가져옴
     const [userName, setUserName] = useState();
+    const history = useHistory();
 
     useEffect(() => {
         // 로그인 시 localStorage에 저장한 username 불러오기
@@ -21,13 +22,21 @@ const Sidebar = () => {
             setUserName(storedUsername);
         }
     }, []);
+    const handleClick = () => {
+        history.push("/profile");
+    };
+
     return (
         <div className="sidebar-container">
-            <SidebarBackground />
+            <SidebarBackground/>
 
             {/* 사용자 정보 영역 */}
-            <div className="sidebar-user">
-                <img className="user-icon" src={userinfo} alt="User Icon" />
+            <div
+                className="sidebar-user"
+                onClick={handleClick}
+                style={{cursor: "pointer"}} // 클릭 가능하다는 표시
+            >
+                <img className="user-icon" src={userinfo} alt="User Icon"/>
                 <span className="user-name">{userName}의 공간</span>
             </div>
 
@@ -71,7 +80,7 @@ const Sidebar = () => {
                     </li>
                 </ul>
                 <SidebarFavorites/>
-                        {/* 도움말 & 공유 버튼 */}
+                {/* 도움말 & 공유 버튼 */}
                 <div className="help-section">
                     <button className="help-button">공유</button>
                     <div className="div-cu-simple-bar"/>

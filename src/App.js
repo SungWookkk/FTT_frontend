@@ -14,6 +14,7 @@ import TodoFolderCreatePage from "./components/todolist/TodoFolderCreatePage";
 import TodoFolderAllPage from "./components/todolist/TodoFolderAllPage";
 import StatisticsPage from "./components/statistics/StatisticsPage";
 import BadgePage from "./components/badge/BadgePage";
+import ProfilePage from "./components/profile/ProfilePage";
 
 const App = () => {
     return (
@@ -30,18 +31,20 @@ const App = () => {
                         <Route path="/dasboard" component={Dashboard}/>
 
                         {/*TodoList 관련*/}
-                        <Route exact path="/todo" component={TodoList} />
-                        <Route path="/todo/write" component={TodoListWritePage} />
-                        <Route path="/todo/list-all" component={TodoListAllListViewPage} />
-                        <Route path="/todo/folder/create" component={TodoFolderCreatePage} />
-                        <Route path="/todo/folder/all" component={TodoFolderAllPage} />
+                        <Route exact path="/todo" component={TodoList}/>
+                        <Route path="/todo/write" component={TodoListWritePage}/>
+                        <Route path="/todo/list-all" component={TodoListAllListViewPage}/>
+                        <Route path="/todo/folder/create" component={TodoFolderCreatePage}/>
+                        <Route path="/todo/folder/all" component={TodoFolderAllPage}/>
 
                         {/*통계 관련 */}
-                        <Route path="/statistics" component={StatisticsPage} />
+                        <Route path="/statistics" component={StatisticsPage}/>
 
                         {/*뱃지 관련*/}
                         <Route path="/badges" component={BadgePage}/>
 
+                        {/*프로필 관련*/}
+                        <Route path="/profile" component={ProfilePage}/>
                     </Switch>
                 </div>
             </Router>
