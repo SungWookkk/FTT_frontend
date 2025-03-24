@@ -1,16 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./css/DashboardContent.css";
-import badge from "../../Auth/css/img/badge_design/Badge_01.svg";
-import {useLocation} from "react-router-dom";
+// 프로필 이미지는 임시로 유지
+import profileBadge from "../../Auth/css/img/badge_design/Badge_01.svg";
+
+// 두 매핑 객체 import
+import { badgeImages, badgeNameMapping } from "../badge/badgeNameMapping";
+
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import CalendarSection from "./CalendarSection"; // 달력 컴포넌트
 
-import CalendarSection from "./CalendarSection"; // 달력 컴포넌트 임포트
 const DashboardContent = () => {
-
     const [username, setUsername] = useState("");
     const [allTasks, setAllTasks] = useState([]);
+    const [userBadges, setUserBadges] = useState([]); // 여러 뱃지 가능
     const location = useLocation();
-
 
     useEffect(() => {
         // 로그인 시 localStorage에 저장한 username 불러오기
@@ -23,7 +27,7 @@ const DashboardContent = () => {
     // ---------------------- 백엔드에서 Task 목록 가져오기 ----------------------
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId");
+        const userId = localStorage.getItem("userId"); // DB PK(숫자)여야 함
 
         axios
             .get("/api/tasks/my-tasks", {
@@ -34,8 +38,6 @@ const DashboardContent = () => {
                 const tasksData = Array.isArray(response.data)
                     ? response.data
                     : response.data.tasks;
-
-                // allTasks 상태에 저장
                 setAllTasks(tasksData);
             })
             .catch((error) => {
@@ -43,28 +45,48 @@ const DashboardContent = () => {
             });
     }, [location.pathname]);
 
+    // ---------------------- 백엔드에서 뱃지 목록 가져오기 ----------------------
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const storedUserId = localStorage.getItem("userId"); // DB PK(숫자)로 가정
+
+        if (storedUserId && token) {
+            axios
+                .get(`/api/user-badges/${storedUserId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((res) => {
+                    console.log("UserBadges => ", res.data);
+                    setUserBadges(res.data); // ex) [ {id:..., badge:{badgeName:'Badge_01',...}}, ...]
+                })
+                .catch((err) => {
+                    console.error("사용자 뱃지를 가져오는데 실패했습니다:", err);
+                });
+        }
+    }, []);
+
     // ---------------------- 마감 임박 & 남은 ToDo 분류 ----------------------
-    // 3일 이하 남은 것을 "마감 임박"으로 간주
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const threeDays = 3 * 24 * 60 * 60 * 1000;
 
-    // 마감 임박 (status !== 'DONE' + dueDate가 3일 이하 남음)
+    // 마감 임박
     const dueSoonTasks = allTasks.filter((task) => {
         if (task.status === "DONE") return false;
         if (!task.dueDate) return false;
         return new Date(task.dueDate) - now <= threeDays && new Date(task.dueDate) - now >= 0;
     });
 
-    // 남은 To Do (status !== 'DONE' 이면서, 마감임박 아닌 것)
+    // 남은 To Do
     const todoTasks = allTasks.filter((task) => {
         if (task.status === "DONE") return false;
-        // 이미 dueSoonTasks로 분류된 건 제외
         const isDueSoon = dueSoonTasks.some((ds) => ds.id === task.id);
         return !isDueSoon;
     });
 
-    // ---------------------- D-Day 계산 함수 ----------------------
+    // D-Day 계산
     const calculateDday = (dueDate) => {
         if (!dueDate) return "마감일 없음";
         const target = new Date(dueDate);
@@ -75,11 +97,19 @@ const DashboardContent = () => {
         return `D+${Math.abs(diff)}`;
     };
 
-    // **2개만 표시**하도록 slice(0, 2)
-    const dueSoonToShow = dueSoonTasks.slice(0, 2);
-    const todoToShow = todoTasks.slice(0, 2);
+    // ---------------------- 현재 뱃지 정보 ----------------------
+    // 가장 최근 or 첫 번째 뱃지를 표시한다고 가정
+    const currentUserBadge = userBadges.length > 0 ? userBadges[0] : null;
+    // DB에서 받은 "Badge_01", "Badge_02" ...
+    const currentBadgeName = currentUserBadge ? currentUserBadge.badge.badgeName : null;
+
+    // (1) 아이콘 이미지
+    const currentBadgeImg = currentBadgeName ? badgeImages[currentBadgeName] : null;
+    // (2) 표시할 문구
+    const displayName = currentBadgeName ? badgeNameMapping[currentBadgeName] : null;
 
 
+    // ---------------------- 렌더링 ----------------------
     return (
         <div className="dashboard-content">
             {/* 대시보드 헤더 */}
@@ -112,12 +142,28 @@ const DashboardContent = () => {
                 <div className="user-info-box">
                     <div className="info-header">
                         <div className="profile-container">
-                        <img className="profile-img" src={badge} alt="프로필 이미지"/>
-                        <span className="user-name"><strong>{username}</strong></span>
+                            {/* 프로필 이미지는 임의로 설정 (Badge_01.svg) */}
+                            <img className="profile-img" src={profileBadge} alt="프로필 이미지"/>
+                            <span className="user-name">
+                <strong>{username}</strong>
+              </span>
                         </div>
                         <span className="user-text">님의 현재 뱃지 등급은</span>
-                        <div className="badge-icon"></div>
-                        <span className="badge-text">입니다.</span>
+
+                        {/* 뱃지 아이콘 (백엔드에서 가져온 badgeName → 로컬 SVG) */}
+                        {/* 뱃지 아이콘 + 뱃지 문구 */}
+                        <div className="badge-icon" style={{ marginLeft: "8px" }}>
+                            {currentBadgeImg && (
+                                <img
+                                    src={currentBadgeImg}
+                                    alt={displayName}
+                                    style={{ width: "55px", height: "55px"}}
+                                />
+                            )}
+                        </div>
+                        <span className="badge-text">{displayName ? displayName : "뱃지 없음"}{" "}
+                            입니다.
+                        </span>
                     </div>
                     <div className="progress-container">
                         <div className="progress-bar">
@@ -130,7 +176,6 @@ const DashboardContent = () => {
                         </div>
                     </div>
                 </div>
-
 
                 {/* 우측 - 두 섹션 (마감 임박 / 남은 To Do) */}
                 <div className="task-sections1">
@@ -145,10 +190,10 @@ const DashboardContent = () => {
                             </div>
                         </div>
                         <div className="task-list">
-                            {dueSoonToShow.length === 0 ? (
+                            {dueSoonTasks.length === 0 ? (
                                 <p className="task-desc1">Task를 생성해 일정을 관리해봐요!</p>
                             ) : (
-                                dueSoonToShow.map((task) => (
+                                dueSoonTasks.slice(0, 2).map((task) => (
                                     <div className="task-card1" key={task.id}>
                                         <div className="task-content">
                                             <div className="task-name">{task.title}</div>
@@ -177,10 +222,10 @@ const DashboardContent = () => {
                             </div>
                         </div>
                         <div className="task-list">
-                            {todoToShow.length === 0 ? (
+                            {todoTasks.length === 0 ? (
                                 <p className="task-desc1">Task를 생성해 일정을 관리해봐요!</p>
                             ) : (
-                                todoToShow.map((task) => (
+                                todoTasks.slice(0, 2).map((task) => (
                                     <div className="task-card1" key={task.id}>
                                         <div className="task-content">
                                             <div className="task-name1">{task.title}</div>
@@ -199,12 +244,9 @@ const DashboardContent = () => {
                     </div>
                 </div>
 
-                {/*이 하위에 피그마 디자인 추출한 달력 넣을 것 */}
-                <CalendarSection/>
-
-
+                {/* 달력 컴포넌트 */}
+                <CalendarSection />
             </div>
-
         </div>
     );
 };
