@@ -1,8 +1,75 @@
 import "../profile/css/ProfileContentPage.css";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
+import axios from "axios";
+
+
 
 const ProfileContentPage = () => {
-    return (
+
+    //프로필 사진 첨부 기능
+    const fileInputRef = useRef(null);
+    const [profileImage, setProfileImage] = useState("img/rectangle.png");
+
+
+
+    // 페이지 로드 시 유저 정보 받아와서 profileImagePath 세팅
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const userId = localStorage.getItem("userId");
+                // 유저 정보 API (예: /api/users/{userId})에서 profileImagePath 가져오기
+                const res = await axios.get(`/api/users/${userId}`);
+                if (res.data.profileImagePath) {
+                    setProfileImage(res.data.profileImagePath);
+                }
+            } catch (err) {
+                console.error("Failed to fetch user info:", err);
+            }
+        };
+        fetchUserInfo();
+    }, []);
+
+
+    const handleUploadClick = () => {
+        // 숨겨진 input을 클릭하도록 트리거
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+
+    // 파일 선택 후 업로드
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            const userId = localStorage.getItem("userId");
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await axios.post(
+                `/api/users/${userId}/profile-image`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            console.log("Upload success:", response.data);
+
+            // 서버에서 새 userInfo(또는 profileImagePath)를 반환한다고 가정
+            if (response.data.profileImagePath) {
+                setProfileImage(response.data.profileImagePath);
+            }
+
+        } catch (err) {
+            console.error("Upload error:", err);
+        }
+    };
+
+        return (
         <div className="dashboard-content">
             {/* 대시보드 헤더 */}
             <div className="dashboard-header">
@@ -42,7 +109,17 @@ const ProfileContentPage = () => {
                         <div className="avatar">
                             <img className="avatar-img" src="img/rectangle.png" alt="Avatar"/>
                         </div>
-                        <button className="avatar-upload-btn">사진 등록</button>
+                        {/* 숨겨진 파일 인풋 */}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+                        <button className="avatar-upload-btn" onClick={handleUploadClick}>
+                            사진 등록
+                        </button>
                     </div>
                     {/* 하단 통계 영역 (4개 칸) */}
                     <div className="bottom-stats-container">
