@@ -8,12 +8,15 @@ import { badgeImages, badgeNameMapping } from "../badge/badgeNameMapping";
 
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import CalendarSection from "./CalendarSection"; // 달력 컴포넌트
+import CalendarSection from "./CalendarSection";// 달력 컴포넌트
+import {useAuth} from "../../Auth/AuthContext";
 
 const DashboardContent = () => {
+    const { auth } = useAuth();
     const [username, setUsername] = useState("");
     const [allTasks, setAllTasks] = useState([]);
     const [userBadges, setUserBadges] = useState([]); // 여러 뱃지 가능
+    const [profileImage, setProfileImage] = useState("");
     const location = useLocation();
 
     useEffect(() => {
@@ -23,6 +26,15 @@ const DashboardContent = () => {
             setUsername(storedUsername);
         }
     }, []);
+
+
+    // ----------------------프로필 이미지 불러오가 ------------------------
+    useEffect(() => {
+        if(auth){
+            setUsername(auth.userName);
+            setProfileImage(auth.profileImage);
+        }
+    }, [auth]);
 
     // ---------------------- 백엔드에서 Task 목록 가져오기 ----------------------
     useEffect(() => {
@@ -142,18 +154,21 @@ const DashboardContent = () => {
                 <div className="user-info-box">
                     <div className="info-header">
                         <div className="profile-container">
-                            {/* 프로필 이미지는 임의로 설정 (Badge_01.svg) */}
-                            <img className="profile-img" src={profileBadge} alt="프로필 이미지"/>
+                            <img
+                                className="profile-img"
+                                src={profileImage || profileBadge}
+                                alt="프로필 이미지"
+                            />
                             <span className="user-name">
-                <strong>{username}</strong>
-              </span>
+        <strong>{username || "닉네임 미등록"}</strong>
+      </span>
                         </div>
                         <span className="user-text">님의 현재 뱃지 등급은</span>
 
                         {/* 뱃지 아이콘 (백엔드에서 가져온 badgeName → 로컬 SVG) */}
                         {/* 뱃지 아이콘 + 뱃지 문구 */}
-                        <div className="badge-icon" style={{ marginLeft: "8px" }}>
-                            {currentBadgeImg && (
+                        <div className="badge-icon" style={{marginLeft: "8px"}}>
+                        {currentBadgeImg && (
                                 <img
                                     src={currentBadgeImg}
                                     alt={displayName}

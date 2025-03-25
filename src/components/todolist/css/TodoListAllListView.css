@@ -118,16 +118,16 @@
 
 /* 모달 콘텐츠 영역 */
 .modal-content {
+    animation: fadeIn .4s ease-in-out forwards;
     background-color: #fff;
-    width: 600px;
-    max-width: 90%;
     border-radius: 12px;
+    box-shadow: 0 4px 12px #00000026;
+    left: 350px;
+    max-width: 90%;
     padding: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     position: relative;
-    left: 90px;
-    top: 150px;
-    animation: fadeIn 0.4s ease-in-out forwards;
+    top: 450px;
+    width: 600px;
 }
 
 @media (max-width: 768px) {

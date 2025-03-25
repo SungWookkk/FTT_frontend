@@ -228,8 +228,8 @@ const ProfileContentPage = () => {
 
             {/* 한 줄 소개 수정 모달 */}
             {showIntroModal && (
-                <div className="modal-overlay" onClick={closeIntroModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-overlay1" onClick={closeIntroModal}>
+                    <div className="modal-content1" onClick={(e) => e.stopPropagation()}>
                         <h2>한 줄 소개 수정</h2>
                         <textarea
                             value={editIntro}
