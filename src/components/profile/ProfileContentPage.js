@@ -1,6 +1,7 @@
 import "../profile/css/ProfileContentPage.css";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import ProfileCommunity from "./ProfileCommunity";
 
 const ProfileContentPage = () => {
     const fileInputRef = useRef(null);
@@ -62,15 +63,11 @@ const ProfileContentPage = () => {
             const formData = new FormData();
             formData.append("file", file);
 
-            const response = await axios.post(
-                `/api/users/${userId}/profile-image`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+            const response = await axios.post(`/api/users/${userId}/profile-image`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             console.log("Upload success:", response.data);
             if (response.data.profile_image) {
                 setProfileImage(response.data.profile_image);
@@ -144,86 +141,88 @@ const ProfileContentPage = () => {
                     <span className="highlight-text">프로필 사진</span>
                     <span className="normal-text"> 및 </span>
                     <span className="highlight-text">연락처</span>
-                    <span className="normal-text">
-            {" "}
-                        등의 정보를 최신 상태로 업데이트해 보세요!
-          </span>
+                    <span className="normal-text"> 등의 정보를 최신 상태로 업데이트해 보세요!</span>
                 </p>
             </div>
 
-            {/* 프로필 정보 영역 */}
+            {/* 레이아웃 컨테이너 */}
             <div className="container">
-                <div className="profile-card">
-                    {/* 프로필 이미지 */}
-                    <div className="avatar-container">
-                        <div className="avatar">
-                            <img className="avatar-img" src={profileImage} alt="Avatar" />
+                {/* ------ 왼쪽 열 (프로필 카드 + 커뮤니티 목록) ------ */}
+                <div className="profile-left-column">
+                    {/* 프로필 카드 */}
+                    <div className="profile-card">
+                        {/* 프로필 이미지 */}
+                        <div className="avatar-container">
+                            <div className="avatar">
+                                <img className="avatar-img" src={profileImage} alt="Avatar" />
+                            </div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: "none" }}
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                            {/* 사진 등록 버튼 (본인만) */}
+                            {isOwner && (
+                                <button className="avatar-upload-btn" onClick={handleUploadClick}>
+                                    사진 등록
+                                </button>
+                            )}
                         </div>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: "none" }}
-                            accept="image/*"
-                            onChange={handleFileChange}
-                        />
-                        {/* 사진 등록 버튼 (본인만) */}
-                        {isOwner && (
-                            <button className="avatar-upload-btn" onClick={handleUploadClick}>
-                                사진 등록
-                            </button>
-                        )}
+
+                        {/* 예시: Top rated / job-success / favorite 등 */}
+                        <div className="top-rated">Top rated</div>
+                        <div className="job-success">79% 완료율</div>
+                        <div className="favorite">짱구가 좋아</div>
+
+                        {/* 한 줄 자기소개 */}
+                        <p className="introduction">
+                            {introduction || "한 줄 자기소개가 없습니다."}
+                            {isOwner && (
+                                <button className="edit-icon-btn" onClick={openIntroModal}>
+                                    ✏️
+                                </button>
+                            )}
+                        </p>
+
+                        {/* 소개 */}
+                        <div className="overview">
+                            소개
+                            {isOwner && (
+                                <button className="edit-icon-btn" onClick={openDescModal}>
+                                    ✏️
+                                </button>
+                            )}
+                        </div>
+                        <p className="description">{description || "소개 내용이 없습니다."}</p>
+
+                        {/* 하단 통계 영역 (4개 칸) */}
+                        <div className="bottom-stats-container">
+                            <div className="stat-box">
+                                <div className="stat-value">1542</div>
+                                <div className="stat-label">생성한 작업 수</div>
+                            </div>
+                            <div className="stat-box">
+                                <div className="stat-value">1350</div>
+                                <div className="stat-label">완료한 작업 수</div>
+                            </div>
+                            <div className="stat-box">
+                                <div className="stat-value">182</div>
+                                <div className="stat-label">실패한 작업 수</div>
+                            </div>
+                            <div className="stat-box">
+                                <div className="stat-value">2849위</div>
+                                <div className="stat-label">작업에 따른 사용자 랭킹</div>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* 예시: Top rated / job-success / favorite 등 */}
-                    <div className="top-rated">Top rated</div>
-                    <div className="job-success">79% 완료율</div>
-                    <div className="favorite">짱구가 좋아</div>
-
-                    {/* 한 줄 자기소개 */}
-                    <p className="introduction">
-                        {introduction || "한 줄 자기소개가 없습니다."}
-                        {isOwner && (
-                            <button className="edit-icon-btn" onClick={openIntroModal}>
-                                ✏️
-                            </button>
-                        )}
-                    </p>
-
-                    {/* 소개 */}
-                    <div className="overview">
-                        소개
-                        {isOwner && (
-                            <button className="edit-icon-btn" onClick={openDescModal}>
-                                ✏️
-                            </button>
-                        )}
-                    </div>
-                    <p className="description">
-                        {description || "소개 내용이 없습니다."}
-                    </p>
-
-                    {/* 하단 통계 영역 (4개 칸) */}
-                    <div className="bottom-stats-container">
-                        <div className="stat-box">
-                            <div className="stat-value">1542</div>
-                            <div className="stat-label">생성한 작업 수</div>
-                        </div>
-                        <div className="stat-box">
-                            <div className="stat-value">1350</div>
-                            <div className="stat-label">완료한 작업 수</div>
-                        </div>
-                        <div className="stat-box">
-                            <div className="stat-value">182</div>
-                            <div className="stat-label">실패한 작업 수</div>
-                        </div>
-                        <div className="stat-box">
-                            <div className="stat-value">2849위</div>
-                            <div className="stat-label">작업에 따른 사용자 랭킹</div>
-                        </div>
-                    </div>
+                    {/* 커뮤니티 게시글 목록 (프로필 카드 하단) */}
+                    <ProfileCommunity />
                 </div>
 
-                {/* 구분선 */}
+                {/* ------ 가운데 세로 구분선 ------ */}
                 <div className="vertical-divider"></div>
             </div>
 

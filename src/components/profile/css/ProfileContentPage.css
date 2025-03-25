@@ -13,7 +13,7 @@
     background-color: #ffffff;
     border: 1px solid #dee1e6;
     width: 792px;
-    height: 378px;
+    height: 328px;
     position: relative;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -36,7 +36,7 @@
 .description {
     position: absolute;
     width: 736px;
-    top: 223px;
+    top: 203px;
     left: 28px;
     font-family: "Inter-Regular", Helvetica;
     font-weight: 400;
@@ -51,7 +51,7 @@
 /* Overview 텍스트 */
 .overview {
     position: absolute;
-    top: 191px;
+    top: 165px;
     left: 28px;
     font-family: "Archivo-Bold", Helvetica;
     font-weight: 700;
