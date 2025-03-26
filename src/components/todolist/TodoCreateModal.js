@@ -105,6 +105,28 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
 
     // Task 저장: 백엔드와 통신
     const handleSave = () => {
+        // --------------------
+        //  유효성 검사 추가
+        // --------------------
+        // 시작일, 마감일이 모두 설정된 경우
+        if (startDate && dueDate) {
+            // 1) 시작일 > 마감일인 경우
+            if (startDate > dueDate) {
+                alert("시작일이 마감일보다 뒤일 수 없습니다.");
+                return;
+            }
+        }
+        //  마감일이 이미 지난 경우 (사용자가 '오늘 이전' 날짜를 마감일로 설정)
+        if (dueDate) {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const due = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+            if (due < now) {
+                alert("이미 지난 날짜는 마감일로 설정할 수 없습니다.");
+                return;
+            }
+        }
+
         // 1) 콘솔 디버깅
         console.log("작업 이름:", taskName);
         console.log("작업 내용:", content);

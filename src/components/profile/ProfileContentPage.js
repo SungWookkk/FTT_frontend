@@ -2,8 +2,10 @@ import "../profile/css/ProfileContentPage.css";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ProfileCommunity from "./ProfileCommunity";
+import { useAuth } from "../../Auth/AuthContext";
 
 const ProfileContentPage = () => {
+    const { auth, setAuth } = useAuth();
     const fileInputRef = useRef(null);
     const [profileImage, setProfileImage] = useState("");
 
@@ -22,6 +24,15 @@ const ProfileContentPage = () => {
     // 현재 로그인된 유저 ID & 페이지 유저 ID
     const userId = localStorage.getItem("userId");
     const [profileUserId, setProfileUserId] = useState(null);
+
+
+    // ---------------------- auth 사용을 위한 useEffect ----------------------
+    useEffect(() => {
+        if (auth) {
+            console.log("사용자 ", auth);
+        }
+    }, [auth]);
+    // ----------------------------------------------------------------------
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -44,7 +55,7 @@ const ProfileContentPage = () => {
                 // 이 프로필의 주인 (PK)
                 setProfileUserId(res.data.id);
             } catch (err) {
-                console.error("Failed to fetch user info:", err);
+                console.error("사용자 정보를 찾을수 없습니다", err);
             }
         };
         fetchUserInfo();
@@ -68,12 +79,19 @@ const ProfileContentPage = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log("Upload success:", response.data);
             if (response.data.profile_image) {
+                // 1) 로컬 state 업데이트
                 setProfileImage(response.data.profile_image);
+                // 2) localStorage에 반영
+                localStorage.setItem("profileImage", response.data.profile_image);
+                // 3) AuthContext의 profileImage도 갱신
+                setAuth((prev) => ({
+                    ...prev,
+                    profileImage: response.data.profile_image,
+                }));
             }
         } catch (err) {
-            console.error("Upload error:", err);
+            console.error("업로드 애러 ", err);
         }
     };
 
@@ -141,7 +159,10 @@ const ProfileContentPage = () => {
                     <span className="highlight-text">프로필 사진</span>
                     <span className="normal-text"> 및 </span>
                     <span className="highlight-text">연락처</span>
-                    <span className="normal-text"> 등의 정보를 최신 상태로 업데이트해 보세요!</span>
+                    <span className="normal-text">
+                        {" "}
+                        등의 정보를 최신 상태로 업데이트해 보세요!
+                    </span>
                 </p>
             </div>
 
