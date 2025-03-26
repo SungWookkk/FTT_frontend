@@ -58,6 +58,13 @@ function isDateInRange(dateStr, startStr, endStr) {
     const e = new Date(endStr);
     return date >= s && date <= e;
 }
+// 로컬 기준 "YYYY-MM-DD" 문자열 반환 함수
+function getLocalDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
 function CalendarSection() {
     const today = new Date();
@@ -72,7 +79,7 @@ function CalendarSection() {
     // "Task 상세" 모달에서 보여줄 단일 Task
     const [selectedTaskDetail, setSelectedTaskDetail] = useState(null);
 
-    const todayISO = today.toISOString().slice(0, 10);
+    const todayLocalStr = getLocalDateString(today);
 
     // 백엔드 호출
     useEffect(() => {
@@ -92,7 +99,7 @@ function CalendarSection() {
     }, []);
 
     /** 오늘 일정 (오늘 날짜가 startDate~dueDate 범위 안에 있는지) */
-    const todayTasks = tasks.filter((t) => isDateInRange(todayISO, t.startDate, t.dueDate));
+    const todayTasks = tasks.filter((t) => isDateInRange(todayLocalStr, t.startDate, t.dueDate));
 
     /** 이전/다음/오늘 버튼 */
     const handlePrevMonth = () => {
@@ -140,7 +147,7 @@ function CalendarSection() {
     /** 특정 날짜의 Task 목록 */
     const getTasksForDate = (dateObj) => {
         if (!dateObj) return [];
-        const isoStr = dateObj.toISOString().slice(0, 10);
+        const isoStr = getLocalDateString(dateObj);
         return tasks.filter((t) => isDateInRange(isoStr, t.startDate, t.dueDate));
     };
 
@@ -198,9 +205,10 @@ function CalendarSection() {
                             // 이전달 공백
                             return <div key={idx} className="date-cell empty"></div>;
                         }
-                        const isoStr = dateObj.toISOString().slice(0, 10);
+                        const isoStr = getLocalDateString(dateObj);
                         const dayNum = dateObj.getDate();
-                        const isToday = isoStr === todayISO;
+                        const isToday = isoStr === todayLocalStr;
+
 
                         const dayTasks = getTasksForDate(dateObj);
                         const tasksToShow = dayTasks.slice(0, MAX_TASKS_PER_DAY);

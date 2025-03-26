@@ -33,7 +33,7 @@ const quillFormats = [
 const TodoDrawerWithPreview = () => {
     // ====== 입력 상태 ======
     const [taskName, setTaskName] = useState("");
-    const [content, setContent] = useState("<p>작업 내용을 입력하세요...</p>");
+    const [content, setContent] = useState("");
     const [priority, setPriority] = useState("보통");
     const [dueDate, setDueDate] = useState(null);
     const [daysLeft, setDaysLeft] = useState(null);
