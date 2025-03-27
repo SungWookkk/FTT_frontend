@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ProfileCommunity from "./ProfileCommunity";
 import { useAuth } from "../../Auth/AuthContext";
+import BadgeTestPanel from "../badge/BadgeTestPanel";
 
 const ProfileContentPage = () => {
     const { auth, setAuth } = useAuth();
@@ -292,6 +293,7 @@ const ProfileContentPage = () => {
                     </div>
                 </div>
             )}
+            <BadgeTestPanel/>
         </div>
     );
 };
