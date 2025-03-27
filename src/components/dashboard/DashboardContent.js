@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./css/DashboardContent.css";
 // 프로필 이미지는 임시로 유지
-import profileBadge from "../../Auth/css/img/badge_design/Badge_01.svg";
-
+import defaultUser from "../../Auth/css/img/default-user.svg";
 // 두 매핑 객체 import
 import { badgeImages, badgeNameMapping } from "../badge/badgeNameMapping";
 
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import CalendarSection from "./CalendarSection";// 달력 컴포넌트
-import {useAuth} from "../../Auth/AuthContext";
+import CalendarSection from "./CalendarSection"; // 달력 컴포넌트
+import { useAuth } from "../../Auth/AuthContext";
 
 const DashboardContent = () => {
     const { auth } = useAuth();
@@ -18,6 +17,7 @@ const DashboardContent = () => {
     const [userBadges, setUserBadges] = useState([]); // 여러 뱃지 가능
     const [profileImage, setProfileImage] = useState("");
     const location = useLocation();
+    const [allBadges, setAllBadges] = useState([]);
 
     useEffect(() => {
         // 로그인 시 localStorage에 저장한 username 불러오기
@@ -27,14 +27,24 @@ const DashboardContent = () => {
         }
     }, []);
 
-
-    // ----------------------프로필 이미지 불러오가 ------------------------
+    // ---------------------- 프로필 이미지 불러오기 ------------------------
     useEffect(() => {
-        if(auth){
+        if (auth) {
             setUsername(auth.userName);
             setProfileImage(auth.profileImage);
         }
     }, [auth]);
+
+    // ---------------------- 전체 뱃지 목록 API 호출 ------------------------
+    useEffect(() => {
+        axios
+            .get("/api/badges")
+            .then((res) => {
+                setAllBadges(res.data);
+                console.log(allBadges)
+            })
+            .catch((err) => console.error(err));
+    }, [allBadges]);
 
     // ---------------------- 백엔드에서 Task 목록 가져오기 ----------------------
     useEffect(() => {
@@ -71,7 +81,7 @@ const DashboardContent = () => {
                 })
                 .then((res) => {
                     console.log("UserBadges => ", res.data);
-                    setUserBadges(res.data); // ex) [ {id:..., badge:{badgeName:'Badge_01',...}}, ...]
+                    setUserBadges(res.data);
                 })
                 .catch((err) => {
                     console.error("사용자 뱃지를 가져오는데 실패했습니다:", err);
@@ -109,15 +119,26 @@ const DashboardContent = () => {
         return `D+${Math.abs(diff)}`;
     };
 
-    // ---------------------- 현재 뱃지 정보 ----------------------
-    // 가장 최근 or 첫 번째 뱃지를 표시한다고 가정
-    const currentUserBadge = userBadges.length > 0 ? userBadges[0] : null;
-    // DB에서 받은 "Badge_01", "Badge_02" ...
-    const currentBadgeName = currentUserBadge ? currentUserBadge.badge.badgeName : null;
+    // ---------------------------
+    // 사용자 뱃지 정렬 및 현재 뱃지 결정
+    // ---------------------------
+    const sortedUserBadges = [...userBadges].sort((a, b) => {
+        const tA = a.badge?.completionThreshold ?? 0;
+        const tB = b.badge?.completionThreshold ?? 0;
+        return tB - tA;
+    });
+    const highestUserBadge = sortedUserBadges[0] || null;
 
-    // (1) 아이콘 이미지
+    // auth.activeBadge는 badge 객체여야 함
+    // 만약 auth.activeBadge가 존재하지만 badgeName이 없다면 무효로 처리
+    const activeBadgeFromAuth =
+        auth && auth.activeBadge && auth.activeBadge.badgeName
+            ? auth.activeBadge
+            : null;
+    // currentBadge를 badge 객체로 통일: activeBadge가 없으면, highestUserBadge.badge를 사용
+    const currentBadge = activeBadgeFromAuth || (highestUserBadge ? highestUserBadge.badge : null);
+    const currentBadgeName = currentBadge ? currentBadge.badgeName : null;
     const currentBadgeImg = currentBadgeName ? badgeImages[currentBadgeName] : null;
-    // (2) 표시할 문구
     const displayName = currentBadgeName ? badgeNameMapping[currentBadgeName] : null;
 
 
@@ -156,29 +177,28 @@ const DashboardContent = () => {
                         <div className="profile-container">
                             <img
                                 className="profile-img"
-                                src={profileImage || profileBadge}
+                                src={profileImage || defaultUser}
                                 alt="프로필 이미지"
                             />
                             <span className="user-name">
-        <strong>{username || "닉네임 미등록"}</strong>
-      </span>
+                <strong>{username || "닉네임 미등록"}</strong>
+              </span>
                         </div>
                         <span className="user-text">님의 현재 뱃지 등급은</span>
 
                         {/* 뱃지 아이콘 (백엔드에서 가져온 badgeName → 로컬 SVG) */}
-                        {/* 뱃지 아이콘 + 뱃지 문구 */}
-                        <div className="badge-icon" style={{marginLeft: "8px"}}>
-                        {currentBadgeImg && (
+                        <div className="badge-icon" style={{ marginLeft: "8px" }}>
+                            {currentBadgeImg && (
                                 <img
                                     src={currentBadgeImg}
                                     alt={displayName}
-                                    style={{ width: "55px", height: "55px"}}
+                                    style={{ width: "55px", height: "55px" }}
                                 />
                             )}
                         </div>
-                        <span className="badge-text">{displayName ? displayName : "뱃지 없음"}{" "}
-                            입니다.
-                        </span>
+                        <span className="badge-text">
+              {displayName ? displayName : "뱃지 없음"} 입니다.
+            </span>
                     </div>
                     <div className="progress-container">
                         <div className="progress-bar">
