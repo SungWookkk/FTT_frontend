@@ -1,8 +1,3 @@
-/****************************************************************************
- * 아래 섹션(대시보드 전체 컨텐츠, 제목, 알림 배너) 코드는 "건드리지 말라"는 요청대로
- * 기존 코드 그대로 유지합니다.
- ****************************************************************************/
-
 /* 대시보드 전체 컨텐츠 스타일 */
 .dashboard-content {
     margin-left: 220px;
@@ -12,6 +7,7 @@
     box-sizing: border-box;
     border-left: 1px solid #e8eaed;
     overflow-y: auto;
+
 }
 
 /* 대시보드 제목 스타일 */
@@ -36,7 +32,6 @@
     box-sizing: border-box;
     width: 100%;
 }
-
 /* 알림 텍스트 스타일 */
 .alert-text {
     font-size: 13.7px;
@@ -59,83 +54,94 @@
     font-weight: 700;
 }
 
-
-/******************************************************************************
- * 아래부터는 "사용자 뱃지 박스" 및 "뱃지 가이드 섹션"을 개선한 코드
- ******************************************************************************/
-
-/* ====================== 사용자 뱃지 박스 ====================== */
-.user-badge-box {
-    /* 카드 형태 박스 */
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-
-    /* 중앙 정렬 & 폭 제한 */
-    max-width: 600px;
-    margin: 40px auto 0 auto;
-    padding: 24px;
-
-    /* 내용 정렬 */
+/* 배지 페이지 전체 컨테이너 */
+.badge-content-container {
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
 }
 
-/* 사용자 뱃지 프로필 */
-.user-badge-profile {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 가운데 배치 (원하면 left로 조정) */
-    gap: 16px;
-}
-
-/* 뱃지 디스플레이: 이미지 + 정보 */
+/* 가장 높은 뱃지 표시 영역 (이미지 + 텍스트) */
 .badge-display {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
 }
 
-/* 뱃지 이미지 (사용자 현재 뱃지) */
 .badge-image {
-    width: 120px;
-    height: 120px;
+    height: 150px;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    background-color: #fff;
+    width: 150px;
 }
 
-/* 뱃지 정보 (텍스트) */
 .badge-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    justify-content: center;
+    position: relative;
+    top: -20px;
     font-weight: 700;
 }
 
-/* 현재 뱃지 문구 */
 .badge-info h2 {
-    margin: 0;
-    font-size: 1.2rem;
+    margin: 0 0 8px;
+    font-size: 1.4rem;
     color: #333;
-    font-weight: 700;
 }
 
 .badge-name {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
     color: #636ae8;
 }
 
 .no-badge {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #999;
+}
+
+/* 다른 뱃지 목록 섹션 */
+.all-badges-section {
+    margin-top: 20px;
+}
+
+.all-badges-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* 뱃지 목록 (가로 그리드) */
+.badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 각 뱃지 아이템 */
+.badge-list-item {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
 }
 
-/* 수정 아이콘 버튼 (연필) */
+.badge-list-image {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.badge-list-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 수정 아이콘 버튼 */
 .edit-icon-btn {
     background: none;
     border: none;
@@ -148,92 +154,309 @@
     color: #4f5762;
 }
 
-/* ====================== 뱃지 가이드 섹션 ====================== */
-.badge-guide-section {
-    /* 카드 형태 박스 */
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+/* 아직 획득하지 않은 뱃지 -> 반투명 */
+.not-earned {
+    opacity: 0.4;
+}
 
-    /* 중앙 정렬 & 폭 제한 */
-    max-width: 800px;
-    margin: 24px auto 40px auto;
+/* 뱃지 선택 모달 */
+.badge-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.badge-modal-content {
+    background: #fff;
     padding: 24px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+}
+.badge-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.badge-modal-header h2 {
+    margin: 0;
+}
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.badge-modal-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+}
+.badge-modal-item {
+    width: 80px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.badge-modal-item:hover {
+    transform: scale(1.05);
+}
+.badge-modal-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
 
-    /* 내용 정렬 */
+/* ========== [user-badge-box] 새 스타일 ========== */
+.user-badge-box {
+    background: linear-gradient(135deg, #ffffff 0%, #fdfdff 100%);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: relative;
+    top: 20px;
+    margin: 20px auto;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding: 24px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 뱃지 가이드 헤더 */
-.badge-guide-header {
-    text-align: center;
+/* 호버 효과: 살짝 위로 올라가고 그림자 강화 */
+.user-badge-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-.badge-guide-header h2 {
-    font-size: 1.4rem;
-    margin: 0;
-    font-weight: 700;
-    color: #2a2e34;
+
+/* 사용자 뱃지 프로필 (왼쪽 상단) */
+.user-badge-profile {
 }
 
-.badge-guide-header p {
-    margin: 4px 0 0;
-    font-size: 0.95rem;
-    color: #555;
+/* 전체 뱃지 목록 타이틀 + 그리드 */
+.all-badges-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* 뱃지 가이드 목록 (4열 그리드) */
-.badge-guide-list {
+/* 2열 그리드 */
+.all-badges-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    /* 혹은 repeat(4, 1fr) 로 고정 4열 */
-    gap: 20px;
-    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
-/* 뱃지 가이드 각 아이템 (뱃지 카드) */
-.badge-guide-item {
+/* 뱃지 리스트 아이템 (기존 스타일과 병합 가능) */
+.badge-list-item {
     background-color: #f2f1fe;
     border-radius: 8px;
     padding: 16px;
-    width: 150px;
     text-align: center;
-
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.badge-guide-item:hover {
+.badge-list-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* 가이드 뱃지 이미지 */
+/* 이미지는 기존 스타일 재사용 */
+.badge-list-image {
+    border-radius: 8px;
+    height: 150px;
+    object-fit: contain;
+    width: 150px;
+}
+
+
+
+/* 가로 레이아웃 컨테이너 */
+.badge-guide-container {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ====== 2행 x 4열 그리드 ====== */
+.badge-guide-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4열 */
+    gap: 24px;
+    justify-items: center;
+}
+
+/* 뱃지 각각 */
+.badge-guide-badge {
+    position: relative;
+    cursor: pointer;
+}
+/* 개별 뱃지 아이템 박스 */
+.badge-guide-item {
+    text-align: center;
+}
+/* 그라디언트 배경을 넣을 원형 영역 */
+.badge-gradient {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* 뱃지 이미지 */
 .badge-guide-image {
     width: 60px;
     height: 60px;
     object-fit: contain;
-    margin-bottom: 12px;
 }
 
-/* 뱃지 이름 / 설명 */
+/* LV 표시 */
+.badge-level {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2a2e34;
+    margin-bottom: 4px;
+}
+
+/* 뱃지 이름 */
+.guide-badge-name {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.2;
+}
+/* 오른쪽 뱃지 영역 (가로 배치) */
+.badge-row {
+    background: #0000;
+    box-sizing: border-box;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    min-height: 220px;
+    padding: 20px;
+    width: 100%;
+    position: relative;
+    right: 70px;
+}
+/* 개별 뱃지 카드 */
+.badge-reflection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.badge-reflection-container:hover {
+    transform: translateY(-4px);
+}
+
+.badge-lv {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.badge-reflection-name {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+.badge-with-reflection {
+    position: relative;
+    width: 80px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 반사 이미지 */
+.badge-reflection {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transform: scaleY(-1);
+    opacity: 0.5;
+    margin-top: -65px;
+    z-index: 1;
+
+    /* 아래쪽이 서서히 사라지는 마스크 */
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+
+.badge-hover-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 1000;
+}
+
+/* 호버 시 툴팁 보이기 */
+.badge-reflection-container:hover .badge-hover-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+/* 마우스 오버 시 살짝 올라가는 효과 */
+.badge-reflection-container:hover {
+    transform: translateY(-4px);
+}
+
+/* 소유하지 않은 뱃지는 반투명 */
+.badge-reflection-container.not-owned {
+    opacity: 0.4;
+}
+
+/* 뱃지 툴팁 안의 이름/설명 스타일 */
 .guide-badge-name {
     font-weight: 700;
     color: #2a2e34;
     margin-bottom: 4px;
     font-size: 0.95rem;
 }
-
 .guide-badge-desc {
     font-size: 0.85rem;
     color: #666;
     line-height: 1.2;
 }
 
-
-/******************************************************************************
- * ========== 모달 (뱃지 선택) ==========
- ******************************************************************************/
+/* 모달 전체 오버레이 */
 .badge-modal-overlay {
     position: fixed;
     top: 0;
@@ -247,16 +470,15 @@
     z-index: 9999;
 }
 
+/* 모달 박스 */
 .badge-modal-content {
     background: #fff;
     padding: 24px;
-    border-radius: 12px;
-    width: 480px;
+    border-radius: 8px;
+    width: 500px;
     max-width: 90%;
     position: relative;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-
-    max-height: 80vh; /* 화면 넘어가는 경우 스크롤 */
+    max-height: 80vh;
     overflow-y: auto;
 }
 
@@ -269,9 +491,6 @@
 }
 .badge-modal-header h2 {
     margin: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #333;
 }
 .modal-close-btn {
     background: none;
@@ -280,15 +499,13 @@
     cursor: pointer;
 }
 
-/* 모달 내 뱃지 목록 (획득 / 미획득) */
+/* 모달 내 뱃지 목록 */
 .badge-modal-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 16px;
     margin-top: 12px;
 }
-
-/* 뱃지 모달 아이템 */
 .badge-modal-item {
     text-align: center;
     cursor: pointer;
@@ -297,17 +514,132 @@
 .badge-modal-item:hover {
     transform: scale(1.05);
 }
-
-/* 뱃지 이미지 */
 .badge-modal-image {
     width: 60px;
     height: 60px;
     object-fit: contain;
     margin-bottom: 4px;
-    border-radius: 4px;
 }
 
 /* 미획득 뱃지는 반투명 */
 .badge-modal-item.not-earned {
     opacity: 0.4;
+}
+
+.badge-page-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* [뱃지 가이드 타이틀 + 물음표 아이콘] 컨테이너 */
+.badge-guide-header {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    left: 110px;
+    position: absolute;
+    top: -20px;
+}
+
+/* 뱃지 가이드 제목 */
+.badge-guide-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+/* 물음표 아이콘 */
+.guide-tooltip-icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    background-color: #636ae8;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    line-height: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* 물음표 아이콘에 마우스 올렸을 때 표시될 툴팁 */
+.guide-tooltip-text {
+    position: absolute;
+    top: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 999;
+    pointer-events: none;
+}
+
+/* 호버 시 툴팁 표시 */
+.guide-tooltip-icon:hover .guide-tooltip-text {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.badge-row-container {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    right: 45px;
+}
+
+.section-header1 {
+    background: linear-gradient(
+            90deg,
+            #fafafa 25%,
+            #ffffff 50%,
+            #fafafa 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 2.5s infinite linear;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 10px 0;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+/* 호버 시 살짝 확대 */
+.section-header:hover {
+    transform: scale(1.02);
+}
+
+/* 내부 텍스트 스타일 */
+.section-header-text {
+    margin: 0;
+    font-size: 1rem;
+    color: #444;
+    font-weight: 600;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -400px 0;
+    }
+    100% {
+        background-position: 400px 0;
+    }
 }
