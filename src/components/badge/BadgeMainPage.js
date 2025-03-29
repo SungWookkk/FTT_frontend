@@ -110,7 +110,9 @@ const BadgeMainPage = () => {
         : [];
 
     // 모달 열기/닫기
-    const handleOpenModal = () => setShowModal(true);
+    const handleOpenModal = () =>
+        setShowModal(true);
+    console.log("open modal");
     const handleCloseModal = () => setShowModal(false);
 
     // 뱃지 선택
@@ -200,14 +202,14 @@ const BadgeMainPage = () => {
                                     alt={currentBadge.badge.badgeName}
                                 />
                                 <div className="badge-info">
-                                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                                        <h2 style={{margin: 0}}>현재 뱃지의 등급은</h2>
+                                    <h2 className="badge-title">
+                                        현재 뱃지의 등급은
                                         <button className="edit-icon-btn" onClick={handleOpenModal}>
                                             ✏️
                                         </button>
-                                    </div>
+                                    </h2>
                                     <p className="badge-name">{currentBadge.badge.badgeName}</p>
-                                    <p> 입니다.</p>
+                                    <p className="badge-desc">입니다.</p>
                                 </div>
                             </div>
                         ) : (
@@ -242,8 +244,9 @@ const BadgeMainPage = () => {
                             return (
                                 <div
                                     key={badge.id}
-                                    style={{background: gradient}}
-                                    // 소유하지 않은 뱃지면 'not-owned' 클래스 추가
+                                    style={{
+                                        background: gradient,
+                                    }}
                                     className={`badge-reflection-container ${isOwned ? "" : "not-owned"}`}
                                 >
                                     {/* 달성 조건(설명)을 툴팁으로 보여주기 */}

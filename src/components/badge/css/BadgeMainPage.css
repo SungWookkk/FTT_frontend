@@ -62,39 +62,60 @@
     gap: 32px;
 }
 
-/* 가장 높은 뱃지 표시 영역 (이미지 + 텍스트) */
+/* 뱃지 표시 영역 */
 .badge-display {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 16px;
+    padding: 16px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    margin-top: 8px;
+    position: relative;
+    bottom: 20px;
 }
 
+/* 뱃지 이미지 */
 .badge-image {
-    height: 150px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
-    width: 150px;
 }
 
+/* 텍스트 정보 영역 */
 .badge-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    position: relative;
-    top: -20px;
-    font-weight: 700;
+    gap: 6px;
 }
 
-.badge-info h2 {
-    margin: 0 0 8px;
-    font-size: 1.4rem;
+/* "현재 뱃지의 등급은" 문구 */
+.badge-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
 }
 
+/* 뱃지 이름 */
 .badge-name {
+    margin: 0;
     font-size: 1.2rem;
     font-weight: 700;
     color: #636ae8;
 }
+
+/* "입니다." 문구 */
+.badge-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+}
+
 
 .no-badge {
     font-size: 1.1rem;
@@ -146,10 +167,13 @@
     background: none;
     border: none;
     color: #636ae8;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: color 0.2s ease;
+    padding: 0;
+    margin: 0;
 }
+
 .edit-icon-btn:hover {
     color: #4f5762;
 }
@@ -217,14 +241,13 @@
     margin-bottom: 4px;
 }
 
-/* ========== [user-badge-box] 새 스타일 ========== */
 .user-badge-box {
     background: linear-gradient(135deg, #ffffff 0%, #fdfdff 100%);
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     position: relative;
-    top: 20px;
+    top: 10px;
     margin: 20px auto;
     max-width: 500px;
     display: flex;
@@ -233,14 +256,24 @@
     padding: 24px;
     box-sizing: border-box;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInSlideUp 0.6s ease-out forwards;
 }
 
-/* 호버 효과: 살짝 위로 올라가고 그림자 강화 */
 .user-badge-box:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
+@keyframes fadeInSlideUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
 /* 사용자 뱃지 프로필 (왼쪽 상단) */
 .user-badge-profile {
@@ -367,9 +400,40 @@
     position: relative;
     cursor: pointer;
     transition: transform 0.2s ease;
+    opacity: 0;
+    animation: slideUpOwned 0.4s ease-out forwards;
 }
+
+/* 미소유 뱃지 -> 다른 애니메이션 */
+.badge-reflection-container.not-owned {
+    animation: slideUpNotOwned 0.4s ease-out forwards;
+}
+
+/* 마우스 호버 시 */
 .badge-reflection-container:hover {
     transform: translateY(-4px);
+}
+
+@keyframes slideUpOwned {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUpNotOwned {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
 }
 
 .badge-lv {
@@ -550,6 +614,8 @@
     font-weight: bold;
     color: #333;
     margin: 0;
+    left: -30px;
+    position: relative;
 }
 
 /* 물음표 아이콘 */
@@ -565,6 +631,8 @@
     line-height: 24px;
     cursor: pointer;
     user-select: none;
+    left: -30px
+
 }
 
 /* 물음표 아이콘에 마우스 올렸을 때 표시될 툴팁 */

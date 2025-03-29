@@ -41,15 +41,16 @@ const DashboardContent = () => {
             .get("/api/badges")
             .then((res) => {
                 setAllBadges(res.data);
-                console.log(allBadges)
+                console.log(allBadges);
             })
             .catch((err) => console.error(err));
-    }, [allBadges]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // 빈 배열
 
     // ---------------------- 백엔드에서 Task 목록 가져오기 ----------------------
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId"); // DB PK(숫자)여야 함
+        const userId = localStorage.getItem("userId");
 
         axios
             .get("/api/tasks/my-tasks", {
