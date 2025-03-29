@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { badgeImages, badgeNameMapping } from "../badge/badgeNameMapping";
+import "../badge/css/SelectBadgeModal.css";
 
 const SelectBadgeModal = ({ userBadges, unearnedBadges, onClose, onSelectBadge }) => {
     return ReactDOM.createPortal(
