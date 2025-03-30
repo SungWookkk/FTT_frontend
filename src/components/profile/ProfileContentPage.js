@@ -27,8 +27,16 @@ const ProfileContentPage = () => {
     // 현재 로그인된 유저 ID & 페이지 유저 ID
     const userId = localStorage.getItem("userId");
     const [profileUserId, setProfileUserId] = useState(null);
+    const [username, setUsername] = useState("");
 
-
+    //--------------------- 사용자 닉네임 가져오기 ---------------
+    useEffect(() => {
+        // 로그인 시 localStorage에 저장한 username 불러오기
+        const storedUsername = localStorage.getItem("userName");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
     // ---------------------- auth 사용을 위한 useEffect ----------------------
     useEffect(() => {
         if (auth) {
@@ -198,7 +206,7 @@ const ProfileContentPage = () => {
                         {/* 예시: Top rated / job-success / favorite 등 */}
                         <div className="top-rated">Top rated</div>
                         <div className="job-success">79% 완료율</div>
-                        <div className="favorite">짱구가 좋아</div>
+                        <div className="favorite">{username}</div>
 
                         {/* 한 줄 자기소개 */}
                         <p className="introduction">

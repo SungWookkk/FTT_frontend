@@ -4,8 +4,21 @@ import "../profile/css/ProfileCommunity.css";
 /**
  * 프로필 페이지 하단에, 사용자가 작성한 커뮤니티 게시글 목록을 보여주는 컴포넌트.
  */
+
+
 const ProfileCommunity = () => {
-    // 임시 데이터 (백엔드 연동 전 예시)
+    const [username, setUsername] = useState("");
+
+
+
+    useEffect(() => {
+        // 로그인 시 localStorage에 저장한 username 불러오기
+        const storedUsername = localStorage.getItem("userName");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
+
     // 'setPosts' 제거하고, 읽기 전용으로만 사용
     const [posts] = useState([
         {
@@ -46,7 +59,7 @@ const ProfileCommunity = () => {
 
     return (
         <div className="profile-community-container">
-            <h2 className="profile-community-title">님이 작성한 커뮤니티 게시글</h2>
+            <h2 className="profile-community-title">{username}님이 작성한 커뮤니티 게시글</h2>
 
             <div className="posts-grid">
                 {posts.map((post) => (

@@ -51,7 +51,7 @@
 /* Overview 텍스트 */
 .overview {
     position: absolute;
-    top: 165px;
+    top: 175px;
     left: 28px;
     font-family: "Archivo-Bold", Helvetica;
     font-weight: 700;
@@ -309,7 +309,7 @@
     height: 112px;
     border-radius: 56px;
     overflow: hidden;
-    position: relative; 
+    position: relative;
 }/* 아바타 내부 이미지 */
 .avatar-img {
     position: absolute;
@@ -332,7 +332,7 @@
     cursor: pointer;
     position: relative;
     left: 45px;
-    top: 25px;
+    top: 20px;
     transition: background-color 0.2s ease;
 }
 
