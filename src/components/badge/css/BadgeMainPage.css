@@ -342,7 +342,7 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     position: relative;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     opacity: 0;
     animation: slideUpOwned 0.4s ease-out forwards;
 }
@@ -352,9 +352,10 @@
     animation: slideUpNotOwned 0.4s ease-out forwards;
 }
 
-/* 마우스 호버 시 */
+/* 마우스 올렸을 때 애니메이션 효과 (scale + shadow) */
 .badge-reflection-container:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 @keyframes slideUpOwned {
