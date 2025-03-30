@@ -123,20 +123,17 @@ const DashboardContent = () => {
     // ---------------------------
     // 사용자 뱃지 정렬 및 현재 뱃지 결정
     // ---------------------------
+// auth.activeBadge가 존재하면 우선 표시, 없으면 userBadges 중 정렬된 첫 번째 사용
     const sortedUserBadges = [...userBadges].sort((a, b) => {
         const tA = a.badge?.completionThreshold ?? 0;
         const tB = b.badge?.completionThreshold ?? 0;
         return tB - tA;
     });
     const highestUserBadge = sortedUserBadges[0] || null;
-
-    // auth.activeBadge는 badge 객체여야 함
-    // 만약 auth.activeBadge가 존재하지만 badgeName이 없다면 무효로 처리
     const activeBadgeFromAuth =
         auth && auth.activeBadge && auth.activeBadge.badgeName
             ? auth.activeBadge
             : null;
-    // currentBadge를 badge 객체로 통일: activeBadge가 없으면, highestUserBadge.badge를 사용
     const currentBadge = activeBadgeFromAuth || (highestUserBadge ? highestUserBadge.badge : null);
     const currentBadgeName = currentBadge ? currentBadge.badgeName : null;
     const currentBadgeImg = currentBadgeName ? badgeImages[currentBadgeName] : null;

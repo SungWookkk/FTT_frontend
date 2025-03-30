@@ -25,7 +25,6 @@ const BadgeMainPage = () => {
         "갓생": "linear-gradient(135deg, #FBC2EB 0%, #A6C1EE 100%)"
     };
     // 뱃지별 "단색 컬러" 매핑  아래 border 등에 활용
-
     const colorMapping = {
         "뚜벅뚜벅 초심자": "#FEE140",
         "목표를 위한 노력가!": "#FBC2EB",
@@ -36,6 +35,22 @@ const BadgeMainPage = () => {
         "이정도면 미친 사람": "#FA709A",
         "갓생": "#FBC2EB"
     };
+
+    // 컴포넌트 마운트 시 localStorage에서 activeBadge 불러오기
+    useEffect(() => {
+        const storedActiveBadge = localStorage.getItem("activeBadge");
+        if (storedActiveBadge) {
+            setActiveBadge(JSON.parse(storedActiveBadge));
+        }
+    }, []);
+
+    //  activeBadge가 만약 userBadge 형식(즉, badge 객체가 아닌)이라면 badge 객체로 변환
+    useEffect(() => {
+        if (activeBadge && !activeBadge.badgeName && activeBadge.badge) {
+            setActiveBadge(activeBadge.badge);
+        }
+    }, [activeBadge]);
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         const storedUserId = localStorage.getItem("userId");
@@ -70,15 +85,15 @@ const BadgeMainPage = () => {
                 });
         }
     }, []);
-    //--------------------사용자 닉네임 가죠오기-------------
+
+    //--------------------사용자 닉네임 불러오기-------------
     useEffect(() => {
-        // 로그인 시 localStorage에 저장한 username 불러오기
         const storedUsername = localStorage.getItem("userName");
         if (storedUsername) {
             setUsername(storedUsername);
         }
     }, []);
-    //--------------------사용자 닉네임 가죠오기-------------
+    //--------------------사용자 닉네임 불러오기-------------
 
     useEffect(() => {
         console.log(auth);
@@ -94,11 +109,11 @@ const BadgeMainPage = () => {
     // 가장 높은 등급(첫 번째)
     const highestBadge = sortedUserBadges[0] || null;
 
-    // 현재 뱃지
-    const currentBadge = activeBadge || highestBadge;
-    const currentBadgeName = currentBadge ? currentBadge.badge.badgeName : null;
+    // 현재 뱃지 : activeBadge가 존재하면 그걸, 없으면 가장 높은 뱃지를 사용
+    // activeBadge는 badge 객체임을 가정 (위 useEffect에서 변환함)
+    const currentBadgeObject = activeBadge || (highestBadge ? highestBadge.badge : null);
+    const currentBadgeName = currentBadgeObject ? currentBadgeObject.badgeName : null;
     const currentBadgeImg = currentBadgeName ? badgeImages[currentBadgeName] : null;
-
 
     // "단색" 컬러 (없으면 #ccc 등 기본값)
     const currentBadgeColor = colorMapping[currentBadgeName] || "#ccc";
@@ -110,12 +125,11 @@ const BadgeMainPage = () => {
         : [];
 
     // 모달 열기/닫기
-    const handleOpenModal = () =>
-        setShowModal(true);
+    const handleOpenModal = () => setShowModal(true);
     console.log("open modal");
     const handleCloseModal = () => setShowModal(false);
 
-    // 뱃지 선택
+    // 뱃지 선택 (수정 모달 내에서 호출됨)
     const handleSelectBadge = (badge) => {
         const found = userBadges.find((ub) => ub.badge.id === badge.id);
         if (!found) {
@@ -141,7 +155,8 @@ const BadgeMainPage = () => {
                         ? sorted[0].badge
                         : null;
 
-                setActiveBadge(newlyActive || sorted[0] || null);
+                // 여기서 activeBadge는 badge 객체만 저장하도록 함
+                setActiveBadge(newActiveBadge);
                 updateActiveBadge(newActiveBadge);
                 localStorage.setItem("activeBadge", JSON.stringify(newActiveBadge));
                 setShowModal(false);
@@ -180,7 +195,6 @@ const BadgeMainPage = () => {
 
             {/* 좌우 배치 컨테이너 */}
             <div className="badge-page-container">
-
                 {/* 왼쪽: 현재(활성) 뱃지 영역 */}
                 <section className="user-badge-box">
                     <div
@@ -193,13 +207,12 @@ const BadgeMainPage = () => {
                         <p className="section-header-text">{username}의 프로필 뱃지</p>
                     </div>
                     <div className="user-badge-profile">
-
-                        {currentBadge ? (
+                        {currentBadgeObject ? (
                             <div className="badge-display">
                                 <img
                                     className="badge-image"
                                     src={currentBadgeImg}
-                                    alt={currentBadge.badge.badgeName}
+                                    alt={currentBadgeObject.badgeName}
                                 />
                                 <div className="badge-info">
                                     <h2 className="badge-title">
@@ -208,7 +221,7 @@ const BadgeMainPage = () => {
                                             ✏️
                                         </button>
                                     </h2>
-                                    <p className="badge-name">{currentBadge.badge.badgeName}</p>
+                                    <p className="badge-name">{currentBadgeObject.badgeName}</p>
                                     <p className="badge-desc">입니다.</p>
                                 </div>
                             </div>
@@ -237,10 +250,8 @@ const BadgeMainPage = () => {
                             const badgeImg = badgeImages[badge.badgeName];
                             const gradient = gradientMapping[badge.badgeName] || "#ddd";
                             const level = index + 1;
-
                             // 사용자 소유 여부 (true면 강조 / false면 반투명)
                             const isOwned = userBadgeIds.includes(badge.id);
-
                             return (
                                 <div
                                     key={badge.id}
@@ -251,10 +262,8 @@ const BadgeMainPage = () => {
                                 >
                                     {/* 달성 조건(설명)을 툴팁으로 보여주기 */}
                                     <div className="badge-hover-tooltip">{badge.description}</div>
-
                                     {/* LV 표시 */}
                                     <div className="badge-lv">LV{level}</div>
-
                                     {/* 뱃지 + 반사 */}
                                     <div className="badge-with-reflection">
                                         <img
@@ -268,7 +277,6 @@ const BadgeMainPage = () => {
                                             className="badge-reflection"
                                         />
                                     </div>
-
                                     {/* 뱃지 이름 */}
                                     <div className="badge-reflection-name">{badge.badgeName}</div>
                                 </div>
@@ -288,7 +296,7 @@ const BadgeMainPage = () => {
                 />
             )}
         </div>
-);
+    );
 };
 
 export default BadgeMainPage;
