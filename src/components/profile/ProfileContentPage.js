@@ -4,6 +4,8 @@ import axios from "axios";
 import ProfileCommunity from "./ProfileCommunity";
 import { useAuth } from "../../Auth/AuthContext";
 import BadgeTestPanel from "../badge/BadgeTestPanel";
+// 프로필 이미지는 임시로 유지
+import defaultUser from "../../Auth/css/img/default-user.svg";
 
 const ProfileContentPage = () => {
     const { auth, setAuth } = useAuth();
@@ -176,12 +178,12 @@ const ProfileContentPage = () => {
                         {/* 프로필 이미지 */}
                         <div className="avatar-container">
                             <div className="avatar">
-                                <img className="avatar-img" src={profileImage} alt="Avatar" />
+                                <img className="avatar-img" src={profileImage || defaultUser} alt=""/>
                             </div>
                             <input
                                 type="file"
                                 ref={fileInputRef}
-                                style={{ display: "none" }}
+                                style={{display: "none"}}
                                 accept="image/*"
                                 onChange={handleFileChange}
                             />

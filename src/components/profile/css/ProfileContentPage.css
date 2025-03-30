@@ -307,10 +307,9 @@
 .avatar {
     width: 112px;
     height: 112px;
-    background-color: #f8cedb;
     border-radius: 56px;
     overflow: hidden;
-    position: relative; /* 내부 이미지 절대 위치를 위해 relative 유지 */
+    position: relative; 
 }/* 아바타 내부 이미지 */
 .avatar-img {
     position: absolute;
