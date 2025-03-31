@@ -434,3 +434,8 @@
 .edit-icon-btn:hover {
     color: #4f5762;
 }
+/* 방명록 영역 (가로 전체) */
+.guestbook-section {
+    width: 100%;
+    /* Guestbook 자체에서 max-width를 갖도록 해도 됨 */
+}

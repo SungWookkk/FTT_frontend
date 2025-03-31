@@ -280,11 +280,11 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
                 {/* ------ 가운데 세로 구분선 ------ */}
                 <div className="vertical-divider"></div>
 
-                <div className="profile-right-column">
-                    <Guestbook ownerId={profileUserId} writerId={userId} isOwner={isOwner} />
+                <div className="guestbook-section">
+                    <Guestbook ownerId={profileUserId} writerId={userId} isOwner={isOwner}/>
                 </div>
-              <ProfileSearchComponent/>
-                </div>
+
+            </div>
 
             {/* 한 줄 소개 수정 모달 */}
             {showIntroModal && (
@@ -332,6 +332,7 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
                 </div>
             )}
             <BadgeTestPanel/>
+            <ProfileSearchComponent/>
         </div>
     );
 };
