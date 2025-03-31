@@ -43,8 +43,10 @@ const App = () => {
                         {/*뱃지 관련*/}
                         <Route path="/badges" component={BadgePage}/>
 
-                        {/*프로필 관련*/}
-                        <Route path="/profile" component={ProfilePage}/>
+
+                        {/* 프로필 관련: URL에 사용자 닉네임 포함 */}
+                        <Route exact path="/profile" component={ProfilePage} />
+                        <Route path="/profile/:username" component={ProfilePage}/>
                     </Switch>
                 </div>
             </Router>

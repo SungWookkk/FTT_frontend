@@ -1,13 +1,17 @@
 import "../profile/css/ProfileContentPage.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState} from "react";
 import axios from "axios";
 import ProfileCommunity from "./ProfileCommunity";
 import { useAuth } from "../../Auth/AuthContext";
 import BadgeTestPanel from "../badge/BadgeTestPanel";
 // 프로필 이미지는 임시로 유지
 import defaultUser from "../../Auth/css/img/default-user.svg";
+import Guestbook from "./Guestbook";
+import ProfileSearchComponent from "./ProfileSearchComponent";
+import {useParams} from "react-router-dom";
 
-const ProfileContentPage = () => {
+
+const ProfileContentPage = ({ ownerId, writerId }) => {
     const { auth, setAuth } = useAuth();
     const fileInputRef = useRef(null);
     const [profileImage, setProfileImage] = useState("");
@@ -29,6 +33,9 @@ const ProfileContentPage = () => {
     const [profileUserId, setProfileUserId] = useState(null);
     const [username, setUsername] = useState("");
 
+    // 라우트 파라미터에서 username 또는 ownerId를 추출
+    const { username: routeUsername, ownerId: routeOwnerId } = useParams();
+
     //--------------------- 사용자 닉네임 가져오기 ---------------
     useEffect(() => {
         // 로그인 시 localStorage에 저장한 username 불러오기
@@ -48,29 +55,44 @@ const ProfileContentPage = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                // userId로 백엔드에서 유저 정보 가져옴
-                const res = await axios.get(`/api/users/${userId}`);
+                let res;
+                // URL에 username 또는 ownerId가 있으면 해당 사용자를 조회
+                if (routeUsername) {
+                    res = await axios.get(`/api/users/by-username/${routeUsername}`);
+                    // 받아온 데이터로 상태 업데이트
+                    setProfileImage(res.data.profile_image || "");
+                    setIntroduction(res.data.introduction || "");
+                    setUsername(res.data.username || "");
+                    setDescription(res.data.description || "");
+                    setProfileUserId(res.data.id); // DB PK
+                } else if (routeOwnerId) {
+                    res = await axios.get(`/api/users/${routeOwnerId}`);
+                } else {
+                    // 기본: 로그인한 사용자의 정보를 조회
+                    res = await axios.get(`/api/users/${userId}`);
+                }
 
-                // 프로필 이미지
+                // 받아온 데이터로 상태 업데이트
                 if (res.data.profile_image) {
                     setProfileImage(res.data.profile_image);
                 }
-                // 한 줄 자기소개 & 소개
                 if (res.data.introduction) {
                     setIntroduction(res.data.introduction);
+                }
+                if (res.data.username) {
+                    setUsername(res.data.username);
                 }
                 if (res.data.description) {
                     setDescription(res.data.description);
                 }
-
-                // 이 프로필의 주인 (PK)
                 setProfileUserId(res.data.id);
             } catch (err) {
-                console.error("사용자 정보를 찾을수 없습니다", err);
+                console.error("사용자 정보를 찾을 수 없습니다", err);
             }
         };
         fetchUserInfo();
-    }, [userId]);
+    }, [userId, routeUsername, routeOwnerId]);
+
 
     // 파일 업로드
     const handleUploadClick = () => {
@@ -149,8 +171,9 @@ const ProfileContentPage = () => {
         }
     };
 
-    // 본인 프로필인지 여부
+    // 로그인한 사용자의 id와 프로필 페이지의 사용자 id를 비교
     const isOwner = parseInt(userId) === profileUserId;
+
 
     return (
         <div className="dashboard-content">
@@ -251,12 +274,17 @@ const ProfileContentPage = () => {
                     </div>
 
                     {/* 커뮤니티 게시글 목록 (프로필 카드 하단) */}
-                    <ProfileCommunity />
+                    <ProfileCommunity/>
                 </div>
 
                 {/* ------ 가운데 세로 구분선 ------ */}
                 <div className="vertical-divider"></div>
-            </div>
+
+                <div className="profile-right-column">
+                    <Guestbook ownerId={profileUserId} writerId={userId} isOwner={isOwner} />
+                </div>
+              <ProfileSearchComponent/>
+                </div>
 
             {/* 한 줄 소개 수정 모달 */}
             {showIntroModal && (

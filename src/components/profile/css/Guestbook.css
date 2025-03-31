@@ -1,0 +1,160 @@
+.guestbook-container {
+    background-color: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.guestbook-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #636ae8;
+    margin-bottom: 12px;
+}
+
+.guestbook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.guestbook-textarea {
+    min-height: 60px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: none;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.guestbook-submit-btn {
+    align-self: flex-end;
+    background-color: #636ae8;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+.guestbook-submit-btn:hover {
+    background-color: #4f57c7;
+}
+
+.guestbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guestbook-empty {
+    font-size: 0.95rem;
+    color: #999;
+    margin-top: 8px;
+}
+
+/* 개별 카드 */
+.guestbook-card {
+    background-color: #f2f1fe;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+}
+
+.guestbook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+.guestbook-writer {
+    font-weight: 600;
+    color: #333;
+}
+.guestbook-date {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.guestbook-content {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+/* 주인 댓글 */
+.guestbook-host-comment {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 8px;
+}
+.host-comment-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #636ae8;
+    margin-bottom: 4px;
+}
+.host-comment-content {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 4px;
+}
+.host-comment-date {
+    font-size: 0.75rem;
+    color: #888;
+    text-align: right;
+}
+
+/* 주인 댓글 작성 폼 */
+.guestbook-host-form {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.host-comment-textarea {
+    min-height: 50px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: none;
+    font-size: 0.9rem;
+}
+.host-comment-submit-btn {
+    align-self: flex-end;
+    background-color: #636ae8;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.host-comment-submit-btn:hover {
+    background-color: #4f57c7;
+}
+
+/* 댓글 달기 토글 버튼 */
+.host-comment-toggle-btn {
+    background: none;
+    border: 1px solid #636ae8;
+    border-radius: 6px;
+    color: #636ae8;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.host-comment-toggle-btn:hover {
+    background-color: #636ae8;
+    color: #fff;
+}
