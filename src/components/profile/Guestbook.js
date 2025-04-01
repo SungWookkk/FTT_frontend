@@ -5,35 +5,36 @@ import "../profile/css/Guestbook.css";
 function Guestbook({ ownerId, writerId, isOwner }) {
     const [entries, setEntries] = useState([]);
     const [newContent, setNewContent] = useState("");
-    const [isSecret, setIsSecret] = useState(false); // 비밀 글 체크박스
+    const [isSecret, setIsSecret] = useState(false);
     const [hostComment, setHostComment] = useState("");
     const [selectedEntryId, setSelectedEntryId] = useState(null);
 
-    // 모달 제어
+    // 모달, 정렬 옵션
     const [showAllModal, setShowAllModal] = useState(false);
-
-    // 정렬 옵션 (최신순/오래된순)
     const [sortOption, setSortOption] = useState("latest");
 
-    // 방명록 목록 불러오기
+    // 방명록 목록
     const fetchEntries = useCallback(async () => {
         try {
             if (!ownerId) return;
-            const res = await axios.get(`/api/guestbook/${ownerId}`);
+            // viewerId=writerId를 쿼리 파라미터로 넘긴다!
+            const res = await axios.get(`/api/guestbook/${ownerId}`, {
+                params: { viewerId: writerId },
+            });
             setEntries(res.data);
         } catch (err) {
             console.error("방명록 목록 불러오기 실패:", err);
         }
-    }, [ownerId]);
+    }, [ownerId, writerId]);
 
     useEffect(() => {
         fetchEntries();
     }, [fetchEntries]);
 
-    // 글자 수 카운트
+    // 글자 수
     const charCount = newContent.length;
 
-    // 방명록 작성 (글자수 제한 + 비밀글)
+    // 작성 (비밀글, 100자 제한)
     const handleAddEntry = async () => {
         if (charCount > 100) {
             alert("최대 100자까지 입력할 수 있습니다.");
@@ -60,7 +61,7 @@ function Guestbook({ ownerId, writerId, isOwner }) {
         }
     };
 
-    // 주인 댓글 작성 (글자수 제한)
+    // 주인 댓글 작성 (100자 제한)
     const handleAddHostComment = async (entryId) => {
         if (hostComment.length > 100) {
             alert("최대 100자까지 입력할 수 있습니다.");
@@ -83,11 +84,10 @@ function Guestbook({ ownerId, writerId, isOwner }) {
         }
     };
 
-    // 방명록 삭제 (빨간 휴지통 아이콘)
+    // 삭제
     const handleDeleteEntry = async (entryId) => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
         try {
-            // DELETE /api/guestbook/{entryId}?requesterId=...
             await axios.delete(`/api/guestbook/${entryId}`, {
                 params: { requesterId: writerId },
             });
@@ -98,13 +98,14 @@ function Guestbook({ ownerId, writerId, isOwner }) {
         }
     };
 
-    // 비밀글 표시 로직 (본인 or 프로필 주인만 내용 확인)
+    // 비밀글 표시 로직
     const getEntryContent = (entry) => {
         const isAuthor = parseInt(writerId) === entry.writer.id;
+        // isOwner: 프로필 주인
         if (entry.secret && !isAuthor && !isOwner) {
             return "비밀 글입니다.";
         }
-        return entry.content;
+        return entry.content; // 원본 내용
     };
 
     // 시간 포맷
@@ -140,27 +141,30 @@ function Guestbook({ ownerId, writerId, isOwner }) {
             {/* 작성 폼 (프로필 주인이 아닐 때만) */}
             {!isOwner && (
                 <div className="guestbook-form">
-                    <div className="guestbook-form-row">
-            <textarea
-                className="guestbook-textarea"
-                placeholder="방명록을 남겨보세요!"
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
-                maxLength={100}
-            />
-                        <div className="char-counter">{charCount}/100</div>
+                    {/* 1) 텍스트 영역 한 줄로 가로 100% */}
+                    <textarea
+                        className="guestbook-textarea"
+                        placeholder="방명록을 남겨보세요!"
+                        value={newContent}
+                        onChange={(e) => setNewContent(e.target.value)}
+                        maxLength={100}
+                    />
 
-                        <label className="secret-check-label">
-                            <input
-                                type="checkbox"
-                                checked={isSecret}
-                                onChange={(e) => setIsSecret(e.target.checked)}
-                            />
-                            비밀 글
-                        </label>
-                    </div>
+                    {/* 2) 아래 줄에 0/100, 비밀글 체크, 작성 버튼 */}
+                    <div className="guestbook-form-lower">
+                        <div className="guestbook-form-left">
+                            <span className="char-counter">{charCount}/100</span>
 
-                    <div className="guestbook-form-button-row">
+                            <label className="secret-check-label">
+                                <input
+                                    type="checkbox"
+                                    checked={isSecret}
+                                    onChange={(e) => setIsSecret(e.target.checked)}
+                                />
+                                비밀 글
+                            </label>
+                        </div>
+
                         <button className="guestbook-submit-btn" onClick={handleAddEntry}>
                             작성
                         </button>

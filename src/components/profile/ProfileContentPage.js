@@ -281,7 +281,7 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
                 <div className="vertical-divider"></div>
 
                 <div className="guestbook-section">
-                    <Guestbook ownerId={profileUserId} writerId={userId} isOwner={isOwner}/>
+                    <Guestbook ownerId={profileUserId} writerId={userId}  isOwner={parseInt(userId) === profileUserId}/>
                 </div>
 
             </div>
