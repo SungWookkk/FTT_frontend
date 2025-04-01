@@ -7,7 +7,7 @@ import StatisticsIcon from "../../../src/Auth/css/img/statistics.svg";
 import BadgeIcon from "../../../src/Auth/css/img/badge.svg";
 import CommunityIcon from "../../../src/Auth/css/img/community.svg";
 import plus from "../../../src/Auth/css/img/plus.svg";
-import userinfo from "../../../src/Auth/css/img/userinfo.svg";
+import userinfo from "../../../src/Auth/css/img/default-user.svg";
 import SidebarFavorites from "./SidebarFavorites";
 import {useEffect, useState} from "react";
 const Sidebar = () => {
