@@ -20,9 +20,9 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    margin-top: 140px;
-    position: absolute;
+    position: relative;
     width: 90%;
+    top: 5px;
 }
 
 .help-button, .share-button {

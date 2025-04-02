@@ -1,0 +1,186 @@
+import React, { useState } from "react";
+import "../team/css/TeamContentPage.css";
+import TeamDropdown from "./TeamDropdown";
+
+const TeamContentPage = () => {
+    const teamData = [
+        { id: 1, name: "공부팀 A", desc: "자격증 스터디를 위한 열정 넘치는 팀", category: "공부", status: "Active", members: 5 },
+        { id: 2, name: "운동팀 B", desc: "함께 운동하며 건강 챙기기", category: "운동", status: "Pending", members: 4 },
+        { id: 3, name: "AI 연구팀", desc: "인공지능 프로젝트 협업", category: "AI", status: "Active", members: 6 },
+        { id: 4, name: "코딩 고수들", desc: "코딩 문제 해결 & 알고리즘 스터디", category: "코딩", status: "Active", members: 8 },
+        { id: 5, name: "취업준비단", desc: "취업 정보 공유 & 면접 대비", category: "취업", status: "Pending", members: 3 },
+        { id: 6, name: "알바정보톡", desc: "파트타임 구직 & 꿀팁 교환", category: "알바", status: "Active", members: 2 },
+        { id: 7, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+    ];
+
+    // 현재 선택된 카테고리 (기본: 전체)
+    const [selectedCategory, setSelectedCategory] = useState("");
+
+    // 카테고리 버튼 클릭 시 해당 카테고리로 변경
+    const handleCategoryClick = (cat) => {
+        setSelectedCategory(cat);
+    };
+
+    // 필터링된 팀 목록
+    const filteredTeams =
+        selectedCategory === ""
+            ? teamData // 전체
+            : teamData.filter((team) => team.category === selectedCategory);
+
+    return (
+        <div className="dashboard-content">
+            {/* 상단 헤더 */}
+            <div className="dashboard-header">
+                <div className="dashboard-left">
+                    <span className="title-text">팀 공간</span>
+                    <TeamDropdown />
+                </div>
+                <div className="header-button-group">
+                    <button className="btn btn-create">팀 생성하기</button>
+                </div>
+            </div>
+
+            {/* 알림 배너 */}
+            <div className="alert-banner">
+                <p className="alert-text">
+                    <span className="highlight-text">팀</span>
+                    <span className="normal-text">은 공동의 목표를 위해 함께 </span>
+                    <span className="highlight-text">소통하고 협업</span>
+                    <span className="normal-text">
+            {" "}
+                        하는 공간입니다. 서로의 아이디어와 역량을 모아{" "}
+          </span>
+                    <span className="highlight-text">시너지를 발휘</span>
+                    <span className="normal-text">하며, 매일의 과제를 </span>
+                    <span className="highlight-text">함께 해결</span>
+                    <span className="normal-text">
+            {" "}
+                        해 보세요. 작지만 꾸준한 노력들이 모여{" "}
+          </span>
+                    <span className="highlight-text">팀의 성장</span>
+                    <span className="normal-text">을 이끌어냅니다!</span>
+                </p>
+            </div>
+            {/* 왼쪽과 오른쪽 영역을 감싸는 컨테이너 */}
+            <div className="content-wrapper">
+            {/* 왼쪽: 팀이 없는 사용자용 안내 영역*/}
+            <div className="no-team-section">
+                <div className="no-team-block bg-image">
+                    <h2>팀이 없으신가요?</h2>
+                    <p>팀에 참가해서 함께 목표를 이루어보세요!</p>
+                    <button className="no-team-btn">팀 찾기</button>
+                </div>
+                <div className="no-team-block bg-image1">
+                    <h2>팀 생성하기!</h2>
+                    <p>팀을 직접 만들어서 공통된 목표를 가진 유저들을 모아봐요!</p>
+                    <button className="no-team-btn">팀 만들기</button>
+                </div>
+            </div>
+
+            <div className="vertical-divider"></div>
+
+            {/* 오른쪽: 테이블 + FAQ/후기 */}
+            <div className="team-right-section">
+                {/* 추천 팀 (테이블) */}
+                <div className="team-table-header">
+                    <h3 className="team-table-title">추천 팀</h3>
+                    <span className="team-count">총 {filteredTeams.length}개 팀</span>
+                </div>
+
+                {/* 카테고리 버튼 그룹 */}
+                <div className="category-btn-group" style={{ marginBottom: "12px" }}>
+                    {["", "공부", "운동", "AI", "코딩", "취업", "알바"].map((cat) => (
+                        <button
+                            key={cat === "" ? "전체" : cat}
+                            className={`category-btn ${
+                                selectedCategory === cat ? "selected" : ""
+                            }`}
+                            onClick={() => handleCategoryClick(cat)}
+                        >
+                            {cat === "" ? "전체" : cat}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="team-table-container">
+                    <table className="team-table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>팀 이름</th>
+                            <th>설명</th>
+                            <th>상태</th>
+                            <th>멤버 수</th>
+                            <th>자세히</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredTeams.map((team, idx) => (
+                            <tr key={team.id}>
+                                <td>
+                                    {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                                </td>
+                                <td>{team.name}</td>
+                                <td>{team.desc}</td>
+                                <td>
+                    <span
+                        className={`status ${
+                            team.status.toLowerCase() === "active"
+                                ? "active"
+                                : "pending"
+                        }`}
+                    >
+                      {team.status}
+                    </span>
+                                </td>
+                                <td>{team.members}명</td>
+                                <td>
+                                    <button className="table-btn">보기</button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* FAQ & 사용자 후기 (카드) */}
+                <div className="faq-and-testimonials">
+                    {/* FAQ 카드 */}
+                    <div className="card-box faq">
+                        <h4>FAQ</h4>
+                        <ul>
+                            <li>
+                                <strong>Q:</strong> 팀 가입은 어떻게 하나요?
+                            </li>
+                            <li>
+                                <strong>A:</strong> 원하는 팀의 '팀 찾기' 버튼을 클릭하세요.
+                            </li>
+                            <li>
+                                <strong>Q:</strong> 팀 생성 후 관리 방법은?
+                            </li>
+                            <li>
+                                <strong>A:</strong> 생성된 팀의 대시보드에서 관리 가능합니다.
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 후기 카드 */}
+                    <div className="card-box testimonials">
+                        <h4>사용자 후기</h4>
+                        <div className="testimonial-card">
+                            <p>"팀 덕분에 프로젝트가 순조롭게 진행됐어요!"</p>
+                            <span>- 사용자 D</span>
+                        </div>
+                        <div className="testimonial-card">
+                            <p>"함께하는 힘이 큰 시너지를 만들어냈습니다."</p>
+                            <span>- 사용자 E</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    );
+};
+
+export default TeamContentPage;

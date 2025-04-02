@@ -93,24 +93,30 @@ const SidebarFavorites = () => {
                 {/* 작업 공간 제목 */}
                 <div className="sidebar-workspace-container">
                     <div className="team-list-title">팀 작업 공간</div>
-                    {/*팀 목록이나 추가 및 삭제 팀의 이름 멤버 관리 등 작업 하는 공간*/}
                     <Link
-                        to="/team-workspace/management"
-                        className={`team-list ${location.pathname === "/team-workspace/management" ? "active" : ""}`}
+                        to="/team"
+                        className={`team-list ${location.pathname === "/team" ? "active" : ""}`}
                     >
-                        내 팀 관리
+                        팀 공간
                     </Link>
-                    {/*팀에서 task를 작성하는 공간*/}
-                    <div className="team-list">팀 To Do List</div>
-                    {/*팀 내에 커뮤니티 공간으로 제작 예정*/}
+                    <div className="team-list">To Do List</div>
                     <Link
                         to="/team-workspace/community"
-                        className={`team-list ${location.pathname === "/team-workspace/community" ? "active" : ""}`}
+                        className={`team-list ${
+                            location.pathname === "/team-workspace/community" ? "active" : ""
+                        }`}
                     >
                         기록
                     </Link>
+                    <Link
+                        to="/team-workspace/management"
+                        className={`team-list ${
+                            location.pathname === "/team-workspace/management" ? "active" : ""
+                        }`}
+                    >
+                        내 팀 관리
+                    </Link>
                 </div>
-
             </div>
         </div>
     );

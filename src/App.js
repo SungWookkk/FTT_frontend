@@ -15,6 +15,7 @@ import TodoFolderAllPage from "./components/todolist/TodoFolderAllPage";
 import StatisticsPage from "./components/statistics/StatisticsPage";
 import BadgePage from "./components/badge/BadgePage";
 import ProfilePage from "./components/profile/ProfilePage";
+import TeamPage from "./components/team/TeamPage";
 
 const App = () => {
     return (
@@ -45,8 +46,12 @@ const App = () => {
 
 
                         {/* 프로필 관련: URL에 사용자 닉네임 포함 */}
-                        <Route exact path="/profile" component={ProfilePage} />
+                        <Route exact path="/profile" component={ProfilePage}/>
                         <Route path="/profile/:username" component={ProfilePage}/>
+
+                        {/*팀 관련*/}
+                        <Route path="/team" component={TeamPage}/>
+
                     </Switch>
                 </div>
             </Router>

@@ -1,0 +1,82 @@
+/* 최상위 컨테이너 */
+.team-dropdown-container {
+    position: relative;
+    display: inline-block;
+    left: 625px;
+}
+
+/* 드롭다운 라벨 (버튼) */
+.team-dropdown-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 라벨 호버 시 약간 강조 */
+.team-dropdown-label:hover {
+    background-color: #f4f4ff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 라벨 아이콘 (🎉) */
+.team-dropdown-icon {
+    font-size: 1.3rem;
+}
+
+/* 라벨 텍스트 */
+.team-dropdown-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 드롭다운 목록 (팝업) */
+.team-dropdown-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 160px;
+    padding: 4px 0;
+    z-index: 999;
+    animation: fadeIn 0.2s ease;
+}
+
+/* 목록 표시 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 목록 아이템 */
+.team-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+/* 목록 아이템 호버 */
+.team-dropdown-item:hover {
+    background-color: #f4f4ff;
+}
