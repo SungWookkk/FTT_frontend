@@ -2,7 +2,93 @@ import React, { useState } from "react";
 import "../team/css/TeamContentPage.css";
 import TeamDropdown from "./TeamDropdown";
 import TeamSearchModal from "./TeamSearchModal";
+import * as PropTypes from "prop-types";
 
+const TeamJoinRequestModal = ({ isOpen, onClose, team }) => {
+    const [nickname, setNickname] = useState("");
+    const [reason, setReason] = useState("");
+    const [goal, setGoal] = useState("");
+
+    // 모달이 열릴 때마다 폼 초기화 (원한다면)
+    // 여기서는 team이 바뀔 때마다 초기화
+    React.useEffect(() => {
+        if (isOpen && team) {
+            setNickname("");
+            setReason("");
+            setGoal("");
+        }
+    }, [isOpen, team]);
+
+    if (!isOpen || !team) return null; // 모달이 닫혀있거나 팀 정보가 없으면 렌더링하지 않음
+
+    const handleJoin = () => {
+        // 가입 신청 로직 (현재는 콘솔 출력/alert 등)
+        console.log("가입 신청 데이터:", {
+            teamId: team.id,
+            nickname,
+            reason,
+            goal,
+        });
+        alert(`${team.name} 팀 가입 신청!`);
+
+        // 모달 닫기
+        onClose();
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="join-modal-container" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={onClose}>
+                    X
+                </button>
+                <h2 className="modal-title">팀 가입 신청</h2>
+                <p className="join-modal-teamname">
+                    가입할 팀: <strong>{team.name}</strong>
+                </p>
+
+                <div className="join-modal-field">
+                    <label>닉네임</label>
+                    <input
+                        type="text"
+                        placeholder="팀에서 사용할 닉네임"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                    />
+                </div>
+
+                <div className="join-modal-field">
+                    <label>가입 사유</label>
+                    <textarea
+                        placeholder="간단한 가입 사유를 적어주세요"
+                        rows={3}
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </div>
+
+                <div className="join-modal-field">
+                    <label>목표</label>
+                    <textarea
+                        placeholder="팀에서 달성하고 싶은 목표를 적어주세요"
+                        rows={3}
+                        value={goal}
+                        onChange={(e) => setGoal(e.target.value)}
+                    />
+                </div>
+
+                <button className="join-submit-btn" onClick={handleJoin}>
+                    가입 신청
+                </button>
+            </div>
+        </div>
+    );
+};
+
+TeamJoinRequestModal.propTypes = {
+    onClose: PropTypes.func,
+    isOpen: PropTypes.bool,
+    team: PropTypes.any
+};
 const TeamContentPage = () => {
     const teamData = [
         { id: 1, name: "공부팀 A", desc: "자격증 스터디를 위한 열정 넘치는 팀", category: "공부", status: "Active", members: 5 },
@@ -29,6 +115,16 @@ const TeamContentPage = () => {
     const handleCategoryClick = (cat) => {
         setSelectedCategory(cat);
     };
+    // "팀 가입 신청 모달" 상태
+    const [joinModalOpen, setJoinModalOpen] = useState(false);
+    const [selectedTeam, setSelectedTeam] = useState(null);
+
+    // 테이블 행 클릭 시
+    const handleRowClick = (team) => {
+        setSelectedTeam(team);
+        setJoinModalOpen(true);
+    };
+
 
     // 필터링된 팀 목록
     const filteredTeams =
@@ -93,104 +189,104 @@ const TeamContentPage = () => {
             <div className="vertical-divider"></div>
 
             {/* 오른쪽: 테이블 + FAQ/후기 */}
-            <div className="team-right-section">
-                {/* 추천 팀 (테이블) */}
-                <div className="team-table-header">
-                    <h3 className="team-table-title">추천 팀</h3>
-                    <span className="team-count">총 {mainTeams.length}개 팀</span>
-                </div>
+                <div className="team-right-section">
+                    {/* 추천 팀 (테이블) */}
+                    <div className="team-table-header">
+                        <h3 className="team-table-title">추천 팀</h3>
+                        <span className="team-count">총 {mainTeams.length}개 팀</span>
+                    </div>
 
-                {/* 카테고리 버튼 그룹 */}
-                <div className="category-btn-group" style={{ marginBottom: "12px" }}>
-                    {["", "공부", "운동", "AI", "코딩", "취업", "알바"].map((cat) => (
-                        <button
-                            key={cat === "" ? "전체" : cat}
-                            className={`category-btn ${
-                                selectedCategory === cat ? "selected" : ""
-                            }`}
-                            onClick={() => handleCategoryClick(cat)}
-                        >
-                            {cat === "" ? "전체" : cat}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="team-table-container">
-                    <table className="team-table">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>팀 이름</th>
-                            <th>설명</th>
-                            <th>상태</th>
-                            <th>멤버 수</th>
-                            <th>자세히</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {mainTeams.map((team, idx) => (
-                            <tr key={team.id}>
-                                <td>
-                                    {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
-                                </td>
-                                <td>{team.name}</td>
-                                <td>{team.desc}</td>
-                                <td>
-                    <span
-                        className={`status ${
-                            team.status.toLowerCase() === "active"
-                                ? "active"
-                                : "pending"
-                        }`}
-                    >
-                      {team.status}
-                    </span>
-                                </td>
-                                <td>{team.members}명</td>
-                                <td>
-                                    <button className="table-btn">보기</button>
-                                </td>
-                            </tr>
+                    {/* 카테고리 버튼 그룹 */}
+                    <div className="category-btn-group" style={{marginBottom: "12px"}}>
+                        {["", "공부", "운동", "AI", "코딩", "취업", "알바"].map((cat) => (
+                            <button
+                                key={cat === "" ? "전체" : cat}
+                                className={`category-btn ${
+                                    selectedCategory === cat ? "selected" : ""
+                                }`}
+                                onClick={() => handleCategoryClick(cat)}
+                            >
+                                {cat === "" ? "전체" : cat}
+                            </button>
                         ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* FAQ & 사용자 후기 (카드) */}
-                <div className="faq-and-testimonials">
-                    {/* FAQ 카드 */}
-                    <div className="card-box faq">
-                        <h4>FAQ</h4>
-                        <ul>
-                            <li>
-                                <strong>Q:</strong> 팀 가입은 어떻게 하나요?
-                            </li>
-                            <li>
-                                <strong>A:</strong> 원하는 팀의 '팀 찾기' 버튼을 클릭하세요.
-                            </li>
-                            <li>
-                                <strong>Q:</strong> 팀 생성 후 관리 방법은?
-                            </li>
-                            <li>
-                                <strong>A:</strong> 생성된 팀의 대시보드에서 관리 가능합니다.
-                            </li>
-                        </ul>
                     </div>
 
-                    {/* 후기 카드 */}
-                    <div className="card-box testimonials">
-                        <h4>사용자 후기</h4>
-                        <div className="testimonial-card">
-                            <p>"팀 덕분에 프로젝트가 순조롭게 진행됐어요!"</p>
-                            <span>- 사용자 D</span>
+                    <div className="team-table-container">
+                        <table className="team-table">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>팀 이름</th>
+                                <th>설명</th>
+                                <th>상태</th>
+                                <th>멤버 수</th>
+                                <th>자세히</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {mainTeams.map((team, idx) => (
+                                <tr
+                                    key={team.id}
+                                    style={{cursor: "pointer"}}
+                                    onClick={() => handleRowClick(team)}
+                                >
+                                    <td>{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</td>
+                                    <td>{team.name}</td>
+                                    <td>{team.desc}</td>
+                                    <td>
+            <span
+                className={`status ${
+                    team.status.toLowerCase() === "active" ? "active" : "pending"
+                }`}
+            >
+              {team.status}
+            </span>
+                                    </td>
+                                    <td>{team.members}명</td>
+                                    <td>
+                                        <button className="table-btn">보기</button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* FAQ & 사용자 후기 (카드) */}
+                    <div className="faq-and-testimonials">
+                        {/* FAQ 카드 */}
+                        <div className="card-box faq">
+                            <h4>FAQ</h4>
+                            <ul>
+                                <li>
+                                    <strong>Q:</strong> 팀 가입은 어떻게 하나요?
+                                </li>
+                                <li>
+                                    <strong>A:</strong> 원하는 팀의 '팀 찾기' 버튼을 클릭하세요.
+                                </li>
+                                <li>
+                                    <strong>Q:</strong> 팀 생성 후 관리 방법은?
+                                </li>
+                                <li>
+                                    <strong>A:</strong> 생성된 팀의 대시보드에서 관리 가능합니다.
+                                </li>
+                            </ul>
                         </div>
-                        <div className="testimonial-card">
-                            <p>"함께하는 힘이 큰 시너지를 만들어냈습니다."</p>
-                            <span>- 사용자 E</span>
+
+                        {/* 후기 카드 */}
+                        <div className="card-box testimonials">
+                            <h4>사용자 후기</h4>
+                            <div className="testimonial-card">
+                                <p>"팀 덕분에 프로젝트가 순조롭게 진행됐어요!"</p>
+                                <span>- 사용자 D</span>
+                            </div>
+                            <div className="testimonial-card">
+                                <p>"함께하는 힘이 큰 시너지를 만들어냈습니다."</p>
+                                <span>- 사용자 E</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
                 {/* 모달 */}
                 <TeamSearchModal
                     isOpen={isModalOpen}
@@ -198,6 +294,12 @@ const TeamContentPage = () => {
                     teamsData={teamData}
                 />
             </div>
+            {/* === 팀 가입 신청 모달 === */}
+            <TeamJoinRequestModal
+                isOpen={joinModalOpen}
+                onClose={() => setJoinModalOpen(false)}
+                team={selectedTeam}
+            />
         </div>
     );
 };

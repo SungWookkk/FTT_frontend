@@ -439,3 +439,11 @@
     top: 150px;
     border-radius: 5px;
 }
+.team-table tbody tr {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.team-table tbody tr:hover {
+    transform: translateY(-3px);
+    background-color: #f7f7f7;
+}

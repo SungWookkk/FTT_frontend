@@ -134,7 +134,14 @@
     border-bottom: 1px solid #eee;
     vertical-align: middle;
 }
+.modal-team-table tbody tr {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
 
+.modal-team-table tbody tr:hover {
+    transform: translateY(-3px);
+    background-color: #f7f7f7;
+}
 /* 페이지네이션 */
 .modal-pagination {
     display: flex;
@@ -207,4 +214,65 @@
 
 .modal-sort-dropdown:focus {
     border-color: #636ae8;
+}
+/* ====== 팀 가입 신청 모달 추가 스타일 ====== */
+.join-modal-container {
+    background-color: #fff;
+    width: 500px;
+    height: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.join-modal-teamname {
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    color: #444;
+}
+
+.join-modal-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.join-modal-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2a2e34;
+}
+
+.join-modal-field input,
+.join-modal-field textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    outline: none;
+    resize: none;
+}
+
+.join-modal-field input:focus,
+.join-modal-field textarea:focus {
+    border-color: #636ae8;
+}
+
+.join-submit-btn {
+    background-color: #636ae8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.join-submit-btn:hover {
+    background-color: #4f57c7;
 }
