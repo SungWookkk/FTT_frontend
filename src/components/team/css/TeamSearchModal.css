@@ -1,0 +1,210 @@
+/* 모달 오버레이: 화면 전체 덮는 반투명 배경 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 컨테이너 */
+.modal-container {
+    background-color: #fff;
+    width: 800px;
+    height: 650px;
+    border-radius: 8px;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 빨간 동그라미 X 버튼 */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ff4c4c;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    font-size: 0.9rem;
+}
+
+/* 모달 제목 */
+.modal-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2a2e34;
+}
+
+/* 검색 폼 */
+.modal-search-row {
+    margin-bottom: 16px;
+}
+
+.modal-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+.modal-search-input:focus {
+    border-color: #636ae8;
+}
+
+/* 카테고리 버튼 그룹 */
+.modal-category-btn-group {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+/* 카테고리 버튼 */
+.modal-category-btn {
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.modal-category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.modal-category-btn.selected {
+    background-color: #636ae8;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(99,106,232,0.3);
+}
+
+/* 테이블 컨테이너 */
+.modal-table-container {
+    background: #fff;
+    border-radius: 6px;
+    overflow-x: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+/* 실제 테이블 */
+.modal-team-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.modal-team-table thead {
+    background-color: #f2f1fe;
+}
+
+.modal-team-table th {
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-team-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* 페이지네이션 */
+.modal-pagination {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.modal-page-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-page-btn:hover {
+    background-color: #ddd;
+}
+
+.modal-page-btn.active {
+    background-color: #636ae8;
+    color: #fff;
+}
+
+/* 모달 필터 헤더: 카테고리와 정렬 버튼을 한 줄에 배치 */
+.modal-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* 정렬 기준 드롭다운 그룹 */
+.modal-sort-dropdown-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    bottom: 5px;
+}
+
+.sort-label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+}
+
+/* 드롭다운 스타일 */
+.modal-sort-dropdown {
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    background-color: #fff;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.modal-sort-dropdown:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.modal-sort-dropdown:focus {
+    border-color: #636ae8;
+}

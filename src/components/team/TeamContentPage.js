@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../team/css/TeamContentPage.css";
 import TeamDropdown from "./TeamDropdown";
+import TeamSearchModal from "./TeamSearchModal";
 
 const TeamContentPage = () => {
     const teamData = [
@@ -11,11 +12,19 @@ const TeamContentPage = () => {
         { id: 5, name: "취업준비단", desc: "취업 정보 공유 & 면접 대비", category: "취업", status: "Pending", members: 3 },
         { id: 6, name: "알바정보톡", desc: "파트타임 구직 & 꿀팁 교환", category: "알바", status: "Active", members: 2 },
         { id: 7, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 8, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 9, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 10, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 11,name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 12, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 13, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
+        { id: 14, name: "공부팀 B", desc: "자격증 2차 스터디 준비 중", category: "공부", status: "Active", members: 7 },
     ];
 
     // 현재 선택된 카테고리 (기본: 전체)
     const [selectedCategory, setSelectedCategory] = useState("");
-
+    // 팀 찾기 모달
+    const [isModalOpen, setModalOpen] = useState(false);
     // 카테고리 버튼 클릭 시 해당 카테고리로 변경
     const handleCategoryClick = (cat) => {
         setSelectedCategory(cat);
@@ -26,6 +35,9 @@ const TeamContentPage = () => {
         selectedCategory === ""
             ? teamData // 전체
             : teamData.filter((team) => team.category === selectedCategory);
+
+    // 메인 페이지에서는 최대 7개까지만 렌더링
+    const mainTeams = filteredTeams.slice(0, 7);
 
     return (
         <div className="dashboard-content">
@@ -68,7 +80,8 @@ const TeamContentPage = () => {
                 <div className="no-team-block bg-image">
                     <h2>팀이 없으신가요?</h2>
                     <p>팀에 참가해서 함께 목표를 이루어보세요!</p>
-                    <button className="no-team-btn">팀 찾기</button>
+                    <button className="no-team-btn" onClick={() => setModalOpen(true)}>팀 찾기</button>
+
                 </div>
                 <div className="no-team-block bg-image1">
                     <h2>팀 생성하기!</h2>
@@ -84,7 +97,7 @@ const TeamContentPage = () => {
                 {/* 추천 팀 (테이블) */}
                 <div className="team-table-header">
                     <h3 className="team-table-title">추천 팀</h3>
-                    <span className="team-count">총 {filteredTeams.length}개 팀</span>
+                    <span className="team-count">총 {mainTeams.length}개 팀</span>
                 </div>
 
                 {/* 카테고리 버튼 그룹 */}
@@ -115,7 +128,7 @@ const TeamContentPage = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredTeams.map((team, idx) => (
+                        {mainTeams.map((team, idx) => (
                             <tr key={team.id}>
                                 <td>
                                     {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
@@ -178,6 +191,12 @@ const TeamContentPage = () => {
                     </div>
                 </div>
             </div>
+                {/* 모달 */}
+                <TeamSearchModal
+                    isOpen={isModalOpen}
+                    onClose={() => setModalOpen(false)}
+                    teamsData={teamData}
+                />
             </div>
         </div>
     );
