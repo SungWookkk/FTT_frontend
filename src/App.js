@@ -17,6 +17,7 @@ import BadgePage from "./components/badge/BadgePage";
 import ProfilePage from "./components/profile/ProfilePage";
 import TeamPage from "./components/team/TeamPage";
 import TeamCreateModal from "./components/team/TeamCreateModal";
+import TeamAffiliationPage from "./components/team/TeamAffiliationPage";
 
 const App = () => {
     return (
@@ -51,8 +52,10 @@ const App = () => {
                         <Route path="/profile/:username" component={ProfilePage}/>
 
                         {/*팀 관련*/}
-                        <Route path="/team" component={TeamPage}/>
+                        <Route exact path="/team" component={TeamPage}/>
                         <Route path="/teams/api/create" component={TeamCreateModal}/> {/*팀 생성 모달 */}
+
+                        <Route path="/team/:teamId" component={TeamAffiliationPage} />
 
 
                     </Switch>

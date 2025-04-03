@@ -4,11 +4,14 @@ import TeamDropdown from "./TeamDropdown";
 import TeamSearchModal from "./TeamSearchModal";
 import * as PropTypes from "prop-types";
 import TeamCreateModal from "./TeamCreateModal";
+import TeamAffiliationContentPage from "./TeamAffiliationContentPage";
+import {useHistory} from "react-router-dom";
 
 const TeamJoinRequestModal = ({ isOpen, onClose, team }) => {
     const [nickname, setNickname] = useState("");
     const [reason, setReason] = useState("");
     const [goal, setGoal] = useState("");
+
 
     // 모달이 열릴 때마다 폼 초기화 (원한다면)
     // 여기서는 team이 바뀔 때마다 초기화
@@ -121,6 +124,19 @@ const TeamContentPage = () => {
     const [selectedTeam, setSelectedTeam] = useState(null);
     // 팀 생성 모달 상태
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    //  드롭다운에서 선택된 팀 (팀 상세 페이지에 표시할 팀)
+    const [teamForAffiliation, setTeamForAffiliation] = useState(null);
+    const history = useHistory();
+
+    // 드롭다운에서 팀 선택 시
+    const handleDropdownTeamSelect = (team) => {
+        setTeamForAffiliation(team);
+        // 경로 변경: /team/팀ID (또는 teamName)
+        console.log("선택된 팀:", team); // 팀 객체에 id 필드가 있는지 확인
+        history.push(`/team/${team.id}`);
+    };
+
+
     // 테이블 행 클릭 시
     const handleRowClick = (team) => {
         setSelectedTeam(team);
@@ -143,7 +159,7 @@ const TeamContentPage = () => {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown />
+                    <TeamDropdown onTeamSelect={handleDropdownTeamSelect} />
                 </div>
                 <div className="header-button-group">
                     <button className="btn btn-create">팀 생성하기</button>
@@ -189,6 +205,18 @@ const TeamContentPage = () => {
             </div>
 
             <div className="vertical-divider"></div>
+
+                {/* 오른쪽 섹션: 조건부 렌더링 */}
+                {teamForAffiliation ? (
+                    // 드롭다운에서 팀이 선택된 경우 -> TeamAffiliationContentPage
+                    <TeamAffiliationContentPage team={teamForAffiliation} />
+                ) : (
+                    // 드롭다운에서 팀이 선택되지 않은 경우 -> 기존 "추천 팀" 테이블
+                    <div className="team-right-section">
+                        {/* 기존 추천 팀 / FAQ / 후기 영역 */}
+                        {/* 예: 추천 팀 테이블, FAQ, 후기 등 */}
+                    </div>
+                )}
 
             {/* 오른쪽: 테이블 + FAQ/후기 */}
                 <div className="team-right-section">
