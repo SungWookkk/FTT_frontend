@@ -3,6 +3,7 @@ import "../team/css/TeamContentPage.css";
 import TeamDropdown from "./TeamDropdown";
 import TeamSearchModal from "./TeamSearchModal";
 import * as PropTypes from "prop-types";
+import TeamCreateModal from "./TeamCreateModal";
 
 const TeamJoinRequestModal = ({ isOpen, onClose, team }) => {
     const [nickname, setNickname] = useState("");
@@ -118,7 +119,8 @@ const TeamContentPage = () => {
     // "팀 가입 신청 모달" 상태
     const [joinModalOpen, setJoinModalOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState(null);
-
+    // 팀 생성 모달 상태
+    const [createModalOpen, setCreateModalOpen] = useState(false);
     // 테이블 행 클릭 시
     const handleRowClick = (team) => {
         setSelectedTeam(team);
@@ -182,7 +184,7 @@ const TeamContentPage = () => {
                 <div className="no-team-block bg-image1">
                     <h2>팀 생성하기!</h2>
                     <p>팀을 직접 만들어서 공통된 목표를 가진 유저들을 모아봐요!</p>
-                    <button className="no-team-btn">팀 만들기</button>
+                    <button className="no-team-btn" onClick={() => setCreateModalOpen(true)}>팀 만들기</button>
                 </div>
             </div>
 
@@ -299,6 +301,11 @@ const TeamContentPage = () => {
                 isOpen={joinModalOpen}
                 onClose={() => setJoinModalOpen(false)}
                 team={selectedTeam}
+            />
+            {/* 팀 생성 모달 */}
+            <TeamCreateModal
+                isOpen={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
             />
         </div>
     );

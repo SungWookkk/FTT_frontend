@@ -1,0 +1,98 @@
+/* 모달 오버레이: 전체 화면 덮는 반투명 배경 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 컨테이너 */
+.create-modal-container {
+    background-color: #fff;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 닫기 버튼: 빨간 동그라미 X */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ff4c4c;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    font-size: 0.9rem;
+}
+
+/* 모달 제목 */
+.modal-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2a2e34;
+}
+
+/* 입력 필드 그룹 */
+.create-modal-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.create-modal-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2a2e34;
+}
+
+.create-modal-field input,
+.create-modal-field textarea,
+.create-modal-field select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    outline: none;
+}
+
+.create-modal-field input:focus,
+.create-modal-field textarea:focus,
+.create-modal-field select:focus {
+    border-color: #636ae8;
+}
+
+/* 제출 버튼 */
+.create-submit-btn {
+    background-color: #636ae8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.create-submit-btn:hover {
+    background-color: #4f57c7;
+}

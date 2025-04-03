@@ -16,6 +16,7 @@ import StatisticsPage from "./components/statistics/StatisticsPage";
 import BadgePage from "./components/badge/BadgePage";
 import ProfilePage from "./components/profile/ProfilePage";
 import TeamPage from "./components/team/TeamPage";
+import TeamCreateModal from "./components/team/TeamCreateModal";
 
 const App = () => {
     return (
@@ -51,6 +52,8 @@ const App = () => {
 
                         {/*팀 관련*/}
                         <Route path="/team" component={TeamPage}/>
+                        <Route path="/teams/api/create" component={TeamCreateModal}/> {/*팀 생성 모달 */}
+
 
                     </Switch>
                 </div>
