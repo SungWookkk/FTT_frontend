@@ -1,0 +1,79 @@
+/* 전체 컨테이너 */
+.team-todo-container {
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+/* "팀 작업" 헤딩 */
+.team-task-title {
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    text-align: left; /* 왼쪽 정렬 */
+    padding: 10px 20px;  /* 좌우 여백 */
+    box-sizing: border-box;
+    max-width: 200px;
+    position: relative;
+    left: 100px;
+}
+
+/* 작업 카드들을 한 줄에 4개씩 배치하는 컨테이너 */
+.team-all-tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4개 열 */
+    gap: 30px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;   /* 중앙 정렬 */
+    padding: 0 40px;  /* 좌우 여백 */
+}
+
+/* 개별 작업 카드 */
+.team-all-list-task-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    position: relative;
+    left: -173px;
+    width: 300px;
+}
+
+.team-all-list-task-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+/* 섹션(상태) 뱃지 */
+.team-task-section-badge {
+    margin-top: 8px;
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 4px;
+    position: relative;
+    bottom: 10px;
+}
+
+/* 작업 카드 내 제목/설명 */
+.team-all-list-task-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2e34;
+    margin-bottom: 4px;
+}
+
+.team-all-list-task-desc {
+    font-size: 12px;
+    color: #4f5762;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden; /* 내용이 길면 말줄임 처리 */
+}
