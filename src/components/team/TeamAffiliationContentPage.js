@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "../team/css/TeamAffiliationContentPage.css";
-
+import TeamDropdown from "./TeamDropdown";
+import TeamCalendarSection from "./TeamCalendarSection";
 // ★ 임시 팀 상세 정보 (예시)
 const DUMMY_TEAM = {
     id: 9999,
-    teamName: "임시팀 상세",
+    teamName: "임시팀",
     description: "임시팀 상세 설명",
     announcement: "임시 공지사항",
     category: "임시카테고리",
@@ -63,9 +64,18 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
+                    <TeamDropdown />
                 </div>
-                <div className="header-button-group">
-                    <button className="btn btn-create">팀 생성하기</button>
+            </div>
+            {/* 목록 선택 탭 */}
+            <div className="list-tap">
+                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
+                    <div className="list-tab-container">
+                        <div className="tab-item active">메인</div>
+                        <div className="tab-item">팀 Todo</div>
+                        <div className="tab-item">소통</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -91,21 +101,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 </p>
             </div>
         <div className="team-affiliation-container">
-            <h2>{team.teamName} 상세 페이지</h2>
-            <p>팀 설명: {team.description}</p>
-            <p>팀 공지사항: {team.announcement}</p>
-            <p>카테고리: {team.category}</p>
-            <h3>팀원 목록</h3>
-            {team.members && team.members.length > 0 ? (
-                <ul>
-                    {team.members.map((member) => (
-                        <li key={member.id}>{member.username}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>팀원이 없습니다.</p>
-            )}
-            {/* 추가적으로 팀 작업(TodoList) 등 표시 가능 */}
+            <TeamCalendarSection team={team} />
         </div>
         </div>
     );
