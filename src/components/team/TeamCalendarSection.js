@@ -161,6 +161,7 @@ function TeamCalendarSection({ team }) {
     return (
         <div className="team-calendar-container">
             {/* 달력 영역 */}
+            <h2 className="calendar-section-title">Calendar</h2>
             <div className="calendar-section">
                 {/* 달력 헤더 */}
                 <div className="calendar-header">
@@ -214,12 +215,12 @@ function TeamCalendarSection({ team }) {
                             >
                                 <div className="date-number">{dayNum}</div>
                                 {tasksToShow.map((task) => {
-                                    const { sectionColor } = getSectionInfo(task);
+                                    const {sectionColor} = getSectionInfo(task);
                                     return (
                                         <div
                                             key={task.id}
                                             className="task-item"
-                                            style={{ backgroundColor: sectionColor, color: "#fff" }}
+                                            style={{backgroundColor: sectionColor, color: "#fff"}}
                                             onClick={() => openTaskDetail(task)}
                                         >
                                             {task.title}

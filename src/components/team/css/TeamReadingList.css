@@ -1,0 +1,87 @@
+/* Reading list 전체 컨테이너 */
+.team-reading-list {
+    width: 1500px;
+    margin: 24px auto;
+    padding: 0 50px;
+    box-sizing: border-box;
+    position: relative;
+    left: -70px;
+    top: 30px;
+}
+
+/* Reading list 타이틀 */
+.reading-list-title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-align: left;
+}
+
+/* 카테고리 열들을 가로로 배치하는 영역 */
+.reading-list-board {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 32px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    padding-left: 20px;
+}
+
+/* 각 카테고리 열 */
+.reading-list-column {
+    flex-shrink: 0;
+    min-width: 240px;
+}
+
+/* 카테고리 제목 */
+.column-title {
+    display: inline-block;
+    background-color: #f2f1fe;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+/* 글 목록(아이템) */
+.reading-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 글을 카드처럼 보이도록 */
+.reading-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 링크 스타일 */
+.reading-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 16px;
+}
+.reading-link:hover {
+    text-decoration: underline;
+}
+
+/* 새 페이지 추가 버튼 */
+.add-new-page {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #999;
+    cursor: pointer;
+}
+.add-new-page:hover {
+    color: #666;
+}
