@@ -1,5 +1,5 @@
 /* 전체 컨테이너: 팀 달력 (달력 영역 + 오른쪽 패널) */
-.team-calendar-container {
+.team-calendar-container1 {
     display: flex;
     align-items: flex-start;
     gap: 16px;
@@ -11,7 +11,7 @@
 }
 
 /* 달력 섹션 */
-.calendar-section {
+.calendar-section1 {
     flex: 1 1 auto;
     min-width: 900px;
     background-color: #fff;
@@ -23,7 +23,7 @@
 }
 
 /* 오른쪽 패널: 오늘의 팀 일정 */
-.right-panels {
+.right-panels1 {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -34,7 +34,7 @@
 }
 
 /* 오늘의 팀 일정 패널 */
-.schedule-sidebar {
+.schedule-sidebar1 {
     width: 300px;
     background-color: #fff;
     border-radius: 8px;
@@ -87,22 +87,22 @@
 }
 
 /* 달력 헤더 */
-.calendar-header {
+.calendar-header1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 8px;
 }
-.calendar-title {
+.calendar-title1 {
     font-size: 18px;
     font-weight: 700;
     color: #2a2e34;
 }
-.calendar-controls {
+.calendar-controls1 {
     display: flex;
     gap: 8px;
 }
-.control-button {
+.control-button1 {
     all: unset;
     background-color: #f2f2fd;
     padding: 4px 12px;
@@ -113,7 +113,7 @@
     border: 1px solid transparent;
     transition: background-color 0.2s ease;
 }
-.control-button:hover {
+.control-button1:hover {
     background-color: #e0e1fa;
 }
 
@@ -352,4 +352,20 @@
     position: relative;
     left: -80px;
     top: -40px;
+}
+/* 오른쪽 패널 (오늘의 일정 + AI) 한 줄 배치 */
+.right-panels1 {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+}
+/* "오늘의 일정" 패널 */
+.schedule-sidebar1 {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 16px;
+    height: 447px;
+    animation-delay: 0.3s;
 }

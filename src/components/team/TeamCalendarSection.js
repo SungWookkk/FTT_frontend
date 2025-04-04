@@ -159,21 +159,21 @@ function TeamCalendarSection({ team }) {
     const titleString = `${year}. ${month + 1}`;
 
     return (
-        <div className="team-calendar-container">
+        <div className="team-calendar-container1">
             {/* 달력 영역 */}
             <h2 className="calendar-section-title">Calendar</h2>
-            <div className="calendar-section">
+            <div className="calendar-section1">
                 {/* 달력 헤더 */}
-                <div className="calendar-header">
-                    <div className="calendar-title">{titleString}</div>
-                    <div className="calendar-controls">
-                        <button className="control-button" onClick={handleToday}>
+                <div className="calendar-header1">
+                    <div className="calendar-title1">{titleString}</div>
+                    <div className="calendar-controls1">
+                        <button className="control-button1" onClick={handleToday}>
                             Today
                         </button>
-                        <button className="control-button" onClick={handlePrevMonth}>
+                        <button className="control-button1" onClick={handlePrevMonth}>
                             &lt;
                         </button>
-                        <button className="control-button" onClick={handleNextMonth}>
+                        <button className="control-button1" onClick={handleNextMonth}>
                             &gt;
                         </button>
                     </div>
@@ -242,8 +242,8 @@ function TeamCalendarSection({ team }) {
             </div>
 
             {/* 오른쪽 패널: 오늘의 팀 일정 */}
-            <div className="right-panels">
-                <div className="schedule-sidebar">
+            <div className="right-panels1">
+                <div className="schedule-sidebar1">
                     <h3 className="sidebar-title">오늘의 팀 일정</h3>
                     <div className="sidebar-list">
                         {todayTasks.length === 0 ? (

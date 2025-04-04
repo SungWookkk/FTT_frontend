@@ -6,6 +6,7 @@ import TeamDropdown from "./TeamDropdown";
 import TeamCalendarSection from "./TeamCalendarSection";
 import TeamReadingList from "./TeamReadingList";
 import TeamStatusMessage from "./TeamStatusMessage";
+import TeamTodoListContent from "./TeamTodoListContent";
 //  임시 팀 상세 정보 (예시)
 const DUMMY_TEAM = {
     id: 9999,
@@ -106,7 +107,8 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <TeamStatusMessage />
         <div className="team-affiliation-container">
             <TeamCalendarSection team={team} />
-            <TeamReadingList />
+          <TeamReadingList />
+            <TeamTodoListContent />
         </div>
 
         </div>
