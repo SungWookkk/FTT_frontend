@@ -18,6 +18,8 @@
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 16px;
+    position: relative;
+    left: -170px;
 }
 
 /* 오른쪽 패널: 오늘의 팀 일정 */
@@ -26,6 +28,9 @@
     flex-direction: column;
     gap: 16px;
     flex-shrink: 0;
+    position: relative;
+    left: -140px;
+    top: 10px;
 }
 
 /* 오늘의 팀 일정 패널 */
@@ -35,9 +40,12 @@
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 16px;
-    height: 515px;
+    height: 445px;
     animation: slideUp 0.5s forwards ease-out;
     animation-delay: 0.3s;
+    position: relative;
+    left: -30px;
+    top: -10px;
 }
 @keyframes slideUp {
     from {
@@ -333,4 +341,15 @@
     font-size: 12px;
     font-weight: 600;
     color: #fff;
+}
+/* Reading list 타이틀 */
+.calendar-section-title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-align: left;
+    position: relative;
+    left: -80px;
+    top: -40px;
 }

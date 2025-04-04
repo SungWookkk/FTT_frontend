@@ -4,7 +4,9 @@ import axios from "axios";
 import "../team/css/TeamAffiliationContentPage.css";
 import TeamDropdown from "./TeamDropdown";
 import TeamCalendarSection from "./TeamCalendarSection";
-// ★ 임시 팀 상세 정보 (예시)
+import TeamReadingList from "./TeamReadingList";
+import TeamStatusMessage from "./TeamStatusMessage";
+//  임시 팀 상세 정보 (예시)
 const DUMMY_TEAM = {
     id: 9999,
     teamName: "임시팀",
@@ -100,9 +102,13 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     <span className="normal-text">을 이끌어냅니다!</span>
                 </p>
             </div>
+            {/* 팀 상태 메시지 영역 (새 컴포넌트) */}
+            <TeamStatusMessage />
         <div className="team-affiliation-container">
             <TeamCalendarSection team={team} />
+            <TeamReadingList />
         </div>
+
         </div>
     );
 }
