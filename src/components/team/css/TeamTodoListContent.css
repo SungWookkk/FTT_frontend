@@ -77,3 +77,26 @@
     white-space: nowrap;
     overflow: hidden; /* 내용이 길면 말줄임 처리 */
 }
+
+/* 애니메이션 효과 (CSSTransition) */
+.task-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+.task-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease, transform 500ms ease;
+}
+.task-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.task-exit-active {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 500ms ease, transform 500ms ease;
+}
+.btn-edit-all{
+    font-weight: 700;
+}

@@ -32,6 +32,7 @@
 .reading-list-column {
     flex-shrink: 0;
     min-width: 240px;
+    margin-bottom: 20px;
 }
 
 /* 카테고리 제목 */
