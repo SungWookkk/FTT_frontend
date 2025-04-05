@@ -8,3 +8,26 @@
     border-left: 1px solid #e8eaed;
     overflow-y: auto;
 }
+/* 탭 아이템 기본 스타일 */
+.tab-item {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+/* 탭 아이템 호버 시 */
+.tab-item:hover {
+    color: #2a2e34;
+}
+
+/* active 클래스가 적용된 탭 아이템 */
+.tab-item.active {
+    color: #2a2e34;
+    font-weight: 700;
+}

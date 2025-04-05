@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 import axios from "axios";
 import "../team/css/TeamAffiliationContentPage.css";
 import TeamDropdown from "./TeamDropdown";
@@ -25,7 +25,8 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     const { teamId } = useParams();
     const [team, setTeam] = useState(propTeam || null);
     const [loading, setLoading] = useState(true);
-
+    const history = useHistory();
+    const location = useLocation();   // ← 현재 경로 확인용
     useEffect(() => {
         // (1) 부모 컴포넌트에서 team 객체를 prop으로 넘겨준 경우 → 그대로 사용
         if (propTeam) {
@@ -61,24 +62,41 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     if (loading) return <div>로딩 중...</div>;
     if (!team) return <div>팀 정보를 찾을 수 없습니다.</div>;
 
+    // 현재 경로가 "/team/:teamId"인지 "/team/:teamId/todo"인지 체크
+    const isMainPage = location.pathname === `/team/${teamId}`;
+    const isTodoPage = location.pathname === `/team/${teamId}/todo`;
+
     return (
         <div className="dashboard-content">
             {/* 상단 헤더 */}
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown />
+                    <TeamDropdown/>
                 </div>
             </div>
+
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
-                        <div className="tab-item active">메인</div>
-                        <div className="tab-item">팀 Todo</div>
+                        {/* 메인 탭 */}
+                        <div
+                            className={`tab-item ${isMainPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}`)}
+                        >
+                            메인
+                        </div>
+                        {/* 팀 Todo 탭 */}
+                        <div
+                            className={`tab-item ${isTodoPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}/todo`)}
+                        >
+                            팀 Todo
+                        </div>
+                        {/* 소통 탭 (예: /team/:teamId/chat) - 경로 준비 시 추가 */}
                         <div className="tab-item">소통</div>
                     </div>
-
                 </div>
             </div>
 
@@ -104,12 +122,12 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 </p>
             </div>
             {/* 팀 상태 메시지 영역 (새 컴포넌트) */}
-            <TeamStatusMessage />
-        <div className="team-affiliation-container">
-            <TeamCalendarSection team={team} />
-          <TeamReadingList />
-            <TeamTodoListContent />
-        </div>
+            <TeamStatusMessage/>
+            <div className="team-affiliation-container">
+                <TeamCalendarSection team={team}/>
+                <TeamReadingList/>
+                <TeamTodoListContent/>
+            </div>
 
         </div>
     );
