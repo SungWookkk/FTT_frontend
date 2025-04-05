@@ -151,7 +151,7 @@ const DashboardContent = () => {
             </div>
 
             {/* 알림 배너 */}
-            <div className="alert-banner">
+            <div className="alert-banner-todo">
                 <p className="alert-text">
                     <span className="normal-text">대시보드에서</span>
                     <span className="highlight-text"> 통계 </span>

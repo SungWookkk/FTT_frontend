@@ -101,7 +101,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             </div>
 
             {/* 알림 배너 */}
-            <div className="alert-banner">
+            <div className="alert-banner-todo">
                 <p className="alert-text">
                     <span className="highlight-text">팀</span>
                     <span className="normal-text">은 공동의 목표를 위해 함께 </span>

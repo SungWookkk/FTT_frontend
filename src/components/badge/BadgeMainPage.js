@@ -174,7 +174,7 @@ const BadgeMainPage = () => {
             </div>
 
             {/* 알림 배너 */}
-            <div className="alert-banner">
+            <div className="alert-banner-todo">
                 <p className="alert-text">
                     <span className="highlight-text"> 뱃지 </span>
                     <span className="normal-text">는 여러분의</span>
