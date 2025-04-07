@@ -1,13 +1,11 @@
+/**
+ * 팀 메인 페이지 하단의 Task 목록
+ * */
+
 import React, { useState } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "../team/css/TeamTodoListContent.css";
 
-/**
- * 단순 디자인 시연용 Dummy Task 목록
- * - 실제 로직이나 API 연동은 제거한 상태
- * - dummyTasks가 8개를 초과하면 "더 보기"/"접기" 버튼을 통해 토글합니다.
- * - 추가되는 Task들은 애니메이션 효과로 부드럽게 나타납니다.
- */
 function TeamTodoListContent() {
     const dummyTasks = [
         {
@@ -98,7 +96,6 @@ function TeamTodoListContent() {
             <h2 className="team-task-title">팀 작업</h2>
 
             <div className="team-all-tasks-grid">
-                {/* [추가 애니메이션 효과] TransitionGroup과 CSSTransition을 적용 */}
                 <TransitionGroup component={null}>
                     {dummyTasks.slice(0, visibleCount).map((task) => (
                         <CSSTransition key={task.id} timeout={500} classNames="task">

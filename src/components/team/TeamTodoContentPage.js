@@ -8,26 +8,71 @@ import {
 } from "react-beautiful-dnd";
 import "../team/css/TeamTodoContentPage.css";
 
-// 초기 데이터: 3개의 컬럼(보류, 진행중, 완료)
+/**
+ * 남은 일수를 계산하는 유틸 함수
+ * - today ~ dueDate 사이의 일수를 구해 D-Day 형태로 반환
+ */
+function getDaysLeft(dueDateString) {
+    if (!dueDateString) return null; // 날짜 없으면 null
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시분초 제거
+    const dueDate = new Date(dueDateString);
+    dueDate.setHours(0, 0, 0, 0); // 시분초 제거
+    const diffTime = dueDate - today; // 밀리초 차이
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
+
+// 초기 데이터: 보류, 진행중, 완료
 const initialColumns = {
     onHold: {
         name: "보류",
         items: [
-            { id: "task-1", title: "기능 A 기획", description: "추가 논의 필요" },
-            { id: "task-2", title: "데이터 모델 설계", description: "초안 작성 중" }
+            {
+                id: "task-1",
+                title: "기능 A 기획",
+                description: "추가 논의 필요",
+                dueDate: "2025-09-10",
+                priority: "높음"
+            },
+            {
+                id: "task-2",
+                title: "데이터 모델 설계",
+                description: "초안 작성 중",
+                dueDate: "2023-09-05",
+                priority: "중간"
+            }
         ],
     },
     inProgress: {
         name: "진행중",
         items: [
-            { id: "task-3", title: "UI/UX 개선", description: "피드백 반영" },
-            { id: "task-4", title: "API 연동", description: "백엔드와 협의 진행" }
+            {
+                id: "task-3",
+                title: "DB 세팅",
+                description: "AWS RDS 환경 구성",
+                dueDate: "2023-09-03",
+                priority: "낮음"
+            },
+            {
+                id: "task-4",
+                title: "API 연동",
+                description: "백엔드와 협의 진행",
+                dueDate: "2023-09-15",
+                priority: "높음"
+            }
         ],
     },
     done: {
         name: "완료",
         items: [
-            { id: "task-5", title: "DB 세팅", description: "AWS RDS 환경 구성" },
+            {
+                id: "task-5",
+                title: "UI/UX 개선",
+                description: "피드백 반영",
+                dueDate: "2023-08-28",
+                priority: "중간"
+            },
         ],
     },
 };
@@ -90,13 +135,18 @@ function TeamTodoContentPage() {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown />
+                    <TeamDropdown/>
+                </div>
+                <div className="header-button-group">
+                    <button className="btn btn-team-create">
+                        팀 작업 생성하기
+                    </button>
                 </div>
             </div>
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
                         <div
                             className={`tab-item ${isMainPage ? "active" : ""}`}
@@ -144,21 +194,51 @@ function TeamTodoContentPage() {
                                         {...provided.droppableProps}
                                     >
                                         <h3 className="column-title">{columnData.name}</h3>
-                                        {columnData.items.map((item, index) => (
-                                            <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                {(provided, snapshot) => (
-                                                    <div
-                                                        className={`kanban-task-card ${snapshot.isDragging ? "dragging" : ""}`}
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                    >
-                                                        <div className="task-title">{item.title}</div>
-                                                        <div className="task-desc">{item.description}</div>
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))}
+                                        {columnData.items.map((item, index) => {
+                                            const daysLeft = getDaysLeft(item.dueDate);
+                                            let ddayText = "";
+                                            if (daysLeft === null) {
+                                                ddayText = "날짜 미정";
+                                            } else if (daysLeft > 0) {
+                                                ddayText = `D-${daysLeft}`;
+                                            } else if (daysLeft === 0) {
+                                                ddayText = "오늘 마감!";
+                                            } else {
+                                                ddayText = "기한 만료";
+                                            }
+                                            return (
+                                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                    {(provided, snapshot) => (
+                                                        <div
+                                                            className={`kanban-task-card ${snapshot.isDragging ? "dragging" : ""}`}
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                        >
+                                                            {/* 우선순위 띠 (ribbon) */}
+                                                            <div className={`priority-ribbon priority-${item.priority || "낮음"}`}>
+                                                                {item.priority || "낮음"}
+                                                            </div>
+
+                                                            {/* 제목 */}
+                                                            <div className="task-title" style={{ marginTop: "20px" }}>
+                                                                {item.title}
+                                                            </div>
+                                                            {/* 설명 */}
+                                                            <div className="task-desc">{item.description}</div>
+                                                            {/* 마감일 + D-Day */}
+                                                            <div className="task-dueDate">
+                                                                <span className="due-label">마감: </span>
+                                                                <span className="due-date-text">
+              {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
+            </span>
+                                                                <span className="dday-text">({ddayText})</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            );
+                                        })}
                                         {provided.placeholder}
                                     </div>
                                 )}

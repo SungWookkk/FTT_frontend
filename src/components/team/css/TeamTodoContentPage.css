@@ -24,7 +24,6 @@
     font-weight: 700;
 }
 
-
 /* Kanban 보드 컨테이너 */
 .kanban-board-container {
     width: 95%;
@@ -62,6 +61,7 @@
 /* 작업 카드 */
 .kanban-task-card {
     background-color: #fff;
+    position: relative;
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 12px;
@@ -77,14 +77,164 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* 카드 내 제목/설명 */
+/* 카드 내 상단(제목, 우선순위) */
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .task-title {
     font-size: 14px;
     font-weight: 600;
     color: #2a2e34;
-    margin-bottom: 4px;
 }
+.task-priority {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 8px;
+}
+
+.task-dueDate {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    gap: 4px;
+    align-items: baseline;
+}
+
+.due-label {
+    font-weight: 600;
+    color: #888;
+}
+
+.due-date-text {
+    font-weight: 500;
+    color: #333;
+}
+
+.dday-text {
+    font-weight: 600;
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+/* 나머지 코드는 동일 */
+.dashboard-content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tab-item {
+    color: #656f7d;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+.tab-item:hover {
+    color: #2a2e34;
+}
+.tab-item.active {
+    color: #2a2e34;
+    font-weight: 700;
+}
+
+.kanban-board-container {
+    width: 95%;
+    margin: 24px auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+.kanban-columns {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+}
+.kanban-column {
+    flex-shrink: 0;
+    width: 300px;
+    background-color: #fafafa;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    padding: 16px;
+    box-sizing: border-box;
+    min-height: 500px;
+}
+.column-title {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+}
+
+.kanban-task-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+.kanban-task-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+.dragging {
+    opacity: 0.8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 .task-desc {
     font-size: 12px;
     color: #4f5762;
+    line-height: 1.4;
+}
+
+/* 팀 작업 생성 버튼 */
+.btn-team-create {
+    background-color: #f2f1fe;
+    color: #4f5762;
+    width: 120px;
+    border: 1px solid #e2e2f6;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn-team-create:hover {
+    background-color: #e2e6f6;
+}
+.priority-ribbon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+/* 우선순위별 배경색  */
+.priority-높음.priority-ribbon {
+    background-color: #e74c3c;
+}
+.priority-중간.priority-ribbon {
+    background-color: #ae67ef;
+}
+
+.priority-낮음.priority-ribbon {
+    background-color: #2dce89;
 }
