@@ -238,3 +238,22 @@
 .priority-낮음.priority-ribbon {
     background-color: #2dce89;
 }
+
+
+/* 담당자 영역 */
+.task-assignee {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+.assignee-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 6px;
+}
+.assignee-name {
+    font-size: 12px;
+    color: #4f5762;
+}

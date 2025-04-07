@@ -6,6 +6,7 @@ import {
     Droppable,
     Draggable
 } from "react-beautiful-dnd";
+import defaultUser from "../../Auth/css/img/default-user.svg";
 import "../team/css/TeamTodoContentPage.css";
 
 /**
@@ -23,7 +24,7 @@ function getDaysLeft(dueDateString) {
     return diffDays;
 }
 
-// 초기 데이터: 보류, 진행중, 완료
+// 초기 데이터: 보류, 진행중, 완료 (우선순위 & 담당자 추가)
 const initialColumns = {
     onHold: {
         name: "보류",
@@ -33,14 +34,16 @@ const initialColumns = {
                 title: "기능 A 기획",
                 description: "추가 논의 필요",
                 dueDate: "2025-09-10",
-                priority: "높음"
+                priority: "높음",
+                userName: "Alice"
             },
             {
                 id: "task-2",
                 title: "데이터 모델 설계",
                 description: "초안 작성 중",
                 dueDate: "2023-09-05",
-                priority: "중간"
+                priority: "중간",
+                userName: "Bob"
             }
         ],
     },
@@ -52,14 +55,16 @@ const initialColumns = {
                 title: "DB 세팅",
                 description: "AWS RDS 환경 구성",
                 dueDate: "2023-09-03",
-                priority: "낮음"
+                priority: "낮음",
+                userName: "Charlie"
             },
             {
                 id: "task-4",
                 title: "API 연동",
                 description: "백엔드와 협의 진행",
                 dueDate: "2023-09-15",
-                priority: "높음"
+                priority: "높음",
+                userName: "David"
             }
         ],
     },
@@ -71,7 +76,8 @@ const initialColumns = {
                 title: "UI/UX 개선",
                 description: "피드백 반영",
                 dueDate: "2023-08-28",
-                priority: "중간"
+                priority: "중간",
+                userName: "Eve"
             },
         ],
     },
@@ -146,7 +152,7 @@ function TeamTodoContentPage() {
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
                         <div
                             className={`tab-item ${isMainPage ? "active" : ""}`}
@@ -220,8 +226,13 @@ function TeamTodoContentPage() {
                                                                 {item.priority || "낮음"}
                                                             </div>
 
+                                                            {/* 담당자: 프로필 이미지와 이름 */}
+                                                            <div className="task-assignee">
+                                                                <img src={defaultUser} alt="User" className="assignee-avatar" />
+                                                                <span className="assignee-name">{item.userName || "미지정"}</span>
+                                                            </div>
                                                             {/* 제목 */}
-                                                            <div className="task-title" style={{ marginTop: "20px" }}>
+                                                            <div className="task-title" style={{ marginTop: "5px" }}>
                                                                 {item.title}
                                                             </div>
                                                             {/* 설명 */}
@@ -230,10 +241,11 @@ function TeamTodoContentPage() {
                                                             <div className="task-dueDate">
                                                                 <span className="due-label">마감: </span>
                                                                 <span className="due-date-text">
-              {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
-            </span>
+                                                                    {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
+                                                                </span>
                                                                 <span className="dday-text">({ddayText})</span>
                                                             </div>
+
                                                         </div>
                                                     )}
                                                 </Draggable>
