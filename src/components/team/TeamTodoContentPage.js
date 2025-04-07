@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import TeamDropdown from "./TeamDropdown";
-import {
-    DragDropContext,
-    Droppable,
-    Draggable
-} from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import defaultUser from "../../Auth/css/img/default-user.svg";
 import "../team/css/TeamTodoContentPage.css";
 
@@ -19,10 +15,9 @@ function getDaysLeft(dueDateString) {
     const diffTime = dueDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-
 }
 
-/** 초기 데이터 */
+/** 초기 데이터  */
 const initialColumns = {
     onHold: {
         name: "진행 예정",
@@ -31,7 +26,7 @@ const initialColumns = {
                 id: "task-1",
                 title: "기능 A 기획",
                 description: "추가 논의 필요",
-                startDate: "2025-09-01",  // 시작일 추가
+                startDate: "2025-09-01",
                 dueDate: "2025-09-10",
                 priority: "높음",
                 userName: "Alice",
@@ -46,13 +41,31 @@ const initialColumns = {
                 userName: "Bob",
             },
             {
-                id: "task-6", // 중복 ID 수정
+                id: "task-6",
                 title: "데이터 모델 설계(2차)",
                 description: "추가 검토 필요",
                 startDate: "2023-09-01",
                 dueDate: "2023-09-05",
                 priority: "중간",
                 userName: "Bob",
+            },
+            {
+                id: "task-7",
+                title: "신규 라이브러리 검토",
+                description: "UI 관련 라이브러리 조사",
+                startDate: "2023-09-10",
+                dueDate: "2023-09-20",
+                priority: "낮음",
+                userName: "Frank",
+            },
+            {
+                id: "task-8",
+                title: "기획안 리뷰",
+                description: "초안 리뷰 일정 조율",
+                startDate: "",
+                dueDate: "",
+                priority: "낮음",
+                userName: "미지정",
             },
         ],
     },
@@ -77,6 +90,24 @@ const initialColumns = {
                 priority: "높음",
                 userName: "David",
             },
+            {
+                id: "task-9",
+                title: "에러 모니터링 설정",
+                description: "Sentry 연동",
+                startDate: "2023-09-02",
+                dueDate: "2023-09-10",
+                priority: "중간",
+                userName: "Grace",
+            },
+            {
+                id: "task-10",
+                title: "UI 컴포넌트 제작",
+                description: "디자인 시안 기반 작업",
+                startDate: "2023-09-05",
+                dueDate: "2023-09-12",
+                priority: "높음",
+                userName: "Helen",
+            },
         ],
     },
     done: {
@@ -90,6 +121,24 @@ const initialColumns = {
                 dueDate: "2023-08-28",
                 priority: "중간",
                 userName: "Eve",
+            },
+            {
+                id: "task-11",
+                title: "테스트 코드 작성",
+                description: "기본 기능 테스트",
+                startDate: "2023-08-15",
+                dueDate: "2023-08-25",
+                priority: "중간",
+                userName: "Irene",
+            },
+            {
+                id: "task-12",
+                title: "리팩토링",
+                description: "코드 구조 개선",
+                startDate: "2023-08-10",
+                dueDate: "2023-08-18",
+                priority: "낮음",
+                userName: "Jake",
             },
         ],
     },
@@ -112,17 +161,15 @@ function TeamTodoContentPage() {
         if (!destination) return;
 
         if (source.droppableId === destination.droppableId) {
-            // 같은 컬럼 내 순서 변경
+            // 같은 컬럼 내에서 순서 변경
             const column = columns[source.droppableId];
             const copiedItems = [...column.items];
             const [removed] = copiedItems.splice(source.index, 1);
             copiedItems.splice(destination.index, 0, removed);
+
             setColumns({
                 ...columns,
-                [source.droppableId]: {
-                    ...column,
-                    items: copiedItems,
-                },
+                [source.droppableId]: { ...column, items: copiedItems },
             });
         } else {
             // 다른 컬럼으로 이동
@@ -132,16 +179,11 @@ function TeamTodoContentPage() {
             const destItems = [...destColumn.items];
             const [removed] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, removed);
+
             setColumns({
                 ...columns,
-                [source.droppableId]: {
-                    ...sourceColumn,
-                    items: sourceItems,
-                },
-                [destination.droppableId]: {
-                    ...destColumn,
-                    items: destItems,
-                },
+                [source.droppableId]: { ...sourceColumn, items: sourceItems },
+                [destination.droppableId]: { ...destColumn, items: destItems },
             });
         }
     };
@@ -163,16 +205,10 @@ function TeamTodoContentPage() {
             <div className="list-tap">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
-                        <div
-                            className={`tab-item ${isMainPage ? "active" : ""}`}
-                            onClick={() => history.push(`/team/${teamId}`)}
-                        >
+                        <div className={`tab-item ${isMainPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}`)}>
                             메인
                         </div>
-                        <div
-                            className={`tab-item ${isTodoPage ? "active" : ""}`}
-                            onClick={() => history.push(`/team/${teamId}/todo`)}
-                        >
+                        <div className={`tab-item ${isTodoPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}/todo`)}>
                             팀 Todo
                         </div>
                         <div className="tab-item">소통</div>
@@ -198,25 +234,19 @@ function TeamTodoContentPage() {
 
             {/* 드래그앤드롭 컨텍스트 */}
             <DragDropContext onDragEnd={onDragEnd}>
-                {/* 세로로 컬럼을 나열 */}
+                {/*
+          - 전체 컬럼을 가로로 나열 (.kanban-columns)
+          - 각 컬럼 내부의 TASK 카드 목록(.task-list-horizontal)도 가로(좌→우)로 나열
+        */}
                 <div className="kanban-columns">
                     {Object.entries(columns).map(([columnId, columnData]) => (
-                        // 각 컬럼: 수평 드래그앤드롭
-                        <Droppable
-                            droppableId={columnId}
-                            key={columnId}
-                            direction="horizontal"
-                        >
-                            {(provided, snapshot) => (
-                                <div className="kanban-column">
-                                    <h3 className="column-title">{columnData.name}</h3>
-
-                                    {/* 수평 나열, 줄바꿈 허용 → flex-wrap: wrap */}
-                                    <div
-                                        className="task-list-horizontal"
-                                        ref={provided.innerRef}
-                                        {...provided.droppableProps}
-                                    >
+                        <Droppable droppableId={columnId} key={columnId} direction="horizontal">
+                            {(provided) => (
+                                <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
+                                    <h3 className="column-title">
+                                        {columnData.name} ({columnData.items.length})
+                                    </h3>
+                                        <div className="task-list-horizontal">
                                         {columnData.items.map((item, index) => {
                                             const daysLeft = getDaysLeft(item.dueDate);
                                             let ddayText = "";
@@ -229,14 +259,11 @@ function TeamTodoContentPage() {
                                             } else {
                                                 ddayText = "기한 만료";
                                             }
-
                                             return (
                                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                                     {(provided, snapshot) => (
                                                         <div
-                                                            className={`kanban-task-card horizontal-card ${
-                                                                snapshot.isDragging ? "dragging" : ""
-                                                            }`}
+                                                            className={`kanban-task-card horizontal-card ${snapshot.isDragging ? "dragging" : ""}`}
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
@@ -245,40 +272,29 @@ function TeamTodoContentPage() {
                                                             <div className={`priority-ribbon priority-${item.priority || "낮음"}`}>
                                                                 {item.priority || "낮음"}
                                                             </div>
-
                                                             {/* 담당자 */}
                                                             <div className="task-assignee">
                                                                 <img src={defaultUser} alt="User" className="assignee-avatar" />
                                                                 <span className="assignee-name">{item.userName || "미지정"}</span>
                                                             </div>
-
                                                             {/* 제목 */}
                                                             <div className="task-title" style={{ marginTop: "10px" }}>
                                                                 {item.title}
                                                             </div>
-
                                                             {/* 설명 */}
                                                             <div className="task-desc">{item.description}</div>
-
-                                                            {/* 시작일 표시 (추가) */}
+                                                            {/* 시작일 */}
                                                             <div className="task-startDate">
-
                                                                 <span className="start-label">시작: </span>
-
                                                                 <span className="start-date-text">
-              {item.startDate
-                  ? new Date(item.startDate).toLocaleDateString()
-                  : "미설정"}
-            </span>
+                                  {item.startDate ? new Date(item.startDate).toLocaleDateString() : "미설정"}
+                                </span>
                                                             </div>
-
                                                             {/* 마감일 + D-Day */}
                                                             <div className="task-dueDate">
                                                                 <span className="due-label">마감: </span>
                                                                 <span className="due-date-text">
-                                  {item.dueDate
-                                      ? new Date(item.dueDate).toLocaleDateString()
-                                      : "미설정"}
+                                  {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
                                 </span>
                                                                 <span className="dday-text">({ddayText})</span>
                                                             </div>
