@@ -155,7 +155,6 @@ function TeamTodoContentPage() {
 
     const [columns, setColumns] = useState(initialColumns);
 
-    // --------------------- [추가] 접기/펼치기 & 순차 애니메이션 관련 상태 ---------------------
     const [collapsed, setCollapsed] = useState(false);
     // 0 ~ 3: 각 컬럼이 순서대로 나타나는 단계를 제어
     const [expandStep, setExpandStep] = useState(3); // 기본(처음)은 모두 보임
@@ -175,12 +174,11 @@ function TeamTodoContentPage() {
             // 처음에는 아무것도 안 보이게 step=0
             setExpandStep(0);
             // 0.3초 간격으로 step을 1->2->3
-            setTimeout(() => setExpandStep(1), 300); // onHold
-            setTimeout(() => setExpandStep(2), 600); // inProgress
-            setTimeout(() => setExpandStep(3), 900); // done
+            setTimeout(() => setExpandStep(1), 300);
+            setTimeout(() => setExpandStep(2), 600);
+            setTimeout(() => setExpandStep(3), 900);
         }
     };
-    // --------------------- [추가] 끝 ---------------------
 
     // 드래그 종료 시 실행
     const onDragEnd = (result) => {
@@ -265,41 +263,30 @@ function TeamTodoContentPage() {
                 </p>
             </div>
 
-            {/* --------------------- [추가] 접기/펼치기 버튼 --------------------- */}
             <div style={{ marginBottom: "16px" }}>
                 <button className="btn-collapse-toggle" onClick={handleToggle}>
                     {collapsed ? "펼치기" : "접기"}
                 </button>
             </div>
-            {/* --------------------- [추가] 끝 --------------------- */}
 
             {/* 드래그앤드롭 컨텍스트 */}
             <DragDropContext onDragEnd={onDragEnd}>
 
-                {/*
-                  !!! 기존 코드: Object.entries(columns).map(...) !!!
-                  절대 수정/삭제하지 않고 그대로 둠.
-                  하지만 여기서는 실제로는 렌더링되지 않도록 trick 처리
-                */}
+
                 {Object.entries(columns).map(([columnId, columnData]) => {
-                    // [추가] trick: 아무것도 리턴 안 함
                     return null;
                 })}
 
                 {/*
-                  [추가] 실제로는 colOrder.map(...) 로 순서 제어 + collapsed/expandStep 적용
                 */}
                 <div className="kanban-columns">
                     {colOrder.map((columnId, idx) => {
                         const columnData = columns[columnId];
                         if (!columnData) return null;
 
-                        // collapsed=true이면 'inProgress'만 보임
                         if (collapsed && columnId !== "inProgress") {
                             return null;
                         }
-                        // 펼치기 중인 경우: expandStep < (idx+1) 이면 아직 표시 X
-                        // idx: 0=onHold, 1=inProgress, 2=done
                         if (!collapsed && expandStep < (idx + 1)) {
                             return null;
                         }
