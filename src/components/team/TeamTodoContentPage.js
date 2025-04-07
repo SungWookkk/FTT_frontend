@@ -155,6 +155,33 @@ function TeamTodoContentPage() {
 
     const [columns, setColumns] = useState(initialColumns);
 
+    // --------------------- [추가] 접기/펼치기 & 순차 애니메이션 관련 상태 ---------------------
+    const [collapsed, setCollapsed] = useState(false);
+    // 0 ~ 3: 각 컬럼이 순서대로 나타나는 단계를 제어
+    const [expandStep, setExpandStep] = useState(3); // 기본(처음)은 모두 보임
+
+    // 컬럼 순서 고정: onHold → inProgress → done
+    const colOrder = ["onHold", "inProgress", "done"];
+
+    const handleToggle = () => {
+        if (!collapsed) {
+            // 접기 => "진행중" 컬럼만 남기고 나머지는 숨김
+            setCollapsed(true);
+            // 진행중만 보이게 step=2로
+            setExpandStep(2);
+        } else {
+            // 펼치기 => 순차로 onHold -> inProgress -> done
+            setCollapsed(false);
+            // 처음에는 아무것도 안 보이게 step=0
+            setExpandStep(0);
+            // 0.3초 간격으로 step을 1->2->3
+            setTimeout(() => setExpandStep(1), 300); // onHold
+            setTimeout(() => setExpandStep(2), 600); // inProgress
+            setTimeout(() => setExpandStep(3), 900); // done
+        }
+    };
+    // --------------------- [추가] 끝 ---------------------
+
     // 드래그 종료 시 실행
     const onDragEnd = (result) => {
         const { source, destination } = result;
@@ -205,10 +232,16 @@ function TeamTodoContentPage() {
             <div className="list-tap">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
-                        <div className={`tab-item ${isMainPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}`)}>
+                        <div
+                            className={`tab-item ${isMainPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}`)}
+                        >
                             메인
                         </div>
-                        <div className={`tab-item ${isTodoPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}/todo`)}>
+                        <div
+                            className={`tab-item ${isTodoPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}/todo`)}
+                        >
                             팀 Todo
                         </div>
                         <div className="tab-item">소통</div>
@@ -232,83 +265,189 @@ function TeamTodoContentPage() {
                 </p>
             </div>
 
+            {/* --------------------- [추가] 접기/펼치기 버튼 --------------------- */}
+            <div style={{ marginBottom: "16px" }}>
+                <button className="btn-collapse-toggle" onClick={handleToggle}>
+                    {collapsed ? "펼치기" : "접기"}
+                </button>
+            </div>
+            {/* --------------------- [추가] 끝 --------------------- */}
+
             {/* 드래그앤드롭 컨텍스트 */}
             <DragDropContext onDragEnd={onDragEnd}>
+
                 {/*
-          - 전체 컬럼을 가로로 나열 (.kanban-columns)
-          - 각 컬럼 내부의 TASK 카드 목록(.task-list-horizontal)도 가로(좌→우)로 나열
-        */}
+                  !!! 기존 코드: Object.entries(columns).map(...) !!!
+                  절대 수정/삭제하지 않고 그대로 둠.
+                  하지만 여기서는 실제로는 렌더링되지 않도록 trick 처리
+                */}
+                {Object.entries(columns).map(([columnId, columnData]) => {
+                    // [추가] trick: 아무것도 리턴 안 함
+                    return null;
+                })}
+
+                {/*
+                  [추가] 실제로는 colOrder.map(...) 로 순서 제어 + collapsed/expandStep 적용
+                */}
                 <div className="kanban-columns">
-                    {Object.entries(columns).map(([columnId, columnData]) => (
-                        <Droppable droppableId={columnId} key={columnId} direction="horizontal">
-                            {(provided) => (
-                                <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
-                                    <h3 className="column-title">
-                                        {columnData.name} ({columnData.items.length})
-                                    </h3>
+                    {colOrder.map((columnId, idx) => {
+                        const columnData = columns[columnId];
+                        if (!columnData) return null;
+
+                        // collapsed=true이면 'inProgress'만 보임
+                        if (collapsed && columnId !== "inProgress") {
+                            return null;
+                        }
+                        // 펼치기 중인 경우: expandStep < (idx+1) 이면 아직 표시 X
+                        // idx: 0=onHold, 1=inProgress, 2=done
+                        if (!collapsed && expandStep < (idx + 1)) {
+                            return null;
+                        }
+
+                        return (
+                            <Droppable
+                                droppableId={columnId}
+                                key={columnId}
+                                direction="horizontal"
+                            >
+                                {(provided) => (
+                                    <div
+                                        className={`kanban-column fade-in-left`}
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                    >
+                                        <h3 className="column-title">
+                                            {columnData.name} (
+                                            {columnData.items.length})
+                                        </h3>
                                         <div className="task-list-horizontal">
-                                        {columnData.items.map((item, index) => {
-                                            const daysLeft = getDaysLeft(item.dueDate);
-                                            let ddayText = "";
-                                            if (daysLeft === null) {
-                                                ddayText = "날짜 미정";
-                                            } else if (daysLeft > 0) {
-                                                ddayText = `D-${daysLeft}`;
-                                            } else if (daysLeft === 0) {
-                                                ddayText = "오늘 마감!";
-                                            } else {
-                                                ddayText = "기한 만료";
-                                            }
-                                            return (
-                                                <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            className={`kanban-task-card horizontal-card ${snapshot.isDragging ? "dragging" : ""}`}
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
+                                            {columnData.items.map(
+                                                (item, index) => {
+                                                    const daysLeft = getDaysLeft(
+                                                        item.dueDate
+                                                    );
+                                                    let ddayText = "";
+                                                    if (daysLeft === null) {
+                                                        ddayText = "날짜 미정";
+                                                    } else if (daysLeft > 0) {
+                                                        ddayText = `D-${daysLeft}`;
+                                                    } else if (daysLeft === 0) {
+                                                        ddayText = "오늘 마감!";
+                                                    } else {
+                                                        ddayText = "기한 만료";
+                                                    }
+                                                    return (
+                                                        <Draggable
+                                                            key={item.id}
+                                                            draggableId={
+                                                                item.id
+                                                            }
+                                                            index={index}
                                                         >
-                                                            {/* 우선순위 띠 */}
-                                                            <div className={`priority-ribbon priority-${item.priority || "낮음"}`}>
-                                                                {item.priority || "낮음"}
-                                                            </div>
-                                                            {/* 담당자 */}
-                                                            <div className="task-assignee">
-                                                                <img src={defaultUser} alt="User" className="assignee-avatar" />
-                                                                <span className="assignee-name">{item.userName || "미지정"}</span>
-                                                            </div>
-                                                            {/* 제목 */}
-                                                            <div className="task-title" style={{ marginTop: "10px" }}>
-                                                                {item.title}
-                                                            </div>
-                                                            {/* 설명 */}
-                                                            <div className="task-desc">{item.description}</div>
-                                                            {/* 시작일 */}
-                                                            <div className="task-startDate">
-                                                                <span className="start-label">시작: </span>
-                                                                <span className="start-date-text">
-                                  {item.startDate ? new Date(item.startDate).toLocaleDateString() : "미설정"}
-                                </span>
-                                                            </div>
-                                                            {/* 마감일 + D-Day */}
-                                                            <div className="task-dueDate">
-                                                                <span className="due-label">마감: </span>
-                                                                <span className="due-date-text">
-                                  {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
-                                </span>
-                                                                <span className="dday-text">({ddayText})</span>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            );
-                                        })}
-                                        {provided.placeholder}
+                                                            {(
+                                                                provided,
+                                                                snapshot
+                                                            ) => (
+                                                                <div
+                                                                    className={`kanban-task-card horizontal-card ${
+                                                                        snapshot.isDragging
+                                                                            ? "dragging"
+                                                                            : ""
+                                                                    }`}
+                                                                    ref={
+                                                                        provided.innerRef
+                                                                    }
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                >
+                                                                    {/* 우선순위 띠 */}
+                                                                    <div
+                                                                        className={`priority-ribbon priority-${
+                                                                            item.priority ||
+                                                                            "낮음"
+                                                                        }`}
+                                                                    >
+                                                                        {item.priority ||
+                                                                            "낮음"}
+                                                                    </div>
+                                                                    {/* 담당자 */}
+                                                                    <div className="task-assignee">
+                                                                        <img
+                                                                            src={
+                                                                                defaultUser
+                                                                            }
+                                                                            alt="User"
+                                                                            className="assignee-avatar"
+                                                                        />
+                                                                        <span className="assignee-name">
+                                                                            {item.userName ||
+                                                                                "미지정"}
+                                                                        </span>
+                                                                    </div>
+                                                                    {/* 제목 */}
+                                                                    <div
+                                                                        className="task-title"
+                                                                        style={{
+                                                                            marginTop:
+                                                                                "10px",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            item.title
+                                                                        }
+                                                                    </div>
+                                                                    {/* 설명 */}
+                                                                    <div className="task-desc">
+                                                                        {
+                                                                            item.description
+                                                                        }
+                                                                    </div>
+                                                                    {/* 시작일 */}
+                                                                    <div className="task-startDate">
+                                                                        <span className="start-label">
+                                                                            시작:{" "}
+                                                                        </span>
+                                                                        <span className="start-date-text">
+                                                                            {item.startDate
+                                                                                ? new Date(
+                                                                                    item.startDate
+                                                                                ).toLocaleDateString()
+                                                                                : "미설정"}
+                                                                        </span>
+                                                                    </div>
+                                                                    {/* 마감일 + D-Day */}
+                                                                    <div className="task-dueDate">
+                                                                        <span className="due-label">
+                                                                            마감:{" "}
+                                                                        </span>
+                                                                        <span className="due-date-text">
+                                                                            {item.dueDate
+                                                                                ? new Date(
+                                                                                    item.dueDate
+                                                                                ).toLocaleDateString()
+                                                                                : "미설정"}
+                                                                        </span>
+                                                                        <span className="dday-text">
+                                                                            (
+                                                                            {
+                                                                                ddayText
+                                                                            }
+                                                                            )
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                    );
+                                                }
+                                            )}
+                                            {provided.placeholder}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </Droppable>
-                    ))}
+                                )}
+                            </Droppable>
+                        );
+                    })}
                 </div>
             </DragDropContext>
         </div>

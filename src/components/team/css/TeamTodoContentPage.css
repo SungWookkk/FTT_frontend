@@ -192,3 +192,29 @@
     color: #e74c3c;
     margin-left: 4px;
 }
+.btn-collapse-toggle {
+     background-color: #ddd;
+     color: #333;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     padding: 6px 12px;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+ }
+.btn-collapse-toggle:hover {
+    background-color: #ccc;
+}
+
+/* 왼쪽에서 오른쪽으로 슬라이드/페이드인 */
+.fade-in-left {
+    animation: slideFromLeft 0.3s ease forwards;
+}
+@keyframes slideFromLeft {
+    0% {
+        opacity: 0;
+        /* transform 속성 제거 */
+    }
+    100% {
+        opacity: 1;
+    }
+}
