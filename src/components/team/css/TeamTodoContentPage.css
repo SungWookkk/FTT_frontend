@@ -54,6 +54,7 @@
     background-color: #e2e6f6;
 }
 
+/* 칸반 영역 */
 .kanban-columns {
     width: 95%;
     display: flex;
@@ -65,7 +66,6 @@
 .kanban-column {
     display: inline-block;
     margin-right: 24px;
-    background-color: #fafafa;
     border-radius: 6px;
     border: 1px solid #eee;
     padding: 16px;
@@ -76,15 +76,14 @@
     max-width: 90%;
     overflow-x: auto;
 }
-/* 컬럼 제목 */
-.column-title {
-    margin: 0 0 16px 0;
+
+/* 타이틀(이름) 돋보이게 */
+.column-title1 {
+    margin: 0;
     font-size: 16px;
     font-weight: 700;
-    color: #333;
-    text-align: center;
+    color: #2a2e34;
 }
-
 /* 카드 목록: 가로로 정렬 */
 .task-list-horizontal {
     display: flex;
@@ -111,6 +110,8 @@
 .dragging {
     opacity: 0.8;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    position: relative;
 }
 
 /* 우선순위 띠 */
@@ -192,29 +193,79 @@
     color: #e74c3c;
     margin-left: 4px;
 }
-.btn-collapse-toggle {
-     background-color: #ddd;
-     color: #333;
-     border: 1px solid #ccc;
-     border-radius: 4px;
-     padding: 6px 12px;
-     cursor: pointer;
-     transition: background-color 0.3s ease;
- }
-.btn-collapse-toggle:hover {
-    background-color: #ccc;
+
+
+/* 컬럼 헤더 컨테이너 - 새로운 디자인 */
+.column-header {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    position: relative;
+    border: 1px solid #e9ecef;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 }
 
-/* 왼쪽에서 오른쪽으로 슬라이드/페이드인 */
-.fade-in-left {
-    animation: slideFromLeft 0.3s ease forwards;
+/* 아코디언(드롭다운) 느낌의 영역 */
+.foldable-section {
+    overflow: hidden;
+    transition: max-height 0.7s ease;
+    max-height: 600px;
+    display: flex
+;
+    flex-direction: column;
 }
-@keyframes slideFromLeft {
-    0% {
-        opacity: 0;
-        /* transform 속성 제거 */
-    }
-    100% {
-        opacity: 1;
-    }
+.foldable-section.folded {
+    max-height: 0;
+}
+
+/* 접기/펼치기 버튼 */
+.fold-toggle-btn {
+    background-color: #bb4444;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.fold-toggle-btn:hover {
+    background-color: #ddd;
+}
+/* 접기/펼치기 버튼 */
+.fold-toggle-btn {
+    background: linear-gradient(135deg, #f06292, #ec407a);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* 버튼 hover 효과 */
+.fold-toggle-btn:hover {
+    background: linear-gradient(135deg, #ec407a, #d81b60);
+    transform: scale(1.05);
+}
+
+/* 버튼 클릭 효과 */
+.fold-toggle-btn:active {
+    transform: scale(0.95);
+}
+/* 달력 아이콘을 부모 내에서 절대 위치로 고정 (접기 버튼의 왼쪽) */
+.calendar-icon {
+    position: absolute;
+    top: 13px;         /* 원하는 상단 위치 (조정 가능) */
+    right: 85px;       /* 접기 버튼과의 간격: 접기 버튼보다 왼쪽에 위치하도록 */
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
 }
