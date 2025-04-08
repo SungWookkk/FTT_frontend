@@ -17,8 +17,8 @@
     background-color: #fff;
     width: 1200px;
     max-width: 100%;
-    max-height: 90%;
     border-radius: 8px;
+    height: 800px;
     overflow: auto;
     position: relative;
     padding: 20px;
@@ -59,4 +59,13 @@
     overflow: auto;
     position: relative;
     padding: 20px;
+}
+
+.calendar-section-title1 {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-align: left;
+    position: relative;
 }

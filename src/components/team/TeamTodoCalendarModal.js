@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../team/css/TeamCalendarSection.css";
 import "../team/css/TeamTodoCalendarModal.css";
+import CalendarRangeBars from "./CalendarRangeBars";
 
 const MAX_TASKS_PER_DAY = 2;
 
@@ -64,6 +65,35 @@ function TeamTodoCalendarModal({ team, onClose }) {
     const [selectedTaskDetail, setSelectedTaskDetail] = useState(null);
     const todayLocalStr = getLocalDateString(today);
 
+    // 임시 데이터 (API 대신 데모용)
+    useEffect(() => {
+        const tempTasks = [
+            {
+                id: "temp-1",
+                title: "데모 작업 1",
+                startDate: "2025-04-05",
+                dueDate: "2025-04-08",
+                status: "",
+            },
+            {
+                id: "temp-2",
+                title: "데모 작업 2 (완료)",
+                startDate: "2025-04-10",
+                dueDate: "2025-04-15",
+                status: "DONE",
+            },
+            {
+                id: "temp-3",
+                title: "데모 작업 3",
+                startDate: "2025-04-15",
+                dueDate: "2025-04-20",
+                status: "",
+            },
+        ];
+        setTasks(tempTasks);
+    }, [team]);
+
+    // 실제 API 호출 로직
     useEffect(() => {
         if (!team || !team.id) return;
         const token = localStorage.getItem("token");
@@ -78,8 +108,6 @@ function TeamTodoCalendarModal({ team, onClose }) {
                 console.error("팀 일정 불러오기 오류:", err);
             });
     }, [team]);
-
-    const todayTasks = tasks.filter((t) => isDateInRange(todayLocalStr, t.startDate, t.dueDate));
 
     const handlePrevMonth = () => {
         setDirection("prev");
@@ -117,13 +145,15 @@ function TeamTodoCalendarModal({ team, onClose }) {
     const totalDays = lastDate.getDate();
     const startDay = firstDate.getDay();
     const calendarCells = [];
+
+    // 앞쪽 빈 칸(해당 달 1일 전의 요일 offset만큼)
     for (let i = 0; i < startDay; i++) {
         calendarCells.push(null);
     }
+    // 실제 날짜들
     for (let d = 1; d <= totalDays; d++) {
         calendarCells.push(new Date(year, month, d));
     }
-
 
     const getTasksForDate = (dateObj) => {
         if (!dateObj) return [];
@@ -155,8 +185,10 @@ function TeamTodoCalendarModal({ team, onClose }) {
                 className="team-calendar-modal-content"
                 onClick={(e) => e.stopPropagation()}
             >
-                <button className="modal-close-button1" onClick={onClose}>×</button>
-                <h2 className="calendar-section-title">Calendar</h2>
+                <button className="modal-close-button1" onClick={onClose}>
+                    ×
+                </button>
+                <h2 className="calendar-section-title1">Calendar</h2>
 
                 <div className="calendar-section">
                     {/* 달력 헤더 */}
@@ -186,78 +218,69 @@ function TeamTodoCalendarModal({ team, onClose }) {
                         <div className="weekday-cell">SAT</div>
                     </div>
 
-                    {/* 날짜 칸 */}
-                    <div key={`${year}-${month}`} className={`dates-grid ${direction === "prev" ? "slide-left" : "slide-right"}`}>
-                        {calendarCells.map((dateObj, idx) => {
-                            if (!dateObj) {
-                                return <div key={idx} className="date-cell empty"></div>;
-                            }
-                            const isoStr = getLocalDateString(dateObj);
-                            const dayNum = dateObj.getDate();
-                            const isToday = isoStr === todayLocalStr;
-                            const dayTasks = getTasksForDate(dateObj);
-                            const tasksToShow = dayTasks.slice(0, MAX_TASKS_PER_DAY);
-                            const moreCount = dayTasks.length - MAX_TASKS_PER_DAY;
+                    {/* 단일 달력 그리드 + Gantt 막대 오버레이 */}
+                    <div style={{ position: "relative" }}>
+                        {/* 날짜 셀 */}
+                        <div
+                            key={`${year}-${month}`}
+                            className={`dates-grid ${
+                                direction === "prev" ? "slide-left" : "slide-right"
+                            }`}
+                        >
+                            {calendarCells.map((dateObj, idx) => {
+                                if (!dateObj) {
+                                    return <div key={idx} className="date-cell empty"></div>;
+                                }
+                                const isoStr = getLocalDateString(dateObj);
+                                const dayNum = dateObj.getDate();
+                                const isToday = isoStr === todayLocalStr;
+                                const dayTasks = getTasksForDate(dateObj);
+                                const tasksToShow = dayTasks.slice(0, MAX_TASKS_PER_DAY);
+                                const moreCount = dayTasks.length - MAX_TASKS_PER_DAY;
 
-                            return (
-                                <div
-                                    key={idx}
-                                    className={`date-cell ${isToday ? "today-highlight" : ""}`}
-                                    onClick={() => openTaskModal(dayTasks)}
-                                >
-                                    <div className="date-number">{dayNum}</div>
-                                    {tasksToShow.map((task) => {
-                                        const { sectionColor } = getSectionInfo(task);
-                                        return (
+                                return (
+                                    <div
+                                        key={idx}
+                                        className={`date-cell ${isToday ? "today-highlight" : ""}`}
+                                        onClick={() => openTaskModal(dayTasks)}
+                                    >
+                                        <div className="date-number">{dayNum}</div>
+                                        {/* 최대 2개의 작업 태그 표시 */}
+                                        {tasksToShow.map((task) => {
+                                            const { sectionColor } = getSectionInfo(task);
+                                            return (
+                                                <div
+                                                    key={task.id}
+                                                    className="task-item"
+                                                    style={{ backgroundColor: sectionColor, color: "#fff" }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openTaskDetail(task);
+                                                    }}
+                                                >
+                                                    {task.title}
+                                                </div>
+                                            );
+                                        })}
+                                        {/* +N more 표시 */}
+                                        {moreCount > 0 && (
                                             <div
-                                                key={task.id}
-                                                className="task-item"
-                                                style={{ backgroundColor: sectionColor, color: "#fff" }}
+                                                className="more-link"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    openTaskDetail(task);
+                                                    openTaskModal(dayTasks);
                                                 }}
                                             >
-                                                {task.title}
+                                                +{moreCount} more
                                             </div>
-                                        );
-                                    })}
-                                    {moreCount > 0 && (
-                                        <div
-                                            className="more-link"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openTaskModal(dayTasks);
-                                            }}
-                                        >
-                                            +{moreCount} more
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* 오른쪽 패널: 오늘의 팀 일정 */}
-                <div className="right-panels">
-                    <div className="schedule-sidebar">
-                        <h3 className="sidebar-title">오늘의 팀 일정</h3>
-                        <div className="sidebar-list">
-                            {todayTasks.length === 0 ? (
-                                <div className="no-tasks">오늘은 일정이 없습니다.</div>
-                            ) : (
-                                todayTasks.map((task) => (
-                                    <div
-                                        key={task.id}
-                                        className="sidebar-task"
-                                        onClick={() => openTaskDetail(task)}
-                                    >
-                                        <div className="sidebar-task-title">{task.title}</div>
+                                        )}
                                     </div>
-                                ))
-                            )}
+                                );
+                            })}
                         </div>
+
+                        {/* 이 위치에서, 달력 셀 위에 Gantt 막대를 그린다 */}
+                        <CalendarRangeBars tasks={tasks} year={year} month={month} />
                     </div>
                 </div>
 
@@ -286,7 +309,10 @@ function TeamTodoCalendarModal({ team, onClose }) {
 function DayTasksModal({ tasks, onClose, onTaskClick }) {
     return (
         <div className="day-tasks-modal-overlay" onClick={onClose}>
-            <div className="day-tasks-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div
+                className="day-tasks-modal-content"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <button className="modal-close-btn" onClick={onClose}>
                     ×
                 </button>
