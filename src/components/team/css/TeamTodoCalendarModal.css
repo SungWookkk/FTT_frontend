@@ -1,0 +1,62 @@
+/* 모달 오버레이: 화면 전체 어둡게 덮음 */
+.team-calendar-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 내용 컨테이너 */
+.team-calendar-modal-content {
+    background-color: #fff;
+    width: 1200px;
+    max-width: 100%;
+    max-height: 90%;
+    border-radius: 8px;
+    overflow: auto;
+    position: relative;
+    padding: 20px;
+}
+
+/* 모달 닫기 버튼 */
+.modal-close-button1 {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 24px;
+}
+
+/* day-tasks-modal-overlay도 같은 방식 */
+.day-tasks-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* day-tasks-modal-content */
+.day-tasks-modal-content {
+    background-color: #fff;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    overflow: auto;
+    position: relative;
+    padding: 20px;
+}

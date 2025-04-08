@@ -5,6 +5,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import defaultUser from "../../Auth/css/img/default-user.svg";
 import "../team/css/TeamTodoContentPage.css";
 import calendar from "../../Auth/css/img/calendar.svg";
+import TeamTodoCalendarModal from "./TeamTodoCalendarModal";
+
 /** 마감일 계산 함수 */
 function getDaysLeft(dueDateString) {
     if (!dueDateString) return null;
@@ -149,20 +151,21 @@ function TeamTodoContentPage() {
     const history = useHistory();
     const location = useLocation();
 
-    // 현재 탭 활성화
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
 
     const [columns, setColumns] = useState(initialColumns);
-
-    // "접기/펼치기" 상태
+    const [sortOrders, setSortOrders] = useState({
+        onHold: "priority",
+        inProgress: "priority",
+        done: "priority",
+    });
+    const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
     const [folded, setFolded] = useState(false);
 
-    // 드래그 종료 시 실행
     const onDragEnd = (result) => {
         const { source, destination } = result;
         if (!destination) return;
-
         if (source.droppableId === destination.droppableId) {
             const column = columns[source.droppableId];
             const copiedItems = [...column.items];
@@ -187,6 +190,26 @@ function TeamTodoContentPage() {
         }
     };
 
+    const getSortedItems = (columnId, items) => {
+        const sortedItems = [...items].sort((a, b) => {
+            const sortBy = sortOrders[columnId];
+            if (sortBy === "priority") {
+                const priorityValue = { "높음": 3, "중간": 2, "낮음": 1 };
+                return (priorityValue[b.priority] || 0) - (priorityValue[a.priority] || 0);
+            } else if (sortBy === "dueDate") {
+                const aDue = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+                const bDue = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+                return aDue - bDue;
+            } else if (sortBy === "startDate") {
+                const aStart = a.startDate ? new Date(a.startDate).getTime() : Infinity;
+                const bStart = b.startDate ? new Date(b.startDate).getTime() : Infinity;
+                return aStart - bStart;
+            }
+            return 0;
+        });
+        return sortedItems;
+    };
+
     return (
         <div className="dashboard-content">
             {/* 상단 헤더 */}
@@ -203,7 +226,12 @@ function TeamTodoContentPage() {
             {/* 탭 */}
             <div className="list-tap">
                 <div
-                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                    }}
                 >
                     <div className="list-tab-container">
                         <div
@@ -243,108 +271,44 @@ function TeamTodoContentPage() {
             </div>
 
             <DragDropContext onDragEnd={onDragEnd}>
-                {/*
-          1) "진행 예정" 컬럼
-             - 버튼을 오른쪽 상단에 배치
-        */}
                 <div className="kanban-columns">
-                    <Droppable droppableId="onHold" direction="horizontal">
-                        {(provided) => {
-                            const columnData = columns.onHold;
-                            return (
-                                <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
-                                    <div className="column-header">
-                                        <h3 className="column-title1">
-                                            {columnData.name} ({columnData.items.length})
-                                        </h3>
-                                        <img src={calendar} alt="Calendar" className="calendar-icon"/>
-                                        {/* 접기/펼치기 버튼 (오른쪽 상단) */}
-                                        <button className="fold-toggle-btn" onClick={() => setFolded(!folded)}>
-
-                                            {folded ? "펼치기" : "접기"}
-                                        </button>
-                                    </div>
-
-                                    <div className="task-list-horizontal">
-                                        {columnData.items.map((item, index) => {
-                                            const daysLeft = getDaysLeft(item.dueDate);
-                                            let ddayText = "";
-                                            if (daysLeft === null) {
-                                                ddayText = "날짜 미정";
-                                            } else if (daysLeft > 0) {
-                                                ddayText = `D-${daysLeft}`;
-                                            } else if (daysLeft === 0) {
-                                                ddayText = "오늘 마감!";
-                                            } else {
-                                                ddayText = "기한 만료";
-                                            }
-                                            return (
-                                                <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            className={`kanban-task-card horizontal-card ${snapshot.isDragging ? "dragging" : ""}`}
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                        >
-                                                            {/* 우선순위 띠 */}
-                                                            <div className={`priority-ribbon priority-${item.priority || "낮음"}`}>
-                                                                {item.priority || "낮음"}
-                                                            </div>
-                                                            {/* 담당자 */}
-                                                            <div className="task-assignee">
-                                                                <img src={defaultUser} alt="User" className="assignee-avatar" />
-                                                                <span className="assignee-name">{item.userName || "미지정"}</span>
-                                                            </div>
-                                                            {/* 제목 */}
-                                                            <div className="task-title" style={{ marginTop: "10px" }}>
-                                                                {item.title}
-                                                            </div>
-                                                            {/* 설명 */}
-                                                            <div className="task-desc">{item.description}</div>
-                                                            {/* 시작일 */}
-                                                            <div className="task-startDate">
-                                                                <span className="start-label">시작: </span>
-                                                                <span className="start-date-text">
-                                  {item.startDate ? new Date(item.startDate).toLocaleDateString() : "미설정"}
-                                </span>
-                                                            </div>
-                                                            {/* 마감일 + D-Day */}
-                                                            <div className="task-dueDate">
-                                                                <span className="due-label">마감: </span>
-                                                                <span className="due-date-text">
-                                  {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
-                                </span>
-                                                                <span className="dday-text">({ddayText})</span>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            );
-                                        })}
-                                        {provided.placeholder}
-                                    </div>
-                                </div>
-                            );
-                        }}
-                    </Droppable>
-
-                    {/*
-            2) "진행중" & "완료" 컬럼은 foldable-section으로 감싸,
-               접기 시 아래로 아코디언처럼 닫히고,
-               펼치기 시 아래로 펼쳐지는 모션
-          */}
-                    <div className={`foldable-section ${folded ? "folded" : "expanded"}`}>
-                        <Droppable droppableId="inProgress" direction="horizontal">
-                            {(provided) => {
-                                const columnData = columns.inProgress;
-                                return (
+                    {["onHold", "inProgress", "done"].map((columnId) => {
+                        const columnData = columns[columnId];
+                        const sortedItems = getSortedItems(columnId, columnData.items);
+                        return (
+                            <Droppable droppableId={columnId} key={columnId} direction="horizontal">
+                                {(provided) => (
                                     <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
-                                        <h3 className="column-title1">
-                                            {columnData.name} ({columnData.items.length})
-                                        </h3>
+                                        <div className="column-header">
+                                            <h3 className="column-title1">
+                                                {columnData.name} ({columnData.items.length})
+                                            </h3>
+                                            {/* 정렬 드롭다운 */}
+                                            <select
+                                                className="sort-dropdown"
+                                                value={sortOrders[columnId]}
+                                                onChange={(e) =>
+                                                    setSortOrders({ ...sortOrders, [columnId]: e.target.value })
+                                                }
+                                            >
+                                                <option value="priority">우선순위순</option>
+                                                <option value="dueDate">마감날짜 얼마 안 남은 순</option>
+                                                <option value="startDate">곧 시작하는 순</option>
+                                            </select>
+                                            {/* 달력 아이콘 클릭 시 달력 모달 열기 */}
+                                            <img
+                                                src={calendar}
+                                                alt="Calendar"
+                                                className="calendar-icon"
+                                                onClick={() => setIsCalendarModalOpen(true)}
+                                            />
+                                            {/* 접기/펼치기 버튼 */}
+                                            <button className="fold-toggle-btn" onClick={() => setFolded(!folded)}>
+                                                {folded ? "펼치기" : "접기"}
+                                            </button>
+                                        </div>
                                         <div className="task-list-horizontal">
-                                            {columnData.items.map((item, index) => {
+                                            {sortedItems.map((item, index) => {
                                                 const daysLeft = getDaysLeft(item.dueDate);
                                                 let ddayText = "";
                                                 if (daysLeft === null) {
@@ -360,7 +324,9 @@ function TeamTodoContentPage() {
                                                     <Draggable key={item.id} draggableId={item.id} index={index}>
                                                         {(provided, snapshot) => (
                                                             <div
-                                                                className={`kanban-task-card horizontal-card ${snapshot.isDragging ? "dragging" : ""}`}
+                                                                className={`kanban-task-card horizontal-card ${
+                                                                    snapshot.isDragging ? "dragging" : ""
+                                                                }`}
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
@@ -370,7 +336,9 @@ function TeamTodoContentPage() {
                                                                 </div>
                                                                 <div className="task-assignee">
                                                                     <img src={defaultUser} alt="User" className="assignee-avatar" />
-                                                                    <span className="assignee-name">{item.userName || "미지정"}</span>
+                                                                    <span className="assignee-name">
+                                    {item.userName || "미지정"}
+                                  </span>
                                                                 </div>
                                                                 <div className="task-title" style={{ marginTop: "10px" }}>
                                                                     {item.title}
@@ -397,78 +365,20 @@ function TeamTodoContentPage() {
                                             {provided.placeholder}
                                         </div>
                                     </div>
-                                );
-                            }}
-                        </Droppable>
-
-                        <Droppable droppableId="done" direction="horizontal">
-                            {(provided) => {
-                                const columnData = columns.done;
-                                return (
-                                    <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
-                                        <h3 className="column-title1">
-                                            {columnData.name} ({columnData.items.length})
-                                        </h3>
-                                        <div className="task-list-horizontal">
-                                            {columnData.items.map((item, index) => {
-                                                const daysLeft = getDaysLeft(item.dueDate);
-                                                let ddayText = "";
-                                                if (daysLeft === null) {
-                                                    ddayText = "날짜 미정";
-                                                } else if (daysLeft > 0) {
-                                                    ddayText = `D-${daysLeft}`;
-                                                } else if (daysLeft === 0) {
-                                                    ddayText = "오늘 마감!";
-                                                } else {
-                                                    ddayText = "기한 만료";
-                                                }
-                                                return (
-                                                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                        {(provided, snapshot) => (
-                                                            <div
-                                                                className={`kanban-task-card horizontal-card ${snapshot.isDragging ? "dragging" : ""}`}
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                            >
-                                                                <div className={`priority-ribbon priority-${item.priority || "낮음"}`}>
-                                                                    {item.priority || "낮음"}
-                                                                </div>
-                                                                <div className="task-assignee">
-                                                                    <img src={defaultUser} alt="User" className="assignee-avatar" />
-                                                                    <span className="assignee-name">{item.userName || "미지정"}</span>
-                                                                </div>
-                                                                <div className="task-title" style={{ marginTop: "10px" }}>
-                                                                    {item.title}
-                                                                </div>
-                                                                <div className="task-desc">{item.description}</div>
-                                                                <div className="task-startDate">
-                                                                    <span className="start-label">시작: </span>
-                                                                    <span className="start-date-text">
-                                    {item.startDate ? new Date(item.startDate).toLocaleDateString() : "미설정"}
-                                  </span>
-                                                                </div>
-                                                                <div className="task-dueDate">
-                                                                    <span className="due-label">마감: </span>
-                                                                    <span className="due-date-text">
-                                    {item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "미설정"}
-                                  </span>
-                                                                    <span className="dday-text">({ddayText})</span>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </Draggable>
-                                                );
-                                            })}
-                                            {provided.placeholder}
-                                        </div>
-                                    </div>
-                                );
-                            }}
-                        </Droppable>
-                    </div>
+                                )}
+                            </Droppable>
+                        );
+                    })}
                 </div>
             </DragDropContext>
+
+            {/* 달력 모달 (조건부 렌더링) */}
+            {isCalendarModalOpen && (
+                <TeamTodoCalendarModal
+                    team={{ id: teamId }}
+                    onClose={() => setIsCalendarModalOpen(false)}
+                />
+            )}
         </div>
     );
 }

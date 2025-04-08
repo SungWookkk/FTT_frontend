@@ -260,11 +260,11 @@
 .fold-toggle-btn:active {
     transform: scale(0.95);
 }
-/* 달력 아이콘을 부모 내에서 절대 위치로 고정 (접기 버튼의 왼쪽) */
+/* 달력 아이콘 */
 .calendar-icon {
     position: absolute;
-    top: 13px;         /* 원하는 상단 위치 (조정 가능) */
-    right: 85px;       /* 접기 버튼과의 간격: 접기 버튼보다 왼쪽에 위치하도록 */
+    top: 13px;
+    right: 85px;
     width: 28px;
     height: 28px;
     object-fit: contain;
