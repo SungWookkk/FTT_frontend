@@ -11,7 +11,7 @@ function TeamTodoListContent({ teamId }) {
     useEffect(() => {
         if (!teamId) return;
         axios
-            .get(`/api/teams/${teamId}/tasks`)
+            .get(`/api/team/${teamId}/tasks`)
             .then((res) => {
                 setTasks(Array.isArray(res.data) ? res.data : []);
             })
