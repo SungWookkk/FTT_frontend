@@ -121,8 +121,8 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     <span className="normal-text">을 이끌어냅니다!</span>
                 </p>
             </div>
-            {/* 팀 상태 메시지 영역 (새 컴포넌트) */}
-            <TeamStatusMessage/>
+            {/* 팀 상태 메시지 영역 */}
+            <TeamStatusMessage teamId={team.id} />
             <div className="team-affiliation-container">
                 <TeamCalendarSection team={team}/>
                 <TeamReadingList teamId={team.id} />

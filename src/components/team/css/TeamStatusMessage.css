@@ -100,3 +100,15 @@
     color: #999;
     margin-top: 4px;
 }
+/* 클릭 가능한 영역임을 강조 */
+.status-content.clickable {
+    cursor: pointer;
+    display: inline-block;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease;
+}
+.status-content.clickable:hover {
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+ }
