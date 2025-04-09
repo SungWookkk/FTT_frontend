@@ -125,7 +125,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <TeamStatusMessage/>
             <div className="team-affiliation-container">
                 <TeamCalendarSection team={team}/>
-                <TeamReadingList/>
+                <TeamReadingList teamId={team.id} />
                 <TeamTodoListContent/>
             </div>
 

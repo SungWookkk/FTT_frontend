@@ -326,3 +326,14 @@
 .empty-state-button:hover {
     background-color: #6154c2;
 }
+/* 빈 상태 안내 카드 */
+.team-empty-task-card {
+    background-color: #fff;
+    border: 1px dashed #bbb;
+    border-radius: 6px;
+    padding: 24px;
+    font-size: 16px;
+    text-align: center;
+    color: #666;
+    margin-bottom: 12px;
+}

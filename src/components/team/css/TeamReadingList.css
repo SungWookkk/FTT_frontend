@@ -1,3 +1,5 @@
+/* 기존 스타일 유지 */
+
 /* Reading list 전체 컨테이너 */
 .team-reading-list {
     width: 1500px;
@@ -9,13 +11,34 @@
     top: 30px;
 }
 
+/* Reading list 헤더 (타이틀과 작성 버튼을 한 줄에 배치) */
+.reading-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
 /* Reading list 타이틀 */
 .reading-list-title {
-    margin-bottom: 24px;
     font-size: 24px;
     font-weight: 700;
     color: #333;
     text-align: left;
+    margin: 0;
+}
+
+/* 읽기 자료 작성 버튼 - 오른쪽에 작게 배치 */
+.add-reading-btn {
+    font-size: 17px;
+    color: #7869f1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.add-reading-btn:hover {
+    text-decoration: underline;
 }
 
 /* 카테고리 열들을 가로로 배치하는 영역 */
@@ -85,4 +108,17 @@
 }
 .add-new-page:hover {
     color: #666;
+}
+
+/* 빈 상태 안내 메시지를 카드처럼 보이게 */
+.empty-reading-item {
+    background-color: #fff;
+    border: 1px dashed #bbb;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.4;
+    text-align: center;
 }

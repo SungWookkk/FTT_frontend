@@ -1,127 +1,87 @@
-/**
- * 팀 메인 페이지 하단의 Task 목록
- * */
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "../team/css/TeamTodoListContent.css";
 
-function TeamTodoListContent() {
-    const dummyTasks = [
-        {
-            id: 1,
-            sectionTitle: "🔥 진행중",
-            sectionColor: "#f39c12",
-            title: "UI/UX 개선",
-            description: "피드백 반영하여 UI 수정",
-        },
-        {
-            id: 2,
-            sectionTitle: "✅ 완료됨",
-            sectionColor: "#27ae60",
-            title: "API 연동",
-            description: "백엔드 API와 연동 완료",
-        },
-        {
-            id: 3,
-            sectionTitle: "🕓 보류",
-            sectionColor: "#3498db",
-            title: "DB 스키마 재설계",
-            description: "추가 논의 필요",
-        },
-        {
-            id: 4,
-            sectionTitle: "⚠ 긴급",
-            sectionColor: "#e74c3c",
-            title: "서버 이슈 해결",
-            description: "서버 다운 문제 해결",
-        },
-        {
-            id: 5,
-            sectionTitle: "🔥 진행중",
-            sectionColor: "#f39c12",
-            title: "문서 업데이트",
-            description: "최신 기술 문서 정리",
-        },
-        {
-            id: 6,
-            sectionTitle: "✅ 완료됨",
-            sectionColor: "#27ae60",
-            title: "디자인 수정",
-            description: "로고 및 컬러 수정",
-        },
-        {
-            id: 7,
-            sectionTitle: "🕓 보류",
-            sectionColor: "#3498db",
-            title: "마케팅 전략",
-            description: "SNS 홍보 계획 수립",
-        },
-        {
-            id: 8,
-            sectionTitle: "⚠ 긴급",
-            sectionColor: "#e74c3c",
-            title: "보안 점검",
-            description: "취약점 검토 및 수정",
-        },
-        {
-            id: 9,
-            sectionTitle: "🔥 진행중",
-            sectionColor: "#f39c12",
-            title: "프로토타입 제작",
-            description: "새 기능 프로토타입 제작",
-        },
-        {
-            id: 10,
-            sectionTitle: "✅ 완료됨",
-            sectionColor: "#27ae60",
-            title: "테스트 자동화",
-            description: "CI/CD 파이프라인 구축",
-        },
-    ];
-
+function TeamTodoListContent({ teamId }) {
+    const [tasks, setTasks] = useState([]);
     const initialVisibleCount = 8;
     const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
 
+    useEffect(() => {
+        if (!teamId) return;
+        axios
+            .get(`/api/teams/${teamId}/tasks`)
+            .then((res) => {
+                setTasks(Array.isArray(res.data) ? res.data : []);
+            })
+            .catch((err) => {
+                console.error("팀 작업 로드 오류:", err);
+                setTasks([]);
+            });
+    }, [teamId]);
+
     const handleToggleVisible = () => {
-        if (visibleCount === dummyTasks.length) {
+        if (visibleCount === tasks.length) {
             setVisibleCount(initialVisibleCount);
         } else {
-            setVisibleCount(dummyTasks.length);
+            setVisibleCount(tasks.length);
         }
     };
 
     return (
         <div className="team-todo-container">
+            {/* 기존 레이아웃 타이틀 유지 */}
             <h2 className="team-task-title">팀 작업</h2>
 
-            <div className="team-all-tasks-grid">
-                <TransitionGroup component={null}>
-                    {dummyTasks.slice(0, visibleCount).map((task) => (
-                        <CSSTransition key={task.id} timeout={500} classNames="task">
-                            <div className="team-all-list-task-card">
-                                <div
-                                    className="team-task-section-badge"
-                                    style={{ backgroundColor: task.sectionColor }}
-                                >
-                                    {task.sectionTitle}
-                                </div>
-                                <div className="team-all-list-task-title">{task.title}</div>
-                                <div className="team-all-list-task-desc">
-                                    {task.description}
-                                </div>
-                            </div>
-                        </CSSTransition>
-                    ))}
-                </TransitionGroup>
-            </div>
-
-            {dummyTasks.length > initialVisibleCount && (
-                <div style={{ textAlign: "center", marginTop: "20px" }}>
-                    <button onClick={handleToggleVisible} className="btn btn-edit-all">
-                        {visibleCount === dummyTasks.length ? "접기" : "더 보기"}
-                    </button>
+            {/* 작업이 비어 있으면 안내 카드 노출, 아니면 기존 목록 표시 */}
+            {tasks.length === 0 ? (
+                <div className="team-all-tasks-grid">
+                    <div className="team-all-list-task-card team-empty-task-card">
+                        아직 팀 작업이 없습니다. 팀 작업을 생성하여 팀 작업에 기여해봐요!
+                    </div>
                 </div>
+            ) : (
+                <>
+                    <div className="team-all-tasks-grid">
+                        <TransitionGroup component={null}>
+                            {tasks.slice(0, visibleCount).map((task) => (
+                                <CSSTransition
+                                    key={task.id}
+                                    timeout={500}
+                                    classNames="task"
+                                >
+                                    <div className="team-all-list-task-card">
+                                        <div
+                                            className="team-task-section-badge"
+                                            style={{ backgroundColor: task.sectionColor }}
+                                        >
+                                            {task.sectionTitle}
+                                        </div>
+                                        <div className="team-all-list-task-title">
+                                            {task.title}
+                                        </div>
+                                        <div className="team-all-list-task-desc">
+                                            {task.description}
+                                        </div>
+                                    </div>
+                                </CSSTransition>
+                            ))}
+                        </TransitionGroup>
+                    </div>
+
+                    {/* '더 보기' / '접기' 버튼 */}
+                    {tasks.length > initialVisibleCount && (
+                        <div style={{ textAlign: "center", marginTop: "20px" }}>
+                            <button
+                                onClick={handleToggleVisible}
+                                className="btn btn-edit-all"
+                            >
+                                {visibleCount === tasks.length ? "접기" : "더 보기"}
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

@@ -1,110 +1,113 @@
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import axios from "axios";
+import TeamReadingListModal from "./TeamReadingListModal"; // 모달 컴포넌트 import
 import "../team/css/TeamReadingList.css";
 
-// 테스트용으로 카테고리를 많이 넣어서 가로 스크롤
-const DUMMY_READING_LIST = [
-    {
-        category: "AWS",
-        items: [
-            { title: "EC2 Spring Boot 배포", link: "https://example.com/ec2-spring" },
-            { title: "EC2 MySQL 설정", link: "https://example.com/ec2-mysql" },
-        ],
-    },
-    {
-        category: "BackEnd",
-        items: [
-            { title: "Node.js", link: "https://nodejs.org" },
-            { title: "HTTP", link: "https://developer.mozilla.org/docs/Web/HTTP" },
-            { title: "Docker", link: "https://www.docker.com/" },
-            { title: "Web Architecture", link: "https://example.com/web-architecture" },
-        ],
-    },
-    {
-        category: "FrontEnd",
-        items: [
-            { title: "React vs JS", link: "https://example.com/react-vs-js" },
-            { title: "모바일 앱 종류", link: "#" },
-            { title: "React 기초", link: "https://react.dev" },
-        ],
-    },
-    {
-        category: "Etc",
-        items: [
-            { title: "기타 주제1", link: "#" },
-            { title: "기타 주제2", link: "#" },
-        ],
-    },
-    {
-        category: "DevOps",
-        items: [
-            { title: "CI/CD", link: "#" },
-            { title: "Kubernetes", link: "#" },
-        ],
-    },
-    {
-        category: "Mobile",
-        items: [
-            { title: "React Native", link: "https://reactnative.dev" },
-            { title: "Flutter", link: "https://flutter.dev" },
-        ],
-    },
-    {
-        category: "Design",
-        items: [
-            { title: "Figma 기초", link: "https://www.figma.com" },
-            { title: "UX/UI 원칙", link: "#" },
-        ],
-    },
-    {
-        category: "Security",
-        items: [
-            { title: "OWASP Top 10", link: "#" },
-            { title: "SSL/TLS", link: "#" },
-        ],
-    },
-    {
-        category: "Marketing",
-        items: [
-            { title: "SEO 기본", link: "#" },
-            { title: "콘텐츠 전략", link: "#" },
-        ],
-    },
-    {
-        category: "Extra",
-        items: [
-            { title: "추가 주제1", link: "#" },
-            { title: "추가 주제2", link: "#" },
-        ],
-    },
-];
 
-function TeamReadingList() {
+function groupReadingItemsByCategory(items) {
+    const map = {};
+
+    items.forEach((it) => {
+        const cat = it.category || "기타";
+        if (!map[cat]) {
+            map[cat] = [];
+        }
+        map[cat].push({ title: it.title, link: it.link });
+    });
+
+    return Object.keys(map).map((cat) => ({
+        category: cat,
+        items: map[cat],
+    }));
+}
+
+
+function TeamReadingList({ teamId }) {
+    const [readingList, setReadingList] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const fetchReadingList = useCallback(() => {
+        if (!teamId) return;
+        axios
+            .get(`/api/team/${teamId}/readingList`)
+            .then((res) => {
+                const rawData = Array.isArray(res.data) ? res.data : [];
+                const groupedData = groupReadingItemsByCategory(rawData);
+                setReadingList(groupedData);
+            })
+            .catch((err) => {
+                console.error("읽기 자료 불러오기 오류:", err);
+                setReadingList([]);
+            });
+    }, [teamId]);
+
+    useEffect(() => {
+        fetchReadingList();
+    }, [fetchReadingList]);
+
+    // 읽기 자료 작성 버튼 클릭 핸들러
+    const handleAddReadingList = () => {
+        setIsModalOpen(true);
+    };
+
+    // 모달에서 저장 후 호출하는 콜백 (목록 갱신)
+    const handleSaveReadingList = (newData) => {
+        // 새로운 데이터를 적용하거나, 새로고침
+        // 예: fetchReadingList();
+        fetchReadingList();
+    };
+
     return (
         <div className="team-reading-list">
-            <h2 className="reading-list-title">Reading List</h2>
+            <div className="reading-list-header">
+                <h2 className="reading-list-title">Reading List</h2>
+                <button onClick={handleAddReadingList} className="add-reading-btn">
+                    + 작성하기
+                </button>
+            </div>
 
             <div className="reading-list-board">
-                {DUMMY_READING_LIST.map((column, idx) => (
-                    <div key={idx} className="reading-list-column">
-                        <h3 className="column-title">{column.category}</h3>
+                {readingList.length === 0 ? (
+                    <div className="reading-list-column">
+                        <h3 className="column-title">No Data</h3>
                         <ul className="reading-items">
-                            {column.items.map((item, itemIdx) => (
-                                <li key={itemIdx} className="reading-item">
-                                    <a
-                                        href={item.link || "#"}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="reading-link"
-                                    >
-                                        {item.title}
-                                    </a>
-                                </li>
-                            ))}
+                            <li className="reading-item empty-reading-item">
+                                아직 읽기 자료가 없습니다. <br />
+                                읽기 자료를 추가하여 팀 작업에 기여해봐요!
+                            </li>
                         </ul>
-                        <div className="add-new-page">+ 새 페이지</div>
                     </div>
-                ))}
+                ) : (
+                    readingList.map((column, idx) => (
+                        <div key={idx} className="reading-list-column">
+                            <h3 className="column-title">{column.category}</h3>
+                            <ul className="reading-items">
+                                {column.items.map((item, itemIdx) => (
+                                    <li key={itemIdx} className="reading-item">
+                                        <a
+                                            href={item.link || "#"}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="reading-link"
+                                        >
+                                            {item.title}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="add-new-page">+ 새 페이지</div>
+                        </div>
+                    ))
+                )}
             </div>
+
+            {isModalOpen && (
+                <TeamReadingListModal
+                    teamId={teamId}
+                    onClose={() => setIsModalOpen(false)}
+                    onSave={handleSaveReadingList}
+                />
+            )}
         </div>
     );
 }
