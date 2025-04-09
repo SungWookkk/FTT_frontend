@@ -258,10 +258,37 @@
 }
 /* 달력 아이콘 */
 .calendar-icon {
-    position: absolute;
-    top: 13px;
-    right: 85px;
     width: 28px;
     height: 28px;
     object-fit: contain;
+    cursor: pointer;
+}
+
+.secondary-columns {
+    overflow: hidden;
+    transition: max-height 0.7s ease, opacity 0.7s ease;
+    max-height: 1000px; /* 충분히 큰 값 */
+    opacity: 1;
+}
+
+.secondary-columns.folded {
+    max-height: 0;
+    opacity: 0;
+}
+/* 드롭다운 최소 폭 지정 */
+.sort-dropdown {
+    min-width: 120px;
+    height: 24px;
+}
+/* 왼쪽 영역: 제목 영역 */
+.header-left {
+    flex: 1 1 auto;  /* 필요에 따라 영역 차지 */
+}
+
+/* 오른쪽 영역: 드롭다운, 달력 아이콘, 버튼 묶음 */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap; /* 화면 폭이 좁으면 줄바꿈 가능 */
 }
