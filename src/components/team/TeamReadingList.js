@@ -1,12 +1,11 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import TeamReadingListModal from "./TeamReadingListModal"; // 모달 컴포넌트 import
+import TeamReadingListModal from "./TeamReadingListModal";
 import "../team/css/TeamReadingList.css";
 
-
+// 읽기 자료 아이템들을 카테고리별로 그룹화하는 함수
 function groupReadingItemsByCategory(items) {
     const map = {};
-
     items.forEach((it) => {
         const cat = it.category || "기타";
         if (!map[cat]) {
@@ -14,17 +13,17 @@ function groupReadingItemsByCategory(items) {
         }
         map[cat].push({ title: it.title, link: it.link });
     });
-
     return Object.keys(map).map((cat) => ({
         category: cat,
         items: map[cat],
     }));
 }
 
-
 function TeamReadingList({ teamId }) {
     const [readingList, setReadingList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // 모달을 열 때 미리 채워질 카테고리 값을 관리하는 state
+    const [modalInitialCategory, setModalInitialCategory] = useState("");
 
     const fetchReadingList = useCallback(() => {
         if (!teamId) return;
@@ -45,15 +44,20 @@ function TeamReadingList({ teamId }) {
         fetchReadingList();
     }, [fetchReadingList]);
 
-    // 읽기 자료 작성 버튼 클릭 핸들러
+    // 최상단 "+ 작성하기" 버튼: 초기 카테고리 미지정
     const handleAddReadingList = () => {
+        setModalInitialCategory("");
+        setIsModalOpen(true);
+    };
+
+    // 각 카테고리 하단의 "+ 여기에 작성하기" 버튼 클릭 시, 해당 카테고리명을 기본값으로 지정
+    const handleAddReadingListForCategory = (category) => {
+        setModalInitialCategory(category);
         setIsModalOpen(true);
     };
 
     // 모달에서 저장 후 호출하는 콜백 (목록 갱신)
     const handleSaveReadingList = (newData) => {
-        // 새로운 데이터를 적용하거나, 새로고침
-        // 예: fetchReadingList();
         fetchReadingList();
     };
 
@@ -95,7 +99,13 @@ function TeamReadingList({ teamId }) {
                                     </li>
                                 ))}
                             </ul>
-                            <div className="add-new-page">+ 새 페이지</div>
+                            {/* 각 카테고리 하단에 추가 버튼 */}
+                            <div
+                                className="add-new-page"
+                                onClick={() => handleAddReadingListForCategory(column.category)}
+                            >
+                                + 여기에 작성하기
+                            </div>
                         </div>
                     ))
                 )}
@@ -104,7 +114,11 @@ function TeamReadingList({ teamId }) {
             {isModalOpen && (
                 <TeamReadingListModal
                     teamId={teamId}
-                    onClose={() => setIsModalOpen(false)}
+                    initialCategory={modalInitialCategory}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setModalInitialCategory("");
+                    }}
                     onSave={handleSaveReadingList}
                 />
             )}

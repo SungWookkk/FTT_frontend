@@ -2,27 +2,25 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../team/css/TeamReadingListModal.css";
 
-function TeamReadingListModal({ teamId, onClose, onSave }) {
-    const [category, setCategory] = useState("");
+function TeamReadingListModal({ teamId, initialCategory, onClose, onSave }) {
+    // initialCategory prop이 있으면 카테고리 필드에 반영
+    const [category, setCategory] = useState(initialCategory || "");
     const [title, setTitle] = useState("");
     const [link, setLink] = useState("");
     const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 모든 필드 입력 확인
         if (!category || !title || !link) {
             setError("모든 필드를 입력해주세요.");
             return;
         }
         setError("");
-
-        // 새 읽기 자료 항목 생성
         const newItem = { category, title, link };
+
         axios
             .post(`/api/team/${teamId}/readingList`, newItem)
             .then((res) => {
-                // onSave 콜백으로 부모에 변경 알림 (필요시 읽기 자료 전체를 재갱신)
                 if (onSave) onSave(res.data);
                 onClose();
             })
@@ -34,16 +32,13 @@ function TeamReadingListModal({ teamId, onClose, onSave }) {
 
     return (
         <div className="reading-modal-overlay" onClick={onClose}>
-            <div
-                className="reading-modal-content"
-                onClick={(e) => e.stopPropagation()}
-            >
+            <div className="reading-modal-content" onClick={(e) => e.stopPropagation()}>
                 <button className="modal-close-btn" onClick={onClose}>
                     ×
                 </button>
                 <h3>새 읽기 자료 작성</h3>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group1">
+                    <div className="form-group">
                         <label htmlFor="category">카테고리</label>
                         <input
                             type="text"
@@ -53,7 +48,7 @@ function TeamReadingListModal({ teamId, onClose, onSave }) {
                             placeholder="예: AWS, BackEnd 등"
                         />
                     </div>
-                    <div className="form-group1">
+                    <div className="form-group">
                         <label htmlFor="title">제목</label>
                         <input
                             type="text"
@@ -63,7 +58,7 @@ function TeamReadingListModal({ teamId, onClose, onSave }) {
                             placeholder="자료 제목을 입력하세요"
                         />
                     </div>
-                    <div className="form-group1">
+                    <div className="form-group">
                         <label htmlFor="link">링크</label>
                         <input
                             type="text"
