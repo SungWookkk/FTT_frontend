@@ -235,7 +235,7 @@
 }
 /* 접기/펼치기 버튼 */
 .fold-toggle-btn {
-    background: linear-gradient(135deg, #f06292, #ec407a);
+    background: #7869f1;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -248,7 +248,7 @@
 
 /* 버튼 hover 효과 */
 .fold-toggle-btn:hover {
-    background: linear-gradient(135deg, #ec407a, #d81b60);
+    background: #7869f1;
     transform: scale(1.05);
 }
 
@@ -291,4 +291,38 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap; /* 화면 폭이 좁으면 줄바꿈 가능 */
+}
+.empty-state-container {
+    margin-top: 40px;
+    text-align: center;
+    position: relative;
+    left: -100px;
+    color: #666;
+}
+
+.empty-state-illustration {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    margin-bottom: 16px;
+    opacity: 0.8; /* 필요시 */
+}
+
+.empty-state-text {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.empty-state-button {
+    border: none;
+    background-color: #7869f1;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.empty-state-button:hover {
+    background-color: #6154c2;
 }

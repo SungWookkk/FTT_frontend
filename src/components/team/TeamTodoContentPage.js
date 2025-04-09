@@ -6,7 +6,6 @@ import defaultUser from "../../Auth/css/img/default-user.svg";
 import "../team/css/TeamTodoContentPage.css";
 import calendar from "../../Auth/css/img/calendar.svg";
 import TeamTodoCalendarModal from "./TeamTodoCalendarModal";
-
 /** 마감일 계산 함수 */
 function getDaysLeft(dueDateString) {
     if (!dueDateString) return null;
@@ -566,7 +565,21 @@ function TeamTodoContentPage() {
                     </div>
                 </div>
             </DragDropContext>
-
+            {folded && (
+                <div className="empty-state-container">
+                    <p className="empty-state-text">
+                        진행 중, 완료된 작업이 현재 숨겨진 상태예요.<br />
+                        다시 보고 싶다면 <strong>펼치기</strong> 버튼을 눌러주세요!
+                    </p>
+                    {/* 이미 '접기'/'펼치기' 버튼이 있다면 중복 필요 없을 수 있음 */}
+                    <button
+                        onClick={() => setFolded(false)}
+                        className="empty-state-button"
+                    >
+                        펼치기
+                    </button>
+                </div>
+            )}
             {/* 달력 모달 (조건부 렌더링) */}
             {isCalendarModalOpen && (
                 <TeamTodoCalendarModal team={{ id: teamId }} onClose={() => setIsCalendarModalOpen(false)} />
