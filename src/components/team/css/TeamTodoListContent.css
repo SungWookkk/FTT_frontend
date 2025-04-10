@@ -100,3 +100,16 @@
 .btn-edit-all{
     font-weight: 700;
 }
+.add-todo-btn {
+    background: none;
+    border: none;
+    color: #7367f0;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.add-todo-btn:hover {
+    text-decoration: underline;
+}

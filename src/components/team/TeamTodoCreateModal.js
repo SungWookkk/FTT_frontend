@@ -7,7 +7,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [priority, setPriority] = useState("중간"); // 기본값
+    const [priority, setPriority] = useState("중간"); // 기본값 "중간"
     const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
@@ -19,14 +19,18 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
             return;
         }
         setError("");
+
+        // 백엔드의 TeamTask 엔티티에 맞게 새 작업 데이터를 구성합니다.
         const newTask = {
             title,
             description,
-            startDate,
-            dueDate,
+            startDate,  // "YYYY-MM-DD" 형식 (HTML input date 사용 시)
+            dueDate,    // "YYYY-MM-DD" 형식
             priority,
-            // 필요 시 status, memo 등 추가 (예: status: "진행중")
+            status: "진행중"  // 새 작업의 기본 상태를 "진행중"으로 설정 (필요에 따라 수정)
+            // memo나 files는 추가 입력이 필요하지 않은 경우 생략 가능
         };
+
         axios
             .post(`/api/team/${teamId}/tasks`, newTask)
             .then((res) => {
@@ -47,7 +51,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
                 </button>
                 <h3>새 팀 작업 생성</h3>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className="form-group1">
                         <label htmlFor="title">제목</label>
                         <input
                             type="text"
@@ -57,7 +61,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
                             placeholder="작업 제목을 입력하세요"
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group1">
                         <label htmlFor="description">설명</label>
                         <textarea
                             id="description"
@@ -66,7 +70,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
                             placeholder="작업 설명을 입력하세요"
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group1">
                         <label htmlFor="startDate">시작일</label>
                         <input
                             type="date"
@@ -75,7 +79,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
                             onChange={(e) => setStartDate(e.target.value)}
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group1">
                         <label htmlFor="dueDate">마감일</label>
                         <input
                             type="date"
@@ -84,7 +88,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
                             onChange={(e) => setDueDate(e.target.value)}
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group1">
                         <label htmlFor="priority">우선순위</label>
                         <select
                             id="priority"

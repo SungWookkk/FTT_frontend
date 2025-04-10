@@ -9,6 +9,7 @@ import TeamStatusMessage from "./TeamStatusMessage";
 import TeamTodoListContent from "./TeamTodoListContent";
 
 function TeamAffiliationContentPage({ team: propTeam }) {
+    // URL에서 teamId 추출 (직접 URL로 접근한 경우에 사용)
     const { teamId } = useParams();
     const [team, setTeam] = useState(
         propTeam
@@ -17,9 +18,10 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     );
     const [loading, setLoading] = useState(true);
     const history = useHistory();
-    const location = useLocation();
+    const location = useLocation(); // 현재 경로 확인용
 
     useEffect(() => {
+        // (1) 부모 컴포넌트에서 team 객체를 prop으로 넘겨준 경우
         if (propTeam) {
             const fixedTeam = {
                 ...propTeam,
@@ -27,17 +29,29 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             };
             setTeam(fixedTeam);
             setLoading(false);
-        } else if (teamId) {
+        }
+        // (2) URL 파라미터(teamId)로 접근 → 서버에서 팀 상세 정보 요청
+        else if (teamId) {
             axios
                 .get(`/api/teams/${teamId}`)
                 .then((res) => {
-                    console.log("백엔드에서 받은 팀 데이터:", res.data);
-                    if (res.data) {
-                        if (!res.data.members || !Array.isArray(res.data.members)) {
-                            res.data.members = [];
+                    let data = res.data;
+                    // 응답이 문자열인 경우 파싱 처리
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (e) {
+                            console.error("JSON 파싱 오류:", e);
+                            data = null;
                         }
-                        // 다른 필드에 대해서도 필요한 경우 검증 추가
-                        setTeam(res.data);
+                    }
+                    console.log("백엔드에서 받은 팀 데이터:", data);
+                    if (data) {
+                        // members 필드가 없거나 배열이 아닌 경우 빈 배열로 대체
+                        if (!data.members || !Array.isArray(data.members)) {
+                            data.members = [];
+                        }
+                        setTeam(data);
                     } else {
                         setTeam(null);
                     }
@@ -49,11 +63,13 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     setLoading(false);
                 });
         } else {
+            // 팀 정보가 없는 경우 null로 설정
             setTeam(null);
             setLoading(false);
         }
     }, [teamId, propTeam]);
 
+    // 팀을 선택했을 때의 핸들러 (드롭다운 등에서 호출)
     const handleTeamSelect = (selectedTeam) => {
         history.push(`/team/${selectedTeam.id}`);
     };
@@ -61,11 +77,13 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     if (loading) return <div>로딩 중...</div>;
     if (!team) return <div>팀 정보를 불러오지 못했습니다.</div>;
 
+    // 현재 경로가 "/team/:teamId"인지 "/team/:teamId/todo"인지 확인
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
 
     return (
         <div className="dashboard-content">
+            {/* 상단 헤더 */}
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
@@ -73,6 +91,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 </div>
             </div>
 
+            {/* 목록 선택 탭 */}
             <div className="list-tap">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <div className="list-tab-container">
@@ -93,6 +112,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 </div>
             </div>
 
+            {/* 알림 배너 */}
             <div className="alert-banner-todo">
                 <p className="alert-text">
                     <span className="highlight-text">팀</span>
@@ -106,6 +126,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 </p>
             </div>
 
+            {/* 하위 컴포넌트들 */}
             <TeamStatusMessage teamId={team.id} />
             <div className="team-affiliation-container">
                 <TeamCalendarSection team={team} />
