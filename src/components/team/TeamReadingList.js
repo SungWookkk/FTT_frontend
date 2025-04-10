@@ -3,7 +3,6 @@ import axios from "axios";
 import TeamReadingListModal from "./TeamReadingListModal";
 import "../team/css/TeamReadingList.css";
 
-// 읽기 자료 아이템들을 카테고리별로 그룹화하는 함수
 function groupReadingItemsByCategory(items) {
     const map = {};
     items.forEach((it) => {
@@ -22,16 +21,18 @@ function groupReadingItemsByCategory(items) {
 function TeamReadingList({ teamId }) {
     const [readingList, setReadingList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // 모달을 열 때 미리 채워질 카테고리 값을 관리하는 state
     const [modalInitialCategory, setModalInitialCategory] = useState("");
 
     const fetchReadingList = useCallback(() => {
+        console.log("TeamReadingList - fetchReadingList, teamId:", teamId);
         if (!teamId) return;
         axios
             .get(`/api/team/${teamId}/readingList`)
             .then((res) => {
+                console.log("TeamReadingList - API 응답:", res.data);
                 const rawData = Array.isArray(res.data) ? res.data : [];
                 const groupedData = groupReadingItemsByCategory(rawData);
+                console.log("TeamReadingList - 그룹화된 데이터:", groupedData);
                 setReadingList(groupedData);
             })
             .catch((err) => {
@@ -44,20 +45,20 @@ function TeamReadingList({ teamId }) {
         fetchReadingList();
     }, [fetchReadingList]);
 
-    // 최상단 "+ 작성하기" 버튼: 초기 카테고리 미지정
     const handleAddReadingList = () => {
+        console.log("TeamReadingList - handleAddReadingList clicked.");
         setModalInitialCategory("");
         setIsModalOpen(true);
     };
 
-    // 각 카테고리 하단의 "+ 여기에 작성하기" 버튼 클릭 시, 해당 카테고리명을 기본값으로 지정
     const handleAddReadingListForCategory = (category) => {
+        console.log("TeamReadingList - handleAddReadingListForCategory for category:", category);
         setModalInitialCategory(category);
         setIsModalOpen(true);
     };
 
-    // 모달에서 저장 후 호출하는 콜백 (목록 갱신)
     const handleSaveReadingList = (newData) => {
+        console.log("TeamReadingList - 새 읽기 자료 저장 후 호출:", newData);
         fetchReadingList();
     };
 
@@ -69,7 +70,6 @@ function TeamReadingList({ teamId }) {
                     + 작성하기
                 </button>
             </div>
-
             <div className="reading-list-board">
                 {readingList.length === 0 ? (
                     <div className="reading-list-column">
@@ -99,18 +99,13 @@ function TeamReadingList({ teamId }) {
                                     </li>
                                 ))}
                             </ul>
-                            {/* 각 카테고리 하단에 추가 버튼 */}
-                            <div
-                                className="add-new-page"
-                                onClick={() => handleAddReadingListForCategory(column.category)}
-                            >
+                            <div className="add-new-page" onClick={() => handleAddReadingListForCategory(column.category)}>
                                 + 여기에 작성하기
                             </div>
                         </div>
                     ))
                 )}
             </div>
-
             {isModalOpen && (
                 <TeamReadingListModal
                     teamId={teamId}

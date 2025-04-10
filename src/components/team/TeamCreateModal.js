@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../team/css/TeamCreateModal.css";
 import axios from "axios";
-import {useAuth} from "../../Auth/AuthContext";
+import { useAuth } from "../../Auth/AuthContext";
 
 const TeamCreateModal = ({ isOpen, onClose }) => {
     // useAuth로 로그인한 사용자 정보(auth)
@@ -28,17 +28,22 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
             alert("로그인이 필요합니다.");
             return;
         }
-        // 팀 생성 데이터 구성
+        // 팀 생성 데이터 구성 (body에 포함되는 정보)
         const teamData = {
             teamName,
             description,
             announcement,
             category,
-            teamLeader: auth.userId
+            teamLeader: auth.userId  // 팀 생성자의 아이디는 헤더에 우선 전달되므로 추가 정보로 포함됨
         };
 
         try {
-            const response = await axios.post("/api/teams/create", teamData);
+            // axios 요청 시 헤더에 "X-User-Id"를 추가
+            const response = await axios.post("/api/teams/create", teamData, {
+                headers: {
+                    "X-User-Id": auth.userId
+                }
+            });
             console.log("팀 생성 성공:", response.data);
             alert(`팀 생성 성공!\n팀 이름: ${response.data.teamName}`);
             onClose();

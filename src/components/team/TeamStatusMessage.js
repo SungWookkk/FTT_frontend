@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../team/css/TeamStatusMessage.css";
 
@@ -9,10 +9,12 @@ function TeamStatusMessage({ teamId }) {
     const MAX_LENGTH = 50;
 
     useEffect(() => {
+        console.log("TeamStatusMessage useEffect - teamId:", teamId);
         if (!teamId) return;
         axios
             .get(`/api/team/${teamId}/statusMessage`)
             .then((res) => {
+                console.log("TeamStatusMessage - API 응답:", res.data);
                 if (typeof res.data === "string") {
                     setMessage(res.data);
                 } else {
@@ -25,29 +27,29 @@ function TeamStatusMessage({ teamId }) {
             });
     }, [teamId, tempMessage]);
 
-    // 모달 열기/닫기
     const openModal = () => {
+        console.log("TeamStatusMessage - 모달 열기, 현재 메시지:", message);
         setTempMessage(message);
         setIsModalOpen(true);
     };
     const closeModal = () => {
+        console.log("TeamStatusMessage - 모달 닫기");
         setIsModalOpen(false);
     };
 
-    // textarea 변경 핸들러
     const handleChange = (e) => {
         if (e.target.value.length <= MAX_LENGTH) {
             setTempMessage(e.target.value);
         }
     };
 
-    // 저장 버튼 클릭 -> PUT 요청
     const handleSave = () => {
         axios
             .put(`/api/team/${teamId}/statusMessage`, tempMessage, {
                 headers: { "Content-Type": "text/plain" }
             })
             .then(() => {
+                console.log("TeamStatusMessage - 저장 성공, 새 메시지:", tempMessage);
                 setMessage(tempMessage);
                 closeModal();
             })
@@ -56,18 +58,14 @@ function TeamStatusMessage({ teamId }) {
             });
     };
 
-
     return (
         <div className="team-status-message-container">
-            {/* 전체 박스에 onClick을 걸어 클릭 시 모달 열기 */}
             <div
                 className="status-content clickable"
                 onClick={openModal}
             >
                 <span className="status-text">{message}</span>
             </div>
-
-            {/* 모달 */}
             {isModalOpen && (
                 <div className="status-modal-overlay" onClick={closeModal}>
                     <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>

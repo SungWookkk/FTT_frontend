@@ -72,10 +72,11 @@ function TeamCalendarSection({ team }) {
         if (!team || !team.id) return;
         const token = localStorage.getItem("token");
         axios
-            .get(`/api/teams/${team.id}/tasks`, {
+            .get(`/api/team/${team.id}/tasks`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
+                console.log("TeamCalendarSection - tasks API 응답:", res.data);
                 setTasks(res.data);
             })
             .catch((err) => {

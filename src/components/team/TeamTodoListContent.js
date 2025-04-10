@@ -9,10 +9,12 @@ function TeamTodoListContent({ teamId }) {
     const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
 
     useEffect(() => {
+        console.log("TeamTodoListContent - teamId:", teamId);
         if (!teamId) return;
         axios
             .get(`/api/team/${teamId}/tasks`)
             .then((res) => {
+                console.log("TeamTodoListContent - API 응답:", res.data);
                 setTasks(Array.isArray(res.data) ? res.data : []);
             })
             .catch((err) => {
@@ -22,6 +24,7 @@ function TeamTodoListContent({ teamId }) {
     }, [teamId]);
 
     const handleToggleVisible = () => {
+        console.log("TeamTodoListContent - handleToggleVisible: 현재 visibleCount:", visibleCount);
         if (visibleCount === tasks.length) {
             setVisibleCount(initialVisibleCount);
         } else {
@@ -29,12 +32,13 @@ function TeamTodoListContent({ teamId }) {
         }
     };
 
+    useEffect(() => {
+        console.log("TeamTodoListContent - tasks 상태 업데이트:", tasks);
+    }, [tasks]);
+
     return (
         <div className="team-todo-container">
-            {/* 기존 레이아웃 타이틀 유지 */}
             <h2 className="team-task-title">팀 작업</h2>
-
-            {/* 작업이 비어 있으면 안내 카드 노출, 아니면 기존 목록 표시 */}
             {tasks.length === 0 ? (
                 <div className="team-all-tasks-grid">
                     <div className="team-all-list-task-card team-empty-task-card">
@@ -46,16 +50,9 @@ function TeamTodoListContent({ teamId }) {
                     <div className="team-all-tasks-grid">
                         <TransitionGroup component={null}>
                             {tasks.slice(0, visibleCount).map((task) => (
-                                <CSSTransition
-                                    key={task.id}
-                                    timeout={500}
-                                    classNames="task"
-                                >
+                                <CSSTransition key={task.id} timeout={500} classNames="task">
                                     <div className="team-all-list-task-card">
-                                        <div
-                                            className="team-task-section-badge"
-                                            style={{ backgroundColor: task.sectionColor }}
-                                        >
+                                        <div className="team-task-section-badge" style={{ backgroundColor: task.sectionColor }}>
                                             {task.sectionTitle}
                                         </div>
                                         <div className="team-all-list-task-title">
@@ -69,14 +66,9 @@ function TeamTodoListContent({ teamId }) {
                             ))}
                         </TransitionGroup>
                     </div>
-
-                    {/* '더 보기' / '접기' 버튼 */}
                     {tasks.length > initialVisibleCount && (
                         <div style={{ textAlign: "center", marginTop: "20px" }}>
-                            <button
-                                onClick={handleToggleVisible}
-                                className="btn btn-edit-all"
-                            >
+                            <button onClick={handleToggleVisible} className="btn btn-edit-all">
                                 {visibleCount === tasks.length ? "접기" : "더 보기"}
                             </button>
                         </div>
