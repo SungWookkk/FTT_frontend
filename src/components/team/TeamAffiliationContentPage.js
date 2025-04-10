@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useHistory, useLocation, useParams} from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import "../team/css/TeamAffiliationContentPage.css";
 import TeamDropdown from "./TeamDropdown";
@@ -7,6 +7,7 @@ import TeamCalendarSection from "./TeamCalendarSection";
 import TeamReadingList from "./TeamReadingList";
 import TeamStatusMessage from "./TeamStatusMessage";
 import TeamTodoListContent from "./TeamTodoListContent";
+
 //  임시 팀 상세 정보 (예시)
 const DUMMY_TEAM = {
     id: 9999,
@@ -27,6 +28,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     const [loading, setLoading] = useState(true);
     const history = useHistory();
     const location = useLocation();   // ← 현재 경로 확인용
+
     useEffect(() => {
         // (1) 부모 컴포넌트에서 team 객체를 prop으로 넘겨준 경우 → 그대로 사용
         if (propTeam) {
@@ -39,6 +41,10 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 .get(`/api/teams/${teamId}`)
                 .then((res) => {
                     if (res.data) {
+                        // members가 없거나 배열이 아닌 경우 빈 배열로 초기화
+                        if (!res.data.members || !Array.isArray(res.data.members)) {
+                            res.data.members = [];
+                        }
                         setTeam(res.data);
                     } else {
                         // 서버 응답은 성공했지만 데이터가 없으면 임시 데이터 사용
@@ -59,6 +65,12 @@ function TeamAffiliationContentPage({ team: propTeam }) {
         }
     }, [teamId, propTeam]);
 
+    // 팀을 선택했을 때의 핸들러
+    const handleTeamSelect = (selectedTeam) => {
+        // 다른 팀으로 이동
+        history.push(`/team/${selectedTeam.id}`);
+    };
+
     if (loading) return <div>로딩 중...</div>;
     if (!team) return <div>팀 정보를 찾을 수 없습니다.</div>;
 
@@ -72,7 +84,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown/>
+                    <TeamDropdown onTeamSelect={handleTeamSelect} />
                 </div>
             </div>
 
@@ -107,16 +119,16 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     <span className="normal-text">은 공동의 목표를 위해 함께 </span>
                     <span className="highlight-text">소통하고 협업</span>
                     <span className="normal-text">
-            {" "}
+                        {" "}
                         하는 공간입니다. 서로의 아이디어와 역량을 모아{" "}
-          </span>
+                    </span>
                     <span className="highlight-text">시너지를 발휘</span>
                     <span className="normal-text">하며, 매일의 과제를 </span>
                     <span className="highlight-text">함께 해결</span>
                     <span className="normal-text">
-            {" "}
+                        {" "}
                         해 보세요. 작지만 꾸준한 노력들이 모여{" "}
-          </span>
+                    </span>
                     <span className="highlight-text">팀의 성장</span>
                     <span className="normal-text">을 이끌어냅니다!</span>
                 </p>
@@ -126,9 +138,8 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <div className="team-affiliation-container">
                 <TeamCalendarSection team={team}/>
                 <TeamReadingList teamId={team.id} />
-                <TeamTodoListContent/>
+                <TeamTodoListContent teamId={team.id}/>
             </div>
-
         </div>
     );
 }
