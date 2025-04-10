@@ -103,13 +103,20 @@
 .add-todo-btn {
     background: none;
     border: none;
-    color: #7367f0;
-    font-weight: 500;
-    font-size: 1rem;
+    color: #7869f1;
     cursor: pointer;
-    padding: 0;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 4px 8px;
+    left: 1314px;
+    position: relative;
 }
 
 .add-todo-btn:hover {
     text-decoration: underline;
+}
+.todo-header{
+    align-items: center;
+    display: flex;
+    margin-bottom: 24px;
 }
