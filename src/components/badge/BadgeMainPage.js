@@ -198,7 +198,7 @@ const BadgeMainPage = () => {
                 {/* 왼쪽: 현재(활성) 뱃지 영역 */}
                 <section className="user-badge-box">
                     <div
-                        className="section-header1"
+                        className="section-header2"
                         style={{
                             borderBottom: `5px solid ${currentBadgeColor}`,
                             width: "100%",
