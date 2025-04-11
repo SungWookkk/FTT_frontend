@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../team/css/TeamCreateModal.css";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
+import {useHistory} from "react-router-dom";
 
 const TeamCreateModal = ({ isOpen, onClose }) => {
     // useAuth로 로그인한 사용자 정보(auth)
     const { auth } = useAuth();
-
+    const history = useHistory();
     const [teamName, setTeamName] = useState("");
     const [description, setDescription] = useState("");
     const [announcement, setAnnouncement] = useState("");
@@ -47,6 +48,7 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
             console.log("팀 생성 성공:", response.data);
             alert(`팀 생성 성공!\n팀 이름: ${response.data.teamName}`);
             onClose();
+            history.push("/team")
         } catch (error) {
             console.error("팀 생성 오류:", error);
             alert("팀 생성 중 오류가 발생했습니다.");
