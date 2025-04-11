@@ -1,122 +1,32 @@
 import React, { useState, useMemo } from "react";
 import "../team/css/TeamSearchModal.css";
 
-const TeamJoinRequestModal = ({ isOpen, onClose, team }) => {
-    const [nickname, setNickname] = useState("");
-    const [reason, setReason] = useState("");
-    const [goal, setGoal] = useState("");
-
-    // 모달이 열릴 때마다 폼 초기화 (원한다면)
-    // 여기서는 team이 바뀔 때마다 초기화
-    React.useEffect(() => {
-        if (isOpen && team) {
-            setNickname("");
-            setReason("");
-            setGoal("");
-        }
-    }, [isOpen, team]);
-
-    if (!isOpen || !team) return null; // 모달이 닫혀있거나 팀 정보가 없으면 렌더링하지 않음
-
-    const handleJoin = () => {
-        // 가입 신청 로직 (현재는 콘솔 출력/alert 등)
-        console.log("가입 신청 데이터:", {
-            teamId: team.id,
-            nickname,
-            reason,
-            goal,
-        });
-        alert(`${team.name} 팀 가입 신청!`);
-
-        // 모달 닫기
-        onClose();
-    };
-
-    return (
-        <div className="modal-overlay">
-            <div className="join-modal-container" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={onClose}>
-                    X
-                </button>
-                <h2 className="modal-title">팀 가입 신청</h2>
-                <p className="join-modal-teamname">
-                    가입할 팀: <strong>{team.name}</strong>
-                </p>
-
-                <div className="join-modal-field">
-                    <label>닉네임</label>
-                    <input
-                        type="text"
-                        placeholder="팀에서 사용할 닉네임"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                    />
-                </div>
-
-                <div className="join-modal-field">
-                    <label>가입 사유</label>
-                    <textarea
-                        placeholder="간단한 가입 사유를 적어주세요"
-                        rows={3}
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)}
-                    />
-                </div>
-
-                <div className="join-modal-field">
-                    <label>목표</label>
-                    <textarea
-                        placeholder="팀에서 달성하고 싶은 목표를 적어주세요"
-                        rows={3}
-                        value={goal}
-                        onChange={(e) => setGoal(e.target.value)}
-                    />
-                </div>
-
-                <button className="join-submit-btn" onClick={handleJoin}>
-                    가입 신청
-                </button>
-            </div>
-        </div>
-    );
-};
-
-/* === 팀 검색/목록 모달 === */
 const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
-    // 검색어 & 선택된 카테고리
+    // 검색어 및 선택된 카테고리 상태
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
-
     // 정렬 기준 (기본: "name")
     const [sortCriterion, setSortCriterion] = useState("name");
-
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 10; // 한 페이지에 10개씩
+    const pageSize = 10;
 
-    // "팀 가입 신청 모달" 상태
-    const [joinModalOpen, setJoinModalOpen] = useState(false);
-    const [selectedTeam, setSelectedTeam] = useState(null);
+    console.debug("TeamSearchModal - teamsData:", teamsData);
 
-    // 테이블 행 클릭 시
-    const handleRowClick = (team) => {
-        setSelectedTeam(team);
-        setJoinModalOpen(true);
-    };
-
-    // 1) 검색어 필터
+    // 1) 검색어 필터 (팀의 이름과 설명을 소문자로 변환하여 비교)
     const searchedTeams = useMemo(() => {
-        return teamsData.filter((team) =>
-            team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            team.desc.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        return teamsData.filter((team, index) => {
+            console.debug(`TeamSearchModal: 필터링 team[${index}]`, team);
+            const teamName = team.name ? team.name.toLowerCase() : "";
+            const teamDesc = team.description ? team.description.toLowerCase() : "";
+            const lowerSearchTerm = searchTerm.toLowerCase();
+            return teamName.includes(lowerSearchTerm) || teamDesc.includes(lowerSearchTerm);
+        });
     }, [teamsData, searchTerm]);
 
     // 2) 카테고리 필터
     const filteredTeams = useMemo(() => {
-        if (!selectedCategory) {
-            return searchedTeams;
-        }
+        if (!selectedCategory) return searchedTeams;
         return searchedTeams.filter((team) => team.category === selectedCategory);
     }, [searchedTeams, selectedCategory]);
 
@@ -124,16 +34,19 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
     const sortedTeams = useMemo(() => {
         const teamsCopy = [...filteredTeams];
         if (sortCriterion === "name") {
-            // 이름순
-            teamsCopy.sort((a, b) => a.name.localeCompare(b.name));
+            // 이름이 undefined일 경우 빈 문자열("")로 대체 후 localeCompare
+            teamsCopy.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
         } else if (sortCriterion === "members") {
-            // 멤버 수 오름차순
-            teamsCopy.sort((a, b) => a.members - b.members);
-        } else if (sortCriterion === "status") {
-            // 상태순: Active 먼저, 그다음 Pending (예시)
             teamsCopy.sort((a, b) => {
-                if (a.status === b.status) return 0;
-                return a.status === "Active" ? -1 : 1;
+                // team.members는 배열이므로 길이를 비교
+                return (a.members ? a.members.length : 0) - (b.members ? b.members.length : 0);
+            });
+        } else if (sortCriterion === "status") {
+            teamsCopy.sort((a, b) => {
+                const statusA = a.status ? a.status.toLowerCase() : "pending";
+                const statusB = b.status ? b.status.toLowerCase() : "pending";
+                if (statusA === statusB) return 0;
+                return statusA === "active" ? -1 : 1;
             });
         }
         return teamsCopy;
@@ -142,30 +55,21 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
     // 페이지네이션 계산
     const totalTeams = sortedTeams.length;
     const totalPages = Math.ceil(totalTeams / pageSize);
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const currentTeams = sortedTeams.slice(startIndex, endIndex);
 
-    // 페이지 이동 함수
     const goToPage = (pageNum) => {
         setCurrentPage(pageNum);
     };
 
-    if (!isOpen) return null; // 모달이 닫혀있으면 렌더링하지 않음
+    if (!isOpen) return null;
 
     return (
         <>
             <div className="modal-overlay">
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-                    {/* 빨간 동그라미 X 버튼 */}
                     <button className="close-button" onClick={onClose}>
                         X
                     </button>
-
-                    {/* 모달 헤더 */}
                     <h2 className="modal-title">팀 목록</h2>
-
-                    {/* 검색 폼 */}
                     <div className="modal-search-row">
                         <input
                             type="text"
@@ -174,32 +78,25 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
-                                setCurrentPage(1); // 검색 시 페이지 초기화
+                                setCurrentPage(1);
                             }}
                         />
                     </div>
-
-                    {/* 카테고리 + 정렬 기준을 한 줄에 배치 */}
                     <div className="modal-filter-header">
-                        {/* 카테고리 버튼 그룹 */}
                         <div className="modal-category-btn-group">
                             {["", "공부", "운동", "AI", "코딩", "취업", "알바"].map((cat) => (
                                 <button
                                     key={cat === "" ? "전체" : cat}
-                                    className={`modal-category-btn ${
-                                        selectedCategory === cat ? "selected" : ""
-                                    }`}
+                                    className={`modal-category-btn ${selectedCategory === cat ? "selected" : ""}`}
                                     onClick={() => {
                                         setSelectedCategory(cat);
-                                        setCurrentPage(1); // 카테고리 변경 시 페이지 초기화
+                                        setCurrentPage(1);
                                     }}
                                 >
                                     {cat === "" ? "전체" : cat}
                                 </button>
                             ))}
                         </div>
-
-                        {/* 정렬 기준 드롭다운 */}
                         <div className="modal-sort-dropdown-group">
                             <span className="sort-label">정렬 기준:</span>
                             <select
@@ -216,8 +113,6 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                             </select>
                         </div>
                     </div>
-
-                    {/* 테이블 */}
                     <div className="modal-table-container">
                         <table className="modal-team-table">
                             <thead>
@@ -230,24 +125,21 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {currentTeams.map((team, idx) => (
-                                <tr
-                                    key={team.id}
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleRowClick(team)}
-                                >
-                                    <td>{startIndex + idx + 1}</td>
-                                    <td>{team.name}</td>
-                                    <td>{team.desc}</td>
-                                    <td>{team.category}</td>
-                                    <td>{team.members}명</td>
-                                </tr>
-                            ))}
+                            {sortedTeams
+                                .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                                .map((team, idx) => (
+                                    <tr key={team.id} style={{ cursor: "pointer" }}>
+                                        <td>{(currentPage - 1) * pageSize + idx + 1}</td>
+                                        <td>{team.name}</td>
+                                        <td>{team.description}</td>
+                                        <td>{team.category}</td>
+                                        {/* team.members는 객체 배열이므로 길이를 출력 */}
+                                        <td>{team.members ? team.members.length : 0}명</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
-
-                    {/* 페이지네이션 */}
                     <div className="modal-pagination">
                         {Array.from({ length: totalPages }).map((_, i) => {
                             const pageNum = i + 1;
@@ -264,13 +156,6 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                     </div>
                 </div>
             </div>
-
-            {/* === 팀 가입 신청 모달 === */}
-            <TeamJoinRequestModal
-                isOpen={joinModalOpen}
-                onClose={() => setJoinModalOpen(false)}
-                team={selectedTeam}
-            />
         </>
     );
 };

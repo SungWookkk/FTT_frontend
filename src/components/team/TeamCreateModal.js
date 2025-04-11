@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import "../team/css/TeamCreateModal.css";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-const TeamCreateModal = ({ isOpen, onClose }) => {
-    // useAuth로 로그인한 사용자 정보(auth)
+const TeamCreateModal = ({ isOpen, onClose, onTeamCreated }) => {
     const { auth } = useAuth();
     const history = useHistory();
     const [teamName, setTeamName] = useState("");
@@ -13,7 +12,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
     const [announcement, setAnnouncement] = useState("");
     const [category, setCategory] = useState("");
 
-    // 모달이 열릴 때마다 폼 초기화
     useEffect(() => {
         if (isOpen) {
             setTeamName("");
@@ -24,31 +22,31 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
     }, [isOpen]);
 
     const handleCreate = async () => {
-        // 로그인한 사용자의 정보가 없으면 오류 처리
         if (!auth || !auth.userId) {
             alert("로그인이 필요합니다.");
             return;
         }
-        // 팀 생성 데이터 구성 (body에 포함되는 정보)
         const teamData = {
             teamName,
             description,
             announcement,
             category,
-            teamLeader: auth.userId  // 팀 생성자의 아이디는 헤더에 우선 전달되므로 추가 정보로 포함됨
+            teamLeader: auth.userId,
         };
 
         try {
-            // axios 요청 시 헤더에 "X-User-Id"를 추가
             const response = await axios.post("/api/teams/create", teamData, {
-                headers: {
-                    "X-User-Id": auth.userId
-                }
+                headers: { "X-User-Id": auth.userId },
             });
             console.log("팀 생성 성공:", response.data);
             alert(`팀 생성 성공!\n팀 이름: ${response.data.teamName}`);
             onClose();
-            history.push("/team")
+            history.push("/team");
+
+            // 새 팀 생성 후, 콜백(onTeamCreated)이 전달되면 호출해 teamsData를 재갱신하도록 함.
+            if (onTeamCreated) {
+                onTeamCreated(response.data);
+            }
         } catch (error) {
             console.error("팀 생성 오류:", error);
             alert("팀 생성 중 오류가 발생했습니다.");
@@ -62,7 +60,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
             <div className="create-modal-container" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button" onClick={onClose}>X</button>
                 <h2 className="modal-title">팀 생성</h2>
-
                 <div className="create-modal-field">
                     <label>팀 이름</label>
                     <input
@@ -72,7 +69,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
                         onChange={(e) => setTeamName(e.target.value)}
                     />
                 </div>
-
                 <div className="create-modal-field">
                     <label>팀 설명</label>
                     <textarea
@@ -82,7 +78,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
                         onChange={(e) => setDescription(e.target.value)}
                     />
                 </div>
-
                 <div className="create-modal-field">
                     <label>팀 공지사항</label>
                     <textarea
@@ -92,7 +87,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
                         onChange={(e) => setAnnouncement(e.target.value)}
                     />
                 </div>
-
                 <div className="create-modal-field">
                     <label>팀 카테고리 주제</label>
                     <select value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -105,7 +99,6 @@ const TeamCreateModal = ({ isOpen, onClose }) => {
                         <option value="기타">기타</option>
                     </select>
                 </div>
-
                 <button className="create-submit-btn" onClick={handleCreate}>
                     팀 생성 신청
                 </button>

@@ -377,7 +377,6 @@ function TaskDetailModal({ task, onClose }) {
                     style={{
                         borderBottom: `4px solid ${sectionColor}`,
                         marginTop: "1px",
-                        width: "500px",
                     }}
                 >
                     <div className="section-header-content">
