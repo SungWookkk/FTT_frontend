@@ -171,7 +171,7 @@ const TeamContentPage = () => {
                                     }}
                                 >
                                     <td>{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</td>
-                                    <td>{team.name}</td>
+                                    <td>{team.teamName}</td>
                                     <td>{team.description}</td>
                                     <td>
                       <span

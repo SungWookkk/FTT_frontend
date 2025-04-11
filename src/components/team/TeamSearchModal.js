@@ -17,7 +17,7 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
     const searchedTeams = useMemo(() => {
         return teamsData.filter((team, index) => {
             console.debug(`TeamSearchModal: 필터링 team[${index}]`, team);
-            const teamName = team.name ? team.name.toLowerCase() : "";
+            const teamName = team.teamName ? team.teamName.toLowerCase() : "";
             const teamDesc = team.description ? team.description.toLowerCase() : "";
             const lowerSearchTerm = searchTerm.toLowerCase();
             return teamName.includes(lowerSearchTerm) || teamDesc.includes(lowerSearchTerm);
@@ -130,7 +130,7 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                                 .map((team, idx) => (
                                     <tr key={team.id} style={{ cursor: "pointer" }}>
                                         <td>{(currentPage - 1) * pageSize + idx + 1}</td>
-                                        <td>{team.name}</td>
+                                        <td>{team.teamName}</td>
                                         <td>{team.description}</td>
                                         <td>{team.category}</td>
                                         {/* team.members는 객체 배열이므로 길이를 출력 */}
