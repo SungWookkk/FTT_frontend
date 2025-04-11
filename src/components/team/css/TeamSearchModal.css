@@ -1,5 +1,5 @@
 /* 모달 오버레이: 화면 전체 덮는 반투명 배경 */
-.modal-overlay {
+.modal-overlay-search {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 1;
 }
 
 /* 모달 컨테이너 */
@@ -275,4 +275,14 @@
 
 .join-submit-btn:hover {
     background-color: #4f57c7;
+}
+.team-btn-apply{
+    background-color: #636ae8;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: .8rem;
+    padding: 6px 10px;
+    transition: background-color .2s ease;
 }

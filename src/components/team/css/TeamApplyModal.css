@@ -1,0 +1,125 @@
+/* TeamApplyModal.css */
+
+/* 모달 오버레이: 전체 화면 덮는 반투명 배경 */
+.apply-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 컨테이너: 모달 본문 영역 */
+.apply-modal-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+/* 닫기 버튼: 오른쪽 상단에 위치 */
+.apply-modal-close-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #555;
+}
+
+/* 모달 제목 */
+.apply-modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+/* 팀 정보: 신청할 팀 이름 등 표시 */
+.apply-modal-team-info {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 24px;
+}
+
+/* 입력 필드 영역 */
+.apply-modal-field {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.apply-modal-field label {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.apply-modal-field textarea,
+.apply-modal-field input {
+    font-size: 0.9rem;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    resize: vertical;
+}
+
+.apply-modal-field textarea:focus,
+.apply-modal-field input:focus {
+    border-color: #5c6bc0;
+}
+
+/* 버튼 그룹 영역 */
+.apply-modal-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.apply-modal-button-group button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.apply-modal-button-group .apply-btn {
+    background-color: #5c6bc0;
+    color: #fff;
+}
+
+.apply-modal-button-group .apply-btn:hover {
+    background-color: #4f57c7;
+}
+
+.apply-modal-button-group .cancel-btn {
+    background-color: #ccc;
+    color: #333;
+}
+
+.apply-modal-button-group .cancel-btn:hover {
+    background-color: #b3b3b3;
+}
+
+/* 반응형: 작은 화면에서 모달 너비 조정 */
+@media screen and (max-width: 600px) {
+    .apply-modal-container {
+        width: 90%;
+        padding: 16px;
+    }
+}

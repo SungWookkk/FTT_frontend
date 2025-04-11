@@ -1,22 +1,27 @@
 import React, { useState, useMemo } from "react";
 import "../team/css/TeamSearchModal.css";
+import TeamApplyModal from "./TeamApplyModal";
 
-const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
+const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
     // 검색어 및 선택된 카테고리 상태
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     // 정렬 기준 (기본: "name")
     const [sortCriterion, setSortCriterion] = useState("name");
-    // 페이지네이션
+    // 페이지네이션 상태
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
-    console.debug("TeamSearchModal - teamsData:", teamsData);
+    // 팀 신청 모달 관련 상태
+    const [applyModalOpen, setApplyModalOpen] = useState(false);
+    const [selectedTeamForApply, setSelectedTeamForApply] = useState(null);
 
-    // 1) 검색어 필터 (팀의 이름과 설명을 소문자로 변환하여 비교)
+    console.debug("TeamSearchModal - teamsData:", teamsData);
+    console.debug("TeamSearchModal - currentUserId:", currentUserId);
+
+    // 1) 검색어 필터: 팀의 이름과 설명을 소문자로 변환하여 비교
     const searchedTeams = useMemo(() => {
-        return teamsData.filter((team, index) => {
-            console.debug(`TeamSearchModal: 필터링 team[${index}]`, team);
+        return teamsData.filter((team) => {
             const teamName = team.teamName ? team.teamName.toLowerCase() : "";
             const teamDesc = team.description ? team.description.toLowerCase() : "";
             const lowerSearchTerm = searchTerm.toLowerCase();
@@ -30,15 +35,13 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
         return searchedTeams.filter((team) => team.category === selectedCategory);
     }, [searchedTeams, selectedCategory]);
 
-    // 3) 정렬 (이름순, 멤버 수순, 상태순)
+    // 3) 정렬: 이름순, 멤버 수순, 상태순
     const sortedTeams = useMemo(() => {
         const teamsCopy = [...filteredTeams];
         if (sortCriterion === "name") {
-            // 이름이 undefined일 경우 빈 문자열("")로 대체 후 localeCompare
-            teamsCopy.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+            teamsCopy.sort((a, b) => (a.teamName || "").localeCompare(b.teamName || ""));
         } else if (sortCriterion === "members") {
             teamsCopy.sort((a, b) => {
-                // team.members는 배열이므로 길이를 비교
                 return (a.members ? a.members.length : 0) - (b.members ? b.members.length : 0);
             });
         } else if (sortCriterion === "status") {
@@ -56,15 +59,19 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
     const totalTeams = sortedTeams.length;
     const totalPages = Math.ceil(totalTeams / pageSize);
 
-    const goToPage = (pageNum) => {
-        setCurrentPage(pageNum);
+    const goToPage = (pageNum) => setCurrentPage(pageNum);
+
+    // 팀 신청 모달 열기 핸들러
+    const handleOpenApplyModal = (team) => {
+        setSelectedTeamForApply(team);
+        setApplyModalOpen(true);
     };
 
     if (!isOpen) return null;
 
     return (
         <>
-            <div className="modal-overlay">
+            <div className="modal-overlay-search">
                 <div className="modal-container" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button" onClick={onClose}>
                         X
@@ -122,6 +129,7 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                                 <th>설명</th>
                                 <th>카테고리</th>
                                 <th>멤버 수</th>
+                                <th>신청</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -133,8 +141,15 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                                         <td>{team.teamName}</td>
                                         <td>{team.description}</td>
                                         <td>{team.category}</td>
-                                        {/* team.members는 객체 배열이므로 길이를 출력 */}
                                         <td>{team.members ? team.members.length : 0}명</td>
+                                        <td>
+                                            <button
+                                                className="team-btn-apply"
+                                                onClick={() => handleOpenApplyModal(team)}
+                                            >
+                                                신청
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -156,6 +171,18 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData }) => {
                     </div>
                 </div>
             </div>
+            {/* 팀 신청 모달 출력 */}
+            {applyModalOpen && selectedTeamForApply && (
+                <TeamApplyModal
+                    isOpen={applyModalOpen}
+                    onClose={() => {
+                        setApplyModalOpen(false);
+                        setSelectedTeamForApply(null);
+                    }}
+                    team={selectedTeamForApply}
+                    userId={currentUserId} // AuthContext에서 전달받은 currentUserId
+                />
+            )}
         </>
     );
 };

@@ -6,8 +6,12 @@ import TeamCreateModal from "./TeamCreateModal";
 import TeamAffiliationContentPage from "./TeamAffiliationContentPage";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../Auth/AuthContext";
 
 const TeamContentPage = () => {
+    const { auth } = useAuth();
+    console.debug("TeamContentPage auth:", auth); // 로그인 정보 확인 (userId, userName 등)
+
     const [teamsData, setTeamsData] = useState([]);
     const [isTeamsLoading, setIsTeamsLoading] = useState(true);
 
@@ -54,7 +58,7 @@ const TeamContentPage = () => {
 
     return (
         <div className="dashboard-content">
-            {/* 상단 헤더 */}
+            {/* 상단 헤더 영역 */}
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
@@ -88,7 +92,7 @@ const TeamContentPage = () => {
             </div>
 
             <div className="content-wrapper">
-                {/* 왼쪽 영역 */}
+                {/* 왼쪽 영역: 팀이 없을 경우 안내 */}
                 <div className="no-team-section">
                     <div className="no-team-block bg-image">
                         <h2>팀이 없으신가요?</h2>
@@ -174,15 +178,14 @@ const TeamContentPage = () => {
                                     <td>{team.teamName}</td>
                                     <td>{team.description}</td>
                                     <td>
-                      <span
-                          className={`status ${
-                              team.status?.toLowerCase() === "active" ? "active" : "pending"
-                          }`}
-                      >
-                        {team.status || "pending"}
-                      </span>
+                                            <span
+                                                className={`status ${
+                                                    team.status?.toLowerCase() === "active" ? "active" : "pending"
+                                                }`}
+                                            >
+                                                {team.status || "pending"}
+                                            </span>
                                     </td>
-                                    {/* members는 배열이므로 길이를 출력 */}
                                     <td>{team.members ? team.members.length : 0}명</td>
                                     <td>
                                         <button className="table-btn">보기</button>
@@ -225,6 +228,7 @@ const TeamContentPage = () => {
                     </div>
                 </div>
 
+                {/* 팀 검색 모달 */}
                 <TeamSearchModal
                     isOpen={isModalOpen}
                     onClose={() => {
@@ -232,6 +236,7 @@ const TeamContentPage = () => {
                         setModalOpen(false);
                     }}
                     teamsData={teamsData}
+                    currentUserId={auth.userId}  // 로그인한 사용자의 userId 전달
                 />
             </div>
 
