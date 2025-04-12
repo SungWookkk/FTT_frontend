@@ -1,37 +1,98 @@
-import React, {useState} from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../Auth/AuthContext";
 import "./css/SidebarFavorites.css";
 import TodoCreateModal from "../todolist/TodoCreateModal";
 
-const SidebarFavorites = ({teamId }) => {
-    const location = useLocation();
+/* 팀 선택 모달: 사용자가 내 팀 중 관리할 팀을 선택 */
+function ChooseTeamModal({ teams, onSelectTeam, onClose }) {
+    return (
+        <div className="management-modal-overlay" onClick={onClose}>
+            <div className="management-modal-container" onClick={(e) => e.stopPropagation()}>
+                <button className="management-modal-close-btn" onClick={onClose}>
+                    X
+                </button>
+                <h2 className="management-modal-title">어떤 팀을 관리하시겠습니까?</h2>
+                {teams && teams.length > 0 ? (
+                    <ul className="management-details-list">
+                        {teams.map((team) => (
+                            <li
+                                key={team.id}
+                                onClick={() => onSelectTeam(team.id)}
+                                style={{ cursor: "pointer", marginBottom: "8px" }}
+                            >
+                                {team.teamName || `팀 ${team.id}`}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div>내가 속한 팀이 없습니다.</div>
+                )}
+            </div>
+        </div>
+    );
+}
 
+const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
+    const { auth } = useAuth();
+    const location = useLocation();
+    const history = useHistory();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [teamSelectModalOpen, setTeamSelectModalOpen] = useState(false);
+
+    // prop으로 전달받은 myTeams가 없으면, 백엔드 API를 통해 가져옵니다.
+    const [localTeams, setLocalTeams] = useState(propMyTeams || []);
+    useEffect(() => {
+        if ((!propMyTeams || propMyTeams.length === 0) && auth.userId) {
+            axios
+                .get(`/api/teams/user/${auth.userId}`)
+                .then((res) => {
+                    console.log("SidebarFavorites - 내 팀 목록:", res.data);
+                    setLocalTeams(res.data);
+                })
+                .catch((err) => {
+                    console.error("내 팀 목록 불러오기 오류:", err);
+                });
+        } else {
+            setLocalTeams(propMyTeams);
+        }
+    }, [propMyTeams, auth.userId]);
+
+    // 디버깅 출력
+    console.debug("SidebarFavorites - teamId:", teamId);
+    console.debug("SidebarFavorites - localTeams:", localTeams);
+
+    // "내 팀 관리" 버튼 클릭 핸들러
+    const handleManagementClick = (e) => {
+        e.preventDefault();
+        if (!localTeams || localTeams.length === 0) {
+            alert("내 팀이 없습니다.");
+        } else if (localTeams.length === 1) {
+            // 내 팀이 한 개이면 바로 이동
+            history.push(`/team/${localTeams[0].id}/management`);
+        } else {
+            // 내 팀이 2개 이상이면 모달을 열어 사용자가 선택하도록 함
+            setTeamSelectModalOpen(true);
+        }
+    };
 
     return (
         <div className="sidebar-favorites">
-            {/* Favorites 제목 */}
-
-
             {/* 작업 공간 메뉴 */}
             <div className="sidebar-workspace-menu">
-                {/* 작업 공간 제목 */}
                 <div className="sidebar-workspace-container">
                     <div className="workspace-title">작업 공간</div>
-                    {/*홈페이지의 메인 컬러 색상을 바꾸는 버튼으로*/}
                     <div className="workspace-add-button" title="새 작업 공간 추가"></div>
                 </div>
 
-                {/* 현재 활성화된 작업 공간*/}
                 <div className="workspace-active">
                     <div className="active-bg"></div>
                     <div className="workspace-icon"></div>
                     <div className="active-text">작업 공간</div>
                 </div>
 
-                {/* 작업 공간 하위 메뉴 */}
                 <div className="workspace-list">
-                    {/* 1) 내 To Do List 목록 */}
                     <Link
                         to="/todo"
                         className={
@@ -43,30 +104,22 @@ const SidebarFavorites = ({teamId }) => {
                         내 To Do List 목록
                     </Link>
 
-                    {/* 2) To Do List 작성 */}
-                    <div>
-                        {/* 모달을 여는 버튼 또는 클릭 가능한 요소 */}
-                        <div
-                            className="workspace-list-item"
-                            onClick={() => setIsCreateModalOpen(true)}
-                            style={{cursor: "pointer"}}
-                        >
-                            To Do List 작성
-                        </div>
-
-                        {/* 모달 열림 여부에 따라 TodoCreateModal 렌더링 */}
-                        {isCreateModalOpen && (
-                            <TodoCreateModal
-                                onClose={() => setIsCreateModalOpen(false)}
-                                onTaskCreated={(newTask) => {
-                                    // 새 작업 생성 후 추가 작업 처리
-                                    console.log("새 작업 생성됨:", newTask);
-                                }}
-                            />
-                        )}
+                    <div
+                        className="workspace-list-item"
+                        onClick={() => setIsCreateModalOpen(true)}
+                        style={{ cursor: "pointer" }}
+                    >
+                        To Do List 작성
                     </div>
+                    {isCreateModalOpen && (
+                        <TodoCreateModal
+                            onClose={() => setIsCreateModalOpen(false)}
+                            onTaskCreated={(newTask) => {
+                                console.log("새 작업 생성됨:", newTask);
+                            }}
+                        />
+                    )}
 
-                    {/* 3) 작업 폴더 생성 */}
                     <Link
                         to="/todo/folder/create"
                         className={
@@ -78,7 +131,6 @@ const SidebarFavorites = ({teamId }) => {
                         작업 폴더 생성
                     </Link>
 
-                    {/* 4) 모든 작업 폴더 */}
                     <Link
                         to="/todo/folder/all"
                         className={
@@ -90,13 +142,11 @@ const SidebarFavorites = ({teamId }) => {
                         모든 작업 폴더
                     </Link>
                 </div>
-                {/* 작업 공간 제목 */}
+
                 <div className="sidebar-workspace-container">
                     <div className="team-list-title">팀 작업 공간</div>
-                    <Link
-                        to="/team"
-                        className={`team-list ${location.pathname === "/team" ? "active" : ""}`}
-                    >
+
+                    <Link to="/team" className={`team-list ${location.pathname === "/team" ? "active" : ""}`}>
                         팀 공간
                     </Link>
                     <div className="team-list">To Do List</div>
@@ -108,16 +158,31 @@ const SidebarFavorites = ({teamId }) => {
                     >
                         기록
                     </Link>
-                    <Link
-                        to={`/team/${teamId}/management`}
+
+                    {/* 내 팀 관리 버튼 */}
+                    <div
                         className={`team-list ${
                             location.pathname === `/team/${teamId}/management` ? "active" : ""
                         }`}
+                        style={{ cursor: "pointer" }}
+                        onClick={handleManagementClick}
                     >
                         내 팀 관리
-                    </Link>
+                    </div>
                 </div>
             </div>
+
+            {/* 팀 선택 모달 */}
+            {teamSelectModalOpen && (
+                <ChooseTeamModal
+                    teams={localTeams || []}
+                    onSelectTeam={(chosenId) => {
+                        setTeamSelectModalOpen(false);
+                        history.push(`/team/${chosenId}/management`);
+                    }}
+                    onClose={() => setTeamSelectModalOpen(false)}
+                />
+            )}
         </div>
     );
 };

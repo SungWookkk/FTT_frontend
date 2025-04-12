@@ -7,11 +7,13 @@ import TeamCalendarSection from "./TeamCalendarSection";
 import TeamReadingList from "./TeamReadingList";
 import TeamStatusMessage from "./TeamStatusMessage";
 import TeamTodoListContent from "./TeamTodoListContent";
-import SidebarFavorites from "../dashboard/SidebarFavorites";
+import { useAuth } from "../../Auth/AuthContext";
 
 function TeamAffiliationContentPage({ team: propTeam }) {
-    // URL에서 teamId 추출 (직접 URL로 접근한 경우에 사용)
+    // URL에서 teamId 추출
     const { teamId } = useParams();
+    const { auth } = useAuth();
+    const currentUserId = auth.userId;
     const [team, setTeam] = useState(
         propTeam
             ? { ...propTeam, members: Array.isArray(propTeam.members) ? propTeam.members : [] }
@@ -19,10 +21,10 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     );
     const [loading, setLoading] = useState(true);
     const history = useHistory();
-    const location = useLocation(); // 현재 경로 확인용
+    const location = useLocation();
 
+    // 팀 상세 정보 로드
     useEffect(() => {
-        // (1) 부모 컴포넌트에서 team 객체를 prop으로 넘겨준 경우
         if (propTeam) {
             const fixedTeam = {
                 ...propTeam,
@@ -30,14 +32,11 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             };
             setTeam(fixedTeam);
             setLoading(false);
-        }
-        // (2) URL 파라미터(teamId)로 접근 → 서버에서 팀 상세 정보 요청
-        else if (teamId) {
+        } else if (teamId) {
             axios
                 .get(`/api/teams/${teamId}`)
                 .then((res) => {
                     let data = res.data;
-                    // 응답이 문자열인 경우 파싱 처리
                     if (typeof data === "string") {
                         try {
                             data = JSON.parse(data);
@@ -48,7 +47,6 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     }
                     console.log("백엔드에서 받은 팀 데이터:", data);
                     if (data) {
-                        // members 필드가 없거나 배열이 아닌 경우 빈 배열로 대체
                         if (!data.members || !Array.isArray(data.members)) {
                             data.members = [];
                         }
@@ -64,13 +62,26 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                     setLoading(false);
                 });
         } else {
-            // 팀 정보가 없는 경우 null로 설정
             setTeam(null);
             setLoading(false);
         }
     }, [teamId, propTeam]);
 
-    // 팀을 선택했을 때의 핸들러 (드롭다운 등에서 호출)
+    // 로그인한 사용자가 속한 팀 목록 로드
+    useEffect(() => {
+        if (currentUserId) {
+            axios
+                .get(`/api/teams/user/${currentUserId}`)
+                .then((res) => {
+                    console.log("내 팀 목록:", res.data);
+                })
+                .catch((err) => {
+                    console.error("내 팀 목록 불러오기 오류:", err);
+                });
+        }
+    }, [currentUserId]);
+
+    // 팀 선택 (TeamDropdown에서 호출)
     const handleTeamSelect = (selectedTeam) => {
         history.push(`/team/${selectedTeam.id}`);
     };
@@ -78,7 +89,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
     if (loading) return <div>로딩 중...</div>;
     if (!team) return <div>팀 정보를 불러오지 못했습니다.</div>;
 
-    // 현재 경로가 "/team/:teamId"인지 "/team/:teamId/todo"인지 확인
+    // 현재 경로 확인
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
 
@@ -88,7 +99,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown onTeamSelect={handleTeamSelect} />
+                    <TeamDropdown onTeamSelect={handleTeamSelect} disableAutoSelect={true} />
                 </div>
             </div>
 
@@ -133,7 +144,6 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 <TeamCalendarSection team={team} />
                 <TeamReadingList teamId={team.id} />
                 <TeamTodoListContent teamId={team.id} />
-                <SidebarFavorites teamId={teamId} />
             </div>
         </div>
     );

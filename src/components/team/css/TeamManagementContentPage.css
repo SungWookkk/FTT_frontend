@@ -63,11 +63,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 99999;
 }
 
 /* 모달 컨테이너 */
@@ -80,11 +80,12 @@
     position: relative;
 }
 
+
 /* 모달 닫기 버튼 */
 .management-modal-close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 14px;
+    right: 14px;
     background: #ff4c4c;
     border: none;
     color: #fff;
@@ -93,6 +94,7 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
+    z-index: 100000;
 }
 
 /* 모달 제목 */

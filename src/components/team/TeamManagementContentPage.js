@@ -1,6 +1,6 @@
 import TeamDropdown from "./TeamDropdown";
 import React, {useState} from "react";
-import {useHistory, useLocation} from "react-router-dom";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 import "../team/css/TeamManagementContentPage.css";
 
 /* 모달(팝업) 컴포넌트 */
@@ -50,7 +50,8 @@ const ManagementDetailsModal = ({ onClose }) => {
     );
 };
 
-function TeamManagementContentPage({teamId}) {
+function TeamManagementContentPage() {
+    const { teamId } = useParams(); // URL에서 teamId를 추출
     const history = useHistory();
     const location = useLocation();
 
