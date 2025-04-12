@@ -7,6 +7,7 @@ import TeamCalendarSection from "./TeamCalendarSection";
 import TeamReadingList from "./TeamReadingList";
 import TeamStatusMessage from "./TeamStatusMessage";
 import TeamTodoListContent from "./TeamTodoListContent";
+import SidebarFavorites from "../dashboard/SidebarFavorites";
 
 function TeamAffiliationContentPage({ team: propTeam }) {
     // URL에서 teamId 추출 (직접 URL로 접근한 경우에 사용)
@@ -132,6 +133,7 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 <TeamCalendarSection team={team} />
                 <TeamReadingList teamId={team.id} />
                 <TeamTodoListContent teamId={team.id} />
+                <SidebarFavorites teamId={teamId} />
             </div>
         </div>
     );

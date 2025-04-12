@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./css/SidebarFavorites.css";
 import TodoCreateModal from "../todolist/TodoCreateModal";
 
-const SidebarFavorites = () => {
+const SidebarFavorites = ({teamId }) => {
     const location = useLocation();
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -109,9 +109,9 @@ const SidebarFavorites = () => {
                         기록
                     </Link>
                     <Link
-                        to="/team-workspace/management"
+                        to={`/team/${teamId}/management`}
                         className={`team-list ${
-                            location.pathname === "/team-workspace/management" ? "active" : ""
+                            location.pathname === `/team/${teamId}/management` ? "active" : ""
                         }`}
                     >
                         내 팀 관리

@@ -1,0 +1,155 @@
+.management-alert-banner {
+    background-color: #f2f1fe;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #e8eaed;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+}
+
+/* 가운데 표시할 텍스트 */
+.management-alert-text {
+    font-size: 13.7px;
+    font-family: "Inter", sans-serif;
+    color: #2a2e34;
+    line-height: 16px;
+    white-space: normal;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    position: relative;
+    right: 70px;
+}
+
+/* 강조 텍스트(굵게) */
+.management-alert-text .management-highlight {
+    font-weight: 700;
+}
+
+/* 일반 텍스트 */
+.management-alert-text .management-normal {
+    font-weight: 400;
+}
+
+/* "자세히 보기" 버튼 - 우측 상단 */
+.management-toggle-btn {
+    position: relative;
+    right: 715px;
+    background: transparent;
+    border: none;
+    color: #636ae8;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    line-height: 16px;
+    padding: 4px 8px;
+    transition: color 0.2s ease;
+}
+
+.management-toggle-btn:hover {
+    color: #4f57c7;
+}
+
+
+/* 모달 오버레이 */
+.management-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 컨테이너 */
+.management-modal-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px 24px;
+    width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+/* 모달 닫기 버튼 */
+.management-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4c4c;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/* 모달 제목 */
+.management-modal-title {
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+/* 상세 기능 목록 */
+.management-details-list {
+    list-style: disc;
+    padding-left: 20px;
+    color: #444;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+.management-details-list li {
+    margin-bottom: 8px;
+}
+
+.management-details-list .management-tooltip {
+    position: relative;
+    cursor: default;
+}
+
+/* 실제 툴팁 텍스트 박스 */
+.management-details-list .management-tooltip-text {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 110%;
+    min-width: 180px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding: 8px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    z-index: 9999;
+}
+
+/* 호버 시 툴팁 표시 */
+.management-details-list .management-tooltip:hover .management-tooltip-text {
+    display: block;
+}
+
+.management-details-list .management-tooltip-text::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+}
