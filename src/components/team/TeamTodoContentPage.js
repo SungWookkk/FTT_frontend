@@ -6,7 +6,7 @@ import defaultUser from "../../Auth/css/img/default-user.svg";
 import "../team/css/TeamTodoContentPage.css";
 import calendar from "../../Auth/css/img/calendar.svg";
 import TeamTodoCalendarModal from "./TeamTodoCalendarModal";
-
+import TeamTodoCreateModal from "./TeamTodoCreateModal";
 /** 마감일 계산 함수 */
 function getDaysLeft(dueDateString) {
     if (!dueDateString) return null;
@@ -210,6 +210,9 @@ function TeamTodoContentPage() {
     // folded === true이면 진행중/완료 컬럼이 숨김 처리됨
     const [folded, setFolded] = useState(false);
 
+    // 모달 열림 상태 관리 (팀 작업 생성 모달)
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
     const onDragEnd = (result) => {
         const { source, destination } = result;
         if (!destination) return;
@@ -263,10 +266,15 @@ function TeamTodoContentPage() {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown />
+                    <TeamDropdown/>
                 </div>
                 <div className="header-button-group">
-                    <button className="btn btn-team-create">팀 작업 생성하기</button>
+                    <button
+                        className="btn btn-team-create"
+                        onClick={() => setIsCreateModalOpen(true)}  // 버튼 클릭 시 모달 열기
+                    >
+                        팀 작업 생성하기
+                    </button>
                 </div>
             </div>
 
@@ -643,6 +651,17 @@ function TeamTodoContentPage() {
                 <TeamTodoCalendarModal
                     team={{ id: teamId }}
                     onClose={() => setIsCalendarModalOpen(false)}
+                />
+            )}
+
+            {/* "팀 작업 생성하기" 버튼 클릭 시 열리는 모달 */}
+            {isCreateModalOpen && (
+                <TeamTodoCreateModal
+                    teamId={teamId}
+                    onClose={() => setIsCreateModalOpen(false)}
+                    onSave={(newTask) => {
+                        console.log("새 작업 생성됨:", newTask);
+                    }}
                 />
             )}
         </div>
