@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
@@ -6,8 +7,9 @@ import "./css/SidebarFavorites.css";
 import TodoCreateModal from "../todolist/TodoCreateModal";
 
 /* 팀 선택 모달: 사용자가 내 팀 중 관리할 팀을 선택 */
+// React Portal을 사용하여 모달을 document.body에 렌더링
 function ChooseTeamModal({ teams, onSelectTeam, onClose }) {
-    return (
+    return createPortal(
         <div className="management-modal-overlay" onClick={onClose}>
             <div className="management-modal-container" onClick={(e) => e.stopPropagation()}>
                 <button className="management-modal-close-btn" onClick={onClose}>
@@ -30,7 +32,8 @@ function ChooseTeamModal({ teams, onSelectTeam, onClose }) {
                     <div>내가 속한 팀이 없습니다.</div>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
 
@@ -172,7 +175,7 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                 </div>
             </div>
 
-            {/* 팀 선택 모달 */}
+            {/* 팀 선택 모달 (React Portal을 사용한 ChooseTeamModal) */}
             {teamSelectModalOpen && (
                 <ChooseTeamModal
                     teams={localTeams || []}
