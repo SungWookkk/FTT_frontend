@@ -8,6 +8,7 @@ import "../team/css/TeamTodoContentPage.css";
 import calendar from "../../Auth/css/img/calendar.svg";
 import TeamTodoCalendarModal from "./TeamTodoCalendarModal";
 import TeamTodoCreateModal from "./TeamTodoCreateModal";
+import {useAuth} from "../../Auth/AuthContext";
 
 /** 마감일 계산 함수 */
 function getDaysLeft(dueDateString) {
@@ -39,6 +40,7 @@ const initialColumns = {
 
 function TeamTodoContentPage() {
     const { teamId } = useParams();
+    const { auth } = useAuth();
     const history = useHistory();
     const location = useLocation();
 
@@ -286,8 +288,8 @@ function TeamTodoContentPage() {
                                                                 className="assignee-avatar"
                                                             />
                                                             <span className="assignee-name">
-                                {item.userName || "미지정"}
-                              </span>
+                                                            {item.user?.username || "미지정"}
+                                                          </span>
                                                         </div>
                                                         <div className="task-title" style={{ marginTop: "10px" }}>
                                                             {item.title}
@@ -402,8 +404,8 @@ function TeamTodoContentPage() {
                                                                             className="assignee-avatar"
                                                                         />
                                                                         <span className="assignee-name">
-                                      {item.userName || "미지정"}
-                                    </span>
+                                                                        {item.user?.username || "미지정"}
+                                                                    </span>
                                                                     </div>
                                                                     <div
                                                                         className="task-title"
@@ -477,6 +479,10 @@ function TeamTodoContentPage() {
                     teamId={teamId}
                     onClose={() => setIsCreateModalOpen(false)}
                     onSave={(newTask) => {
+                        // 새 작업에 user 정보가 누락되었으면 강제로 추가
+                        if (!newTask.user) {
+                            newTask.user = { username: auth.userName };
+                        }
                         setColumns((prevColumns) => ({
                             ...prevColumns,
                             inProgress: {

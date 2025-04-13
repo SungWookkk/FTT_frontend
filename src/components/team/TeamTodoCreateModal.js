@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../team/css/TeamTodoCreateModal.css";
+import {useAuth} from "../../Auth/AuthContext";
 
 /**
  * 작업 상태를 판별하여 sectionTitle, sectionColor, isRecentlyCreated 등을 반환하는 함수
@@ -53,6 +54,7 @@ function mapSectionInfo(task) {
 }
 
 function TeamTodoCreateModal({ teamId, onClose, onSave }) {
+    const { auth } = useAuth();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -98,10 +100,12 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
             dueDate,
             priority,
             status: "진행중",
-            // createdAt은 서버에서 자동 생성될 수도 있으나,
-            // "최근 작성" 판별 시 참고하려면 여기서도 임시로 넣어볼 수 있음
             createdAt: new Date().toISOString(),
+            user: {
+                username: auth.userName
+            }
         };
+
 
         // 팀 작업 생성 API 호출
         axios
