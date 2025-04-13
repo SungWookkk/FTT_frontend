@@ -267,8 +267,11 @@
 .secondary-columns {
     overflow: hidden;
     transition: max-height 0.7s ease, opacity 0.7s ease;
-    max-height: 1000px; /* 충분히 큰 값 */
+    max-height: 1000px;
     opacity: 1;
+    flex-direction: column;
+    display: flex
+;
 }
 
 .secondary-columns.folded {
