@@ -479,15 +479,26 @@ function TeamTodoContentPage() {
                     teamId={teamId}
                     onClose={() => setIsCreateModalOpen(false)}
                     onSave={(newTask) => {
-                        // 새 작업에 user 정보가 누락되었으면 강제로 추가
+                        // 사용자 정보 없으면 강제로 추가
                         if (!newTask.user) {
                             newTask.user = { username: auth.userName };
                         }
+
+                        // newTask.status 값으로 컬럼 결정
+                        let columnKey = "inProgress"; // 기본값
+                        if (newTask.status === "진행 예정" || newTask.status === "TODO") {
+                            columnKey = "onHold";
+                        } else if (newTask.status === "완료" || newTask.status === "DONE") {
+                            columnKey = "done";
+                        } else if (newTask.status === "진행중") {
+                            columnKey = "inProgress";
+                        }
+
                         setColumns((prevColumns) => ({
                             ...prevColumns,
-                            inProgress: {
-                                ...prevColumns.inProgress,
-                                items: [...prevColumns.inProgress.items, newTask],
+                            [columnKey]: {
+                                ...prevColumns[columnKey],
+                                items: [...prevColumns[columnKey].items, newTask],
                             },
                         }));
                     }}

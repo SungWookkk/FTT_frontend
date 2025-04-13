@@ -92,6 +92,22 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
         }
         setError("");
 
+
+
+        // 날짜 비교 로직
+        const now = new Date();
+        const userStartDate = new Date(startDate);
+
+        // 시간 비교를 정확히 하기 위해 시분초를 0으로 맞춤
+        now.setHours(0, 0, 0, 0);
+        userStartDate.setHours(0, 0, 0, 0);
+
+        let computedStatus = "진행중";
+        // 시작일이 오늘보다 뒤라면(미래 날짜라면) "진행 예정"
+        if (userStartDate > now) {
+            computedStatus = "진행 예정";
+        }
+
         // 팀 작업 데이터
         const newTask = {
             title,
@@ -99,7 +115,7 @@ function TeamTodoCreateModal({ teamId, onClose, onSave }) {
             startDate,
             dueDate,
             priority,
-            status: "진행중",
+            status: computedStatus,
             createdAt: new Date().toISOString(),
             user: {
                 username: auth.userName
