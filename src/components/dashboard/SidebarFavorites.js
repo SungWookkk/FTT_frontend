@@ -177,10 +177,10 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                     </Link>
 
                     <Link
-                        to="/team-workspace/community"
-                        className={`team-list ${location.pathname === "/team-workspace/community" ? "active" : ""}`}
+                        to={`/team/${teamId}/community`}
+                        className={`team-list ${location.pathname.startsWith(`/team/${teamId}/community`) ? "active" : ""}`}
                     >
-                        기록
+                        소통
                     </Link>
 
                     {/* 내 팀 관리 버튼 */}

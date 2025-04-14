@@ -119,7 +119,12 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                         >
                             팀 Todo
                         </div>
-                        <div className="tab-item">소통</div>
+                        <div
+                            className={`tab-item ${isTodoPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}/community`)}
+                        >
+                            소통
+                        </div>
                     </div>
                 </div>
             </div>

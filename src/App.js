@@ -20,6 +20,7 @@ import TeamCreateModal from "./components/team/TeamCreateModal";
 import TeamAffiliationPage from "./components/team/TeamAffiliationPage";
 import TeamTodoPage from "./components/team/TeamTodoPage";
 import TeamManagementPage from "./components/team/TeamManagementPage";
+import TeamCommunityPage from "./components/team/TeamCommunityPage";
 
 const App = () => {
     return (
@@ -60,6 +61,7 @@ const App = () => {
                         <Route exact path="/team/:teamId" component={TeamAffiliationPage} />
                         <Route path="/team/:teamId/todo" component={TeamTodoPage} />
                         <Route path="/team/:teamId/management" component={TeamManagementPage} />
+                        <Route path="/team/:teamId/community" component={TeamCommunityPage} />
 
                     </Switch>
                 </div>
