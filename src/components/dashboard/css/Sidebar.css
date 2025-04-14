@@ -728,7 +728,9 @@ a {
     margin-top: 25px;
     background-color: #f7f8f9;
     border-bottom: 1px solid #e8eaed;
-    z-index: 100; /* 다른 요소 위에 배치 */
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
 }
 
 .user-icon {

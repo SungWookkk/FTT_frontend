@@ -10,10 +10,14 @@ import plus from "../../../src/Auth/css/img/plus.svg";
 import userinfo from "../../../src/Auth/css/img/default-user.svg";
 import SidebarFavorites from "./SidebarFavorites";
 import {useEffect, useState} from "react";
-const Sidebar = () => {
+const Sidebar = ({onToggle}) => {
     const location = useLocation(); // 현재 활성화된 URL을 가져옴
     const [userName, setUserName] = useState();
     const history = useHistory();
+
+    // /team/1/community 같은 경로에 접속했는지 판별
+    const isTeamCommunity = location.pathname.includes("/community");
+
 
     useEffect(() => {
         // 로그인 시 localStorage에 저장한 username 불러오기
@@ -26,18 +30,41 @@ const Sidebar = () => {
         history.push("/profile");
     };
 
+
+
     return (
         <div className="sidebar-container">
             <SidebarBackground/>
 
             {/* 사용자 정보 영역 */}
-            <div
-                className="sidebar-user"
-                onClick={handleClick}
-                style={{cursor: "pointer"}} // 클릭 가능하다는 표시
-            >
-                <img className="user-icon" src={userinfo} alt="User Icon"/>
+            <div className="sidebar-user" onClick={handleClick}>
+                <img className="user-icon" src={userinfo} alt="User Icon" />
                 <span className="user-name">{userName}의 공간</span>
+
+                {/* 팀 커뮤니티 경로일 때 토글 버튼 표시 */}
+                {isTeamCommunity && (
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (onToggle) onToggle();
+                        }}
+                        style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            backgroundColor: "yellow",
+                            color: "#333",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                        }}
+                        title="채팅 사이드바 전환"
+                    >
+                        채팅
+                    </div>
+                )}
             </div>
 
             <nav className="sidebar-content">
