@@ -21,9 +21,8 @@ function ChatSidebar({ onBack }) {
                     }}
                     style={{
                         position: "absolute",
-                        top: "10px",
+                        top: "20px",
                         right: "10px",
-                        backgroundColor: "yellow",
                         color: "#333",
                         padding: "4px 8px",
                         borderRadius: "4px",

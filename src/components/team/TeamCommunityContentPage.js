@@ -17,7 +17,7 @@ function TeamCommunityContentPage() {
     // 현재 경로 확인
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
-
+    const isCommunityPage = location.pathname === `/team/${teamId}/community`;
 
 
     return(
@@ -47,7 +47,7 @@ function TeamCommunityContentPage() {
                             팀 Todo
                         </div>
                         <div
-                            className={`tab-item ${isTodoPage ? "active" : ""}`}
+                            className={`tab-item ${isCommunityPage ? "active" : ""}`}
                             onClick={() => history.push(`/team/${teamId}/community`)}
                         >
                             소통
