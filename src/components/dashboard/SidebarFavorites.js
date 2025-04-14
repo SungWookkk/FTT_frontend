@@ -80,6 +80,17 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
         }
     };
 
+    // 현재 URL을 슬래시로 분할하여 active 여부 판단
+    const pathSegments = location.pathname.split("/").filter(Boolean);
+    // 예) "/team/1" → ["team", "1"]  => 팀 공간 active
+    // 예) "/team/1/todo" → ["team", "1", "todo"]  => To Do List active
+    const isTeamSpaceActive = pathSegments[0] === "team" && (pathSegments.length === 1 || pathSegments.length === 2);
+    const isTeamTodoActive = pathSegments[0] === "team" && pathSegments[2] === "todo";
+    const isTeamManagementActive =
+        pathSegments[0] === "team" &&
+        pathSegments[1] === String(teamId) &&
+        pathSegments[2] === "management";
+
     return (
         <div className="sidebar-favorites">
             {/* 작업 공간 메뉴 */}
@@ -110,7 +121,7 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                     <div
                         className="workspace-list-item"
                         onClick={() => setIsCreateModalOpen(true)}
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         To Do List 작성
                     </div>
@@ -149,25 +160,33 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                 <div className="sidebar-workspace-container">
                     <div className="team-list-title">팀 작업 공간</div>
 
-                    <Link to="/team" className={`team-list ${location.pathname === "/team" ? "active" : ""}`}>
+                    {/* 수정된 부분: 팀 공간 링크 */}
+                    <Link
+                        to="/team"
+                        className={`team-list ${isTeamSpaceActive ? "active" : ""}`}
+                    >
                         팀 공간
                     </Link>
-                    <div className="team-list">To Do List</div>
+
+                    {/* 수정된 부분: To Do List 링크 */}
+                    <Link
+                        to={`/team/${teamId}/todo`}
+                        className={`team-list ${isTeamTodoActive ? "active" : ""}`}
+                    >
+                        To Do List
+                    </Link>
+
                     <Link
                         to="/team-workspace/community"
-                        className={`team-list ${
-                            location.pathname === "/team-workspace/community" ? "active" : ""
-                        }`}
+                        className={`team-list ${location.pathname === "/team-workspace/community" ? "active" : ""}`}
                     >
                         기록
                     </Link>
 
                     {/* 내 팀 관리 버튼 */}
                     <div
-                        className={`team-list ${
-                            location.pathname === `/team/${teamId}/management` ? "active" : ""
-                        }`}
-                        style={{ cursor: "pointer" }}
+                        className={`team-list ${isTeamManagementActive ? "active" : ""}`}
+                        style={{cursor: "pointer"}}
                         onClick={handleManagementClick}
                     >
                         내 팀 관리

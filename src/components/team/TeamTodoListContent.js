@@ -132,7 +132,7 @@ function TeamTodoListContent({ teamId }) {
                                 <CSSTransition key={task.id} timeout={500} classNames="task">
                                     <div className="team-all-list-task-card">
                                         {/* (3) 왼쪽 상단 뱃지 컨테이너: 상태 뱃지 + '최근 작성' 뱃지 */}
-                                        <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                                        <div style={{ display: "flex", gap: "8px"}}>
                                             <div
                                                 className="team-task-section-badge"
                                                 style={{ backgroundColor: task.sectionColor }}
