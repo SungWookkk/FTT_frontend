@@ -93,6 +93,15 @@ function TeamTodoContentPage() {
     const onDragEnd = (result) => {
         const { source, destination } = result;
         if (!destination) return;
+
+        // 로컬 state 업데이트 전에, 이동한 작업의 새 상태를 결정
+        const statusMapping = {
+            onHold: "진행 예정",     // onHold 컬럼 => 진행 예정
+            inProgress: "진행중",     // inProgress 컬럼 => 진행중
+            done: "완료",            // done 컬럼 => 완료
+        };
+
+        // 만약 같은 컬럼 내의 재정렬이면 그냥 로컬 state만 업데이트합니다.
         if (source.droppableId === destination.droppableId) {
             const column = columns[source.droppableId];
             const copiedItems = [...column.items];
@@ -103,6 +112,7 @@ function TeamTodoContentPage() {
                 [source.droppableId]: { ...column, items: copiedItems },
             });
         } else {
+            // 다른 컬럼 간 이동인 경우
             const sourceColumn = columns[source.droppableId];
             const destColumn = columns[destination.droppableId];
             const sourceItems = [...sourceColumn.items];
@@ -110,14 +120,25 @@ function TeamTodoContentPage() {
             const [removed] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, removed);
 
-            //  여기서 서버에 'status' 변경 patch를 할 수도 있음 (destination.droppableId에 맞춰)
-            //   axios.patch(`/api/team/${teamId}/tasks/${removed.id}`, { status: newStatus })
+            // 새 상태 결정 (destination.droppableId에 따라)
+            const newStatus = statusMapping[destination.droppableId];
 
+            // 로컬 state 업데이트
             setColumns({
                 ...columns,
                 [source.droppableId]: { ...sourceColumn, items: sourceItems },
                 [destination.droppableId]: { ...destColumn, items: destItems },
             });
+
+            // 서버에 상태 변경 PATCH 요청
+            axios
+                .patch(`/api/team/${teamId}/tasks/${removed.id}`, { status: newStatus })
+                .then((res) => {
+                    console.log("작업 상태 업데이트 성공:", res.data);
+                })
+                .catch((err) => {
+                    console.error("작업 상태 업데이트 실패:", err);
+                });
         }
     };
 
@@ -494,13 +515,19 @@ function TeamTodoContentPage() {
                             columnKey = "inProgress";
                         }
 
-                        setColumns((prevColumns) => ({
-                            ...prevColumns,
-                            [columnKey]: {
+
+                        setColumns((prevColumns) => {
+                            // 기존 항목과 새 작업을 합쳐 새로운 배열 생성
+                            const updatedColumn = {
                                 ...prevColumns[columnKey],
                                 items: [...prevColumns[columnKey].items, newTask],
-                            },
-                        }));
+                            };
+
+                            return {
+                                ...prevColumns,
+                                [columnKey]: updatedColumn,
+                            };
+                        });
                     }}
                 />
             )}
