@@ -6,7 +6,7 @@ import TeamCommunityContentPage from "./TeamCommunityContentPage";
 
 function TeamCommunityPage() {
     // false: 기본 사이드바, true: 채팅 사이드바
-    const [useChatSidebar, setUseChatSidebar] = useState(false);
+    const [useChatSidebar, setUseChatSidebar] = useState(true);
 
     // Sidebar에서 "채팅" 버튼 클릭 시 호출할 콜백
     const handleShowChat = () => {

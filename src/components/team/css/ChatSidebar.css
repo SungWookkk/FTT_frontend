@@ -1,0 +1,138 @@
+.help-section1 {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    position: absolute;
+    width: 90%;
+    top: 849px;
+    left: 15px;
+}
+
+.help-button1, .share-button1 {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 13.7px;
+    color: #2a2e34;
+    font-family: "Inter-Regular", sans-serif;
+    background-color: #f7f8f9;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.help-item1 {
+    border-radius: 6px;
+    height: 28px;
+    left: 9px;
+    position: absolute;
+    width: 113px;
+}
+
+.div-cu-simple-bar1 {
+    background-color: #e8eaed;
+    height: 24px;
+    margin-top: 10px;
+    width: 2px;
+}
+
+.sidebar-button {
+    display: block;
+    width: 100%;
+    padding: 6px 20px;
+    margin: 6px 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2a2e34;
+    font-family: "Inter", sans-serif;
+    text-align: left;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.sidebar-button:hover {
+    background-color: #f0f3f7;
+}
+
+.sidebar-button:active {
+    background-color: #e1e7ed;
+}
+
+/* 사용자 상태 텍스트 */
+.sidebar-button span.online {
+    color: #1da55c;
+    font-weight: bold;
+}
+
+.sidebar-button span.offline {
+    color: #a0a4a8;
+}
+.sidebar-container1{
+    width: 260px;
+    height: 100vh;
+    background-color: #f4f5f7;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar-user1{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px 20px 20px;
+    margin-top: 25px;
+    background-color: #f7f8f9;
+    border-bottom: 1px solid #e8eaed;
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
+}
+.sidebar-content1{
+    position: relative;
+    width: 100%;
+    left: 10px;
+}
+.sidebar-menu1{
+    list-style: none;
+    padding-right: 10px;
+    margin: 0;
+}
+.sidebar-menu1 li {
+    padding: 1px 20px 10px 10px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* 기본 링크 스타일 */
+.sidebar-menu1 li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 15px;
+    margin-right: -10px;
+    transition: color 0.2s ease;
+
+}
+
+
+/* 활성화된 메뉴 */
+.sidebar-menu1 li.active a {
+    font-weight: bold;
+    background-color: #e5e4fc;
+    height: 32px;
+    width: 238px;
+    border-radius: 6px;
+}
+.sidebar-menu1 li a:hover {
+    text-decoration: underline;
+    color: #5f55ee;
+    cursor: pointer;
+}
+
