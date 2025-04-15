@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import {Link, useLocation, useHistory, useParams} from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
 import "./css/SidebarFavorites.css";
@@ -44,7 +44,13 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [teamSelectModalOpen, setTeamSelectModalOpen] = useState(false);
 
-    // prop으로 전달받은 myTeams가 없으면, 백엔드 API를 통해 가져옵니다.
+
+    // 여기서 useParams()로 현재 URL 파라미터(teamId) 가져옴
+    // 만약 상위에서 teamId가 잘 안 넘어오면 paramTeamId를 fallback으로 사용
+    const { teamId: paramTeamId } = useParams();
+    const effectiveTeamId = teamId || paramTeamId;
+
+    // prop으로 전달받은 myTeams가 없으면, 백엔드 API를 통해 가져옴
     const [localTeams, setLocalTeams] = useState(propMyTeams || []);
     useEffect(() => {
         if ((!propMyTeams || propMyTeams.length === 0) && auth.userId) {
@@ -177,7 +183,7 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                     </Link>
 
                     <Link
-                        to={`/team/${teamId}/community`}
+                        to={effectiveTeamId ? `/team/${effectiveTeamId}/community` : "/team"}
                         className={`team-list ${location.pathname.startsWith(`/team/${teamId}/community`) ? "active" : ""}`}
                     >
                         소통

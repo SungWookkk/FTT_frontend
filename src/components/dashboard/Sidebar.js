@@ -1,4 +1,4 @@
-import {Link, useHistory, useLocation} from "react-router-dom";
+import {Link, useHistory, useLocation, useParams} from "react-router-dom";
 import "./css/Sidebar.css";
 import SidebarBackground from "./SidebarBackground";
 import DashboardIcon from "../../../src/Auth/css/img/Dashboard.svg";
@@ -14,7 +14,7 @@ const Sidebar = ({onToggle}) => {
     const location = useLocation(); // 현재 활성화된 URL을 가져옴
     const [userName, setUserName] = useState();
     const history = useHistory();
-
+    const { teamId } = useParams();
     // /team/1/community 같은 경로에 접속했는지 판별
     const isTeamCommunity = location.pathname.includes("/community");
 
@@ -104,7 +104,7 @@ const Sidebar = ({onToggle}) => {
                         </Link>
                     </li>
                 </ul>
-                <SidebarFavorites/>
+                <SidebarFavorites teamId={teamId} />
                 {/* 도움말 & 공유 버튼 */}
                 <div className="help-section">
                     <button className="help-button">공유</button>

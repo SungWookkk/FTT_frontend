@@ -1,47 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import userinfo from "../../Auth/css/img/default-user.svg";
 import "../dashboard/css/Sidebar.css";
 import "../team/css/ChatSidebar.css";
 import AddChannelModal from "./AddChannelModal";
+import axios from "axios";
+import { useAuth } from "../../Auth/AuthContext";
 
 /**
- * @param onBack {Function} - "기본 사이드바"로 돌아갈 때 호출하는 콜백
+ * ChatSidebar 컴포넌트
+ * @param {Function} onBack - "기본 사이드바"로 돌아갈 때 호출되는 콜백
  */
 function ChatSidebar({ onBack }) {
-    // 1) 채널 목록을 state로 관리 (초기값 임의 설정)
-    const [channels, setChannels] = useState(["General", "공지사항", "프로젝트 A", "자유 채널"]);
+    const { teamId } = useParams();
+    const { auth } = useAuth();
 
-    // 임시 예시: 사용자 목록
+    // 채널 목록 상태 (초기값은 빈 배열; 팀 생성 시 BE에서 기본채널(["General", "공지사항", "자유 채널"])이 설정되어 있어야 함)
+    const [channels, setChannels] = useState([]);
+    // 사용자 목록: 실제 기능에서는 서버에서 가져오지만 여기서는 임시로 사용
     const [users] = useState([
         { name: "Alice (온라인)", status: "online" },
         { name: "Bob (오프라인)", status: "offline" },
-        { name: "Charlie (오프라인)", status: "offline" },
-        { name: "Charlie (오프라인)", status: "offline" },
-        { name: "Charlie (오프라인)", status: "offline" },
         { name: "Charlie (오프라인)", status: "offline" },
     ]);
 
     // 모달 열림 여부
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // "+ 채널 추가" 버튼 클릭 -> 모달 열기
+    // 팀 채널 목록을 BE로부터 불러오기 (컴포넌트 마운트 시, 팀ID 변경 시)
+    useEffect(() => {
+        if (teamId) {
+            axios
+                .get(`/api/team/${teamId}/channels`)
+                .then((res) => {
+                    setChannels(res.data);
+                })
+                .catch((err) => {
+                    console.error("채널 목록 불러오기 실패:", err);
+                });
+        }
+    }, [teamId]);
+
+    // "+ 채널 추가" 버튼 클릭: 모달 열기
     const handleAddChannelClick = () => {
         setIsModalOpen(true);
     };
 
-    // 모달에서 "생성" 버튼 클릭 시
+    // 모달에서 생성 버튼을 누르면 채널 추가 처리 (DB에 채널 추가 API 호출 후 state 업데이트)
     const handleCreateChannel = (newChannelName) => {
-        setChannels((prev) => [...prev, newChannelName]);
-        setIsModalOpen(false);
+        const payload = {
+            channelName: newChannelName,
+            description: "",
+            // 생성자 정보: BE는 createdBy가 UserInfo 엔티티 여기서는 ID를 전달
+            createdBy: { id: auth.userId },
+        };
+
+        axios
+            .post(`/api/team/${teamId}/channels`, payload)
+            .then((res) => {
+                // 응답으로 새 채널 객체가 넘어온다고 가정하고, state에 추가
+                setChannels((prev) => [...prev, res.data]);
+                setIsModalOpen(false);
+            })
+            .catch((err) => {
+                console.error("채널 생성 실패:", err);
+            });
     };
 
-    // 모달에서 "취소"/배경 클릭 시
+    // 모달 닫기 처리
     const handleCancelAddChannel = () => {
         setIsModalOpen(false);
     };
 
     return (
         <div className="sidebar-container1">
+            {/* 사용자 정보 영역 */}
             <div className="sidebar-user1">
                 <img className="user-icon" src={userinfo} alt="User Icon" />
                 <span className="user-name">팀 채팅 공간</span>
@@ -59,32 +92,36 @@ function ChatSidebar({ onBack }) {
             </div>
 
             <nav className="sidebar-content1">
+                {/* 채널 목록 헤더 */}
                 <ul className="sidebar-menu1">
                     <li className="channel-header">
                         <span className="channel-title">채널 목록</span>
-                        <button className="add-channel-button" onClick={handleAddChannelClick}>+ 채널 추가</button>
+                        <button className="add-channel-button" onClick={handleAddChannelClick}>
+                            + 채널 추가
+                        </button>
                     </li>
                 </ul>
 
-                {/* ===== 채널 목록: 스크롤 영역 ===== */}
+                {/* 채널 목록 스크롤 영역 */}
                 <ul className="sidebar-menu1 channel-list-scroll">
-                    {channels.map((channelName, idx) => (
-                        <li key={idx}>
+                    {channels.map((channel, idx) => (
+                        <li key={channel.id || idx}>
                             <button className="sidebar-button">
-                                <span>{channelName}</span>
+                                <span>{channel.channelName}</span>
                             </button>
                         </li>
                     ))}
                 </ul>
 
-
                 {/* 구분선 */}
                 <div style={{ height: "1px", backgroundColor: "#e8eaed", margin: "20px 0" }} />
 
-                {/* ==== 사용자 목록: 스크롤 영역 ==== */}
+                {/* 사용자 목록 스크롤 영역 */}
                 <ul className="sidebar-menu1 user-list-scroll">
                     <li>
-                        <span style={{ fontSize: "14px", color: "#656f7d", fontWeight: 700 }}>사용자 목록</span>
+            <span style={{ fontSize: "14px", color: "#656f7d", fontWeight: 700 }}>
+              사용자 목록
+            </span>
                     </li>
                     {users.map((u, idx) => (
                         <li key={idx}>
@@ -100,14 +137,14 @@ function ChatSidebar({ onBack }) {
                 </ul>
             </nav>
 
-            {/* 하단 (도움말 등) */}
+            {/* 하단 (도움말 & 공유) */}
             <div className="help-section1">
                 <button className="help-button1">공유</button>
                 <div className="div-cu-simple-bar1" />
                 <button className="share-button1">도움말</button>
             </div>
 
-            {/* 모달: AddChannelModal */}
+            {/* 채널 추가 모달 */}
             {isModalOpen && (
                 <AddChannelModal
                     onCreateChannel={handleCreateChannel}
