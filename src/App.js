@@ -21,6 +21,7 @@ import TeamAffiliationPage from "./components/team/TeamAffiliationPage";
 import TeamTodoPage from "./components/team/TeamTodoPage";
 import TeamManagementPage from "./components/team/TeamManagementPage";
 import TeamCommunityPage from "./components/team/TeamCommunityPage";
+import ChannelDetailPage from "./components/team/ChannelDetailPage";
 
 const App = () => {
     return (
@@ -61,8 +62,10 @@ const App = () => {
                         <Route exact path="/team/:teamId" component={TeamAffiliationPage} />
                         <Route path="/team/:teamId/todo" component={TeamTodoPage} />
                         <Route path="/team/:teamId/management" component={TeamManagementPage} />
-                        <Route path="/team/:teamId/community" component={TeamCommunityPage} />
-
+                        {/* 더 구체적인 라우트를 위에 배치 */}
+                        <Route exact path="/team/:teamId/community/:channelId" component={ChannelDetailPage} />
+                        {/* 그 다음에 일반적인 /team/:teamId/community */}
+                        <Route exact path="/team/:teamId/community" component={TeamCommunityPage} />
                     </Switch>
                 </div>
             </Router>

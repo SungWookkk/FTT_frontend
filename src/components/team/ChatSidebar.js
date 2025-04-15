@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import userinfo from "../../Auth/css/img/default-user.svg";
 import "../dashboard/css/Sidebar.css";
 import "../team/css/ChatSidebar.css";
@@ -104,22 +104,26 @@ function ChatSidebar({ onBack }) {
 
                 {/* 채널 목록 스크롤 영역 */}
                 <ul className="sidebar-menu1 channel-list-scroll">
-                    {channels.map((channel, idx) => (
-                        <li key={channel.id || idx}>
-                            <button className="sidebar-button">
+                    {channels.map((channel) => (
+                        <li key={channel.id}>
+                            <Link
+                                to={`/team/${teamId}/community/${channel.id}`}
+                                className="sidebar-button"
+                                style={{textDecoration: "none"}}
+                            >
                                 <span>{channel.channelName}</span>
-                            </button>
+                            </Link>
                         </li>
                     ))}
                 </ul>
 
                 {/* 구분선 */}
-                <div style={{ height: "1px", backgroundColor: "#e8eaed", margin: "20px 0" }} />
+                <div style={{height: "1px", backgroundColor: "#e8eaed", margin: "20px 0", width: "240px"}}/>
 
                 {/* 사용자 목록 스크롤 영역 */}
                 <ul className="sidebar-menu1 user-list-scroll">
                     <li>
-            <span style={{ fontSize: "14px", color: "#656f7d", fontWeight: 700 }}>
+            <span style={{fontSize: "14px", color: "#656f7d", fontWeight: 700}}>
               사용자 목록
             </span>
                     </li>
@@ -140,7 +144,7 @@ function ChatSidebar({ onBack }) {
             {/* 하단 (도움말 & 공유) */}
             <div className="help-section1">
                 <button className="help-button1">공유</button>
-                <div className="div-cu-simple-bar1" />
+                <div className="div-cu-simple-bar1"/>
                 <button className="share-button1">도움말</button>
             </div>
 
