@@ -1,34 +1,56 @@
-import React from "react";
-import "../dashboard/css/Sidebar.css";
+import React, { useState } from "react";
 import userinfo from "../../Auth/css/img/default-user.svg";
+import "../dashboard/css/Sidebar.css";
 import "../team/css/ChatSidebar.css";
+import AddChannelModal from "./AddChannelModal";
+
 /**
  * @param onBack {Function} - "기본 사이드바"로 돌아갈 때 호출하는 콜백
  */
 function ChatSidebar({ onBack }) {
+    // 1) 채널 목록을 state로 관리 (초기값 임의 설정)
+    const [channels, setChannels] = useState(["General", "공지사항", "프로젝트 A", "자유 채널"]);
+
+    // 임시 예시: 사용자 목록
+    const [users] = useState([
+        { name: "Alice (온라인)", status: "online" },
+        { name: "Bob (오프라인)", status: "offline" },
+        { name: "Charlie (오프라인)", status: "offline" },
+        { name: "Charlie (오프라인)", status: "offline" },
+        { name: "Charlie (오프라인)", status: "offline" },
+        { name: "Charlie (오프라인)", status: "offline" },
+    ]);
+
+    // 모달 열림 여부
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // "+ 채널 추가" 버튼 클릭 -> 모달 열기
+    const handleAddChannelClick = () => {
+        setIsModalOpen(true);
+    };
+
+    // 모달에서 "생성" 버튼 클릭 시
+    const handleCreateChannel = (newChannelName) => {
+        setChannels((prev) => [...prev, newChannelName]);
+        setIsModalOpen(false);
+    };
+
+    // 모달에서 "취소"/배경 클릭 시
+    const handleCancelAddChannel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
-        <div className="sidebar-container1" style={{backgroundColor: "#f7f8f9"}}>
-            {/* 사용자 정보 영역 */}
-            <div className="sidebar-user1" style={{position: "relative", cursor: "pointer"}}>
-                <img className="user-icon" src={userinfo} alt="User Icon"/>
+        <div className="sidebar-container1">
+            <div className="sidebar-user1">
+                <img className="user-icon" src={userinfo} alt="User Icon" />
                 <span className="user-name">팀 채팅 공간</span>
 
-                {/* "기본" 버튼 */}
                 <div
+                    className="basic-button"
                     onClick={(e) => {
                         e.stopPropagation();
-                        if (onBack) onBack(); // 부모에서 전달된 콜백 호출
-                    }}
-                    style={{
-                        position: "absolute",
-                        top: "20px",
-                        right: "10px",
-                        color: "#333",
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
+                        if (onBack) onBack();
                     }}
                     title="기본 사이드바로 돌아가기"
                 >
@@ -36,66 +58,62 @@ function ChatSidebar({ onBack }) {
                 </div>
             </div>
 
-            {/* 채팅 콘텐츠 영역 */}
             <nav className="sidebar-content1">
-                {/* 채널 목록 */}
                 <ul className="sidebar-menu1">
-                    <li style={{ marginTop: 15 }}>
-                        <span style={{ fontSize: "14px", color: "#656f7d", fontWeight: 700 }}>채널 목록</span>
-                    </li>
-                    {/* 내비게이션 링크가 아니라 단순 버튼 형태로 대체하여 href 관련 ESLint 경고를 피함 */}
-                    <li>
-                        <button className="sidebar-button">
-                            <span>General</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span>공지사항</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span>프로젝트 A</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span>자유 채널</span>
-                        </button>
+                    <li className="channel-header">
+                        <span className="channel-title">채널 목록</span>
+                        <button className="add-channel-button" onClick={handleAddChannelClick}>+ 채널 추가</button>
                     </li>
                 </ul>
+
+                {/* ===== 채널 목록: 스크롤 영역 ===== */}
+                <ul className="sidebar-menu1 channel-list-scroll">
+                    {channels.map((channelName, idx) => (
+                        <li key={idx}>
+                            <button className="sidebar-button">
+                                <span>{channelName}</span>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+
 
                 {/* 구분선 */}
                 <div style={{ height: "1px", backgroundColor: "#e8eaed", margin: "20px 0" }} />
 
-                <ul className="sidebar-menu1">
-                    <li style={{ marginTop: 15 }}>
+                {/* ==== 사용자 목록: 스크롤 영역 ==== */}
+                <ul className="sidebar-menu1 user-list-scroll">
+                    <li>
                         <span style={{ fontSize: "14px", color: "#656f7d", fontWeight: 700 }}>사용자 목록</span>
                     </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span className="online">🟢 Alice (온라인)</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span className="offline">⚪ Bob (오프라인)</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button className="sidebar-button">
-                            <span className="offline">⚪ Charlie (오프라인)</span>
-                        </button>
-                    </li>
+                    {users.map((u, idx) => (
+                        <li key={idx}>
+                            <button className="sidebar-button">
+                                {u.status === "online" ? (
+                                    <span className="online">🟢 {u.name}</span>
+                                ) : (
+                                    <span className="offline">⚪ {u.name}</span>
+                                )}
+                            </button>
+                        </li>
+                    ))}
                 </ul>
             </nav>
-                {/* 하단 (도움말 등) */}
+
+            {/* 하단 (도움말 등) */}
             <div className="help-section1">
                 <button className="help-button1">공유</button>
-                <div className="div-cu-simple-bar1"/>
+                <div className="div-cu-simple-bar1" />
                 <button className="share-button1">도움말</button>
             </div>
+
+            {/* 모달: AddChannelModal */}
+            {isModalOpen && (
+                <AddChannelModal
+                    onCreateChannel={handleCreateChannel}
+                    onCancel={handleCancelAddChannel}
+                />
+            )}
         </div>
     );
 }
