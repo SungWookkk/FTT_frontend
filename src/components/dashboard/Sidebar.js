@@ -15,8 +15,9 @@ const Sidebar = ({onToggle}) => {
     const [userName, setUserName] = useState();
     const history = useHistory();
     const { teamId } = useParams();
-    // /team/1/community 같은 경로에 접속했는지 판별
-    const isTeamCommunity = location.pathname.includes("/community");
+
+    // 팀 커뮤니티 경로 여부 teamId를 포함한 경로로 시작하는지 확인
+    const isTeamCommunity = location.pathname.startsWith(`/team/${teamId}/community`);
 
 
     useEffect(() => {
