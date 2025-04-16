@@ -26,7 +26,12 @@ const TeamApplyModal = ({ isOpen, onClose, team, userId }) => {
             onClose();
         } catch (error) {
             console.error("팀 신청 중 오류:", error);
-            alert("팀 신청에 실패했습니다. 다시 시도해주세요.");
+            // 서버에서 반환된 오류 메시지가 "이미 가입되어 있는 팀입니다!"이면 해당 문구를 alert로 노출
+            if (error.response && error.response.data === "이미 가입되어 있는 팀입니다!") {
+                alert("이미 가입되어 있는 팀입니다!");
+            } else {
+                alert("팀 신청에 실패했습니다. 다시 시도해주세요.");
+            }
         }
     };
 
