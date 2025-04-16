@@ -7,17 +7,18 @@ const TeamApplyModal = ({ isOpen, onClose, team, userId }) => {
     const [reason, setReason] = useState("");
     const [goal, setGoal] = useState("");
 
-    // isOpen이 false이면 null 반환 (훅 호출 이후에 조건부 반환)
+    // isOpen이 false이면 null 반환
     if (!isOpen) return null;
 
     const handleApply = async () => {
         try {
+            // teamId 대신 팀 정보를 team: { id: team.id } 형태로 전송
             const requestData = {
-                teamId: team.id,
+                team: { id: team.id },
                 reason,
                 goal,
             };
-            // userId가 반드시 존재
+            // userId가 반드시 존재 (헤더에 전달)
             const response = await axios.post("/api/team-applications", requestData, {
                 headers: { "X-User-Id": userId },
             });

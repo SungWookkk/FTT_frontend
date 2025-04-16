@@ -1,3 +1,4 @@
+/* 기존 관리 페이지 CSS (이미 제공된 코드) */
 .management-alert-banner {
     background-color: #f2f1fe;
     height: 44px;
@@ -55,7 +56,6 @@
     color: #4f57c7;
 }
 
-
 /* 모달 오버레이 */
 .management-modal-overlay {
     position: fixed;
@@ -79,7 +79,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     position: relative;
 }
-
 
 /* 모달 닫기 버튼 */
 .management-modal-close-btn {
@@ -154,4 +153,107 @@
     border-width: 6px;
     border-style: solid;
     border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+}
+
+/* --- 아래는 팀 신청 목록 영역에 대한 추가 CSS --- */
+
+/* 팀 신청 목록 섹션 */
+.team-application-section {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f7f8f9;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+}
+
+/* 섹션 제목 */
+.section-title {
+    font-size: 1rem;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    color: #2a2e34;
+    margin-bottom: 10px;
+}
+
+/* 신청이 없을 때 메시지 */
+.no-applications {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* 신청 목록 스타일 */
+.application-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.application-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.application-item:last-child {
+    border-bottom: none;
+}
+
+/* 신청 정보 영역 */
+.application-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.applicant-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2a2e34;
+}
+
+.application-reason,
+.application-goal,
+.application-status {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 2px;
+}
+
+/* 액션 버튼 영역 */
+.application-actions {
+    display: flex;
+    position: relative;
+    right: 1600px;
+    gap: 8px;
+}
+
+.approve-btn,
+.reject-btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.approve-btn {
+    background-color: #1da55c;
+    color: #fff;
+}
+
+.approve-btn:hover {
+    background-color: #169d4c;
+}
+
+.reject-btn {
+    background-color: #ff4c4c;
+    color: #fff;
+}
+
+.reject-btn:hover {
+    background-color: #e04343;
 }
