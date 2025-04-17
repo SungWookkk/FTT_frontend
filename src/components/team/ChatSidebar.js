@@ -10,6 +10,8 @@ import { useAuth } from "../../Auth/AuthContext";
 function ChatSidebar({ onBack }) {
     const { teamId } = useParams();
     const { auth } = useAuth();
+    // 실제 팀원 엔티티 기반 state
+    const [members, setMembers] = useState([]);
 
     // 임시 더미 데이터 (로컬 테스트용)
     const dummyChannels = [
@@ -19,11 +21,6 @@ function ChatSidebar({ onBack }) {
     ];
 
     const [channels, setChannels] = useState(dummyChannels);
-    const [users] = useState([
-        { name: "Alice (온라인)", status: "online" },
-        { name: "Bob (오프라인)", status: "offline" },
-        { name: "Charlie (오프라인)", status: "offline" }
-    ]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -39,6 +36,21 @@ function ChatSidebar({ onBack }) {
                     console.error("채널 목록 불러오기 실패:", err);
                 });
         }
+    }, [teamId]);
+
+    useEffect(() => {
+        axios.get(`/api/teams/${teamId}/members`)
+            .then(res => {
+                // res.data 는 UserInfo[] 형식
+                setMembers(
+                    res.data.map(u => ({
+                        id: u.id,
+                        name: u.username,
+                        status: "offline"   // 나중에 WebSocket Presence 로 업데이팅
+                    }))
+                );
+            })
+            .catch(err => console.error("팀원 조회 실패:", err));
     }, [teamId]);
 
     const handleAddChannelClick = () => {
@@ -105,7 +117,7 @@ function ChatSidebar({ onBack }) {
                                 exact
                                 className="sidebar-button"
                                 activeClassName="active-channel"
-                                style={{ textDecoration: "none" }}
+                                style={{textDecoration: "none"}}
                             >
                                 {channel.channelName}
                             </NavLink>
@@ -123,25 +135,14 @@ function ChatSidebar({ onBack }) {
                 />
 
                 <ul className="sidebar-menu1 user-list-scroll">
-                    <li>
-            <span
-                style={{
-                    fontSize: "14px",
-                    color: "#656f7d",
-                    fontWeight: 700
-                }}
-            >
-              사용자 목록
-            </span>
-                    </li>
-                    {users.map((u, idx) => (
-                        <li key={idx}>
+                    <li><span className="channel-title">사용자 목록</span></li>
+                    {members.map(u => (
+                        <li key={u.id}>
                             <button className="sidebar-button">
-                                {u.status === "online" ? (
-                                    <span className="online">🟢 {u.name}</span>
-                                ) : (
-                                    <span className="offline">⚪ {u.name}</span>
-                                )}
+                                {u.status === "online"
+                                    ? <span className="online">🟢 {u.name}</span>
+                                    : <span className="offline">⚪ {u.name}</span>
+                                }
                             </button>
                         </li>
                     ))}
@@ -150,7 +151,7 @@ function ChatSidebar({ onBack }) {
 
             <div className="help-section1">
                 <button className="help-button1">공유</button>
-                <div className="div-cu-simple-bar1" />
+                <div className="div-cu-simple-bar1"/>
                 <button className="share-button1">도움말</button>
             </div>
 
