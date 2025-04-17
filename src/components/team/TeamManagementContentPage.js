@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import TeamDropdown from "./TeamDropdown";
 import "../team/css/TeamManagementContentPage.css";
 import axios from "axios";
+import TeamKickMemberModal from "./management/TeamKickMemberModal";
+import TeamPromoteMemberModal from "./management/TeamPromoteMemberModal";
+import TeamLeaveTeamModal from "./management/TeamLeaveTeamModal";
+import TeamDisbandTeamModal from "./management/TeamDisbandTeamModal";
 
 const ManagementDetailsModal = ({ onClose }) => {
     return (
@@ -63,6 +67,13 @@ function TeamManagementContentPage() {
     // 팀 신청 목록 상태
     const [applications, setApplications] = useState([]);
 
+    // 팀 관리 기능 상태
+    const [showKick, setShowKick] = useState(false);
+    const [showPromote, setShowPromote] = useState(false);
+    const [showLeave, setShowLeave] = useState(false);
+    const [showDisband, setShowDisband] = useState(false);
+    const [members, setMembers] = useState([]);
+
     // 팀 선택 시 호출 (TeamDropdown 등에서)
     const handleTeamSelect = (selectedTeam) => {
         history.push(`/team/${selectedTeam.id}`);
@@ -81,6 +92,7 @@ function TeamManagementContentPage() {
                 });
         }
     }, [teamId]);
+
 
     // 신청 승인 처리 함수
     const handleApprove = (applicationId) => {
@@ -119,6 +131,28 @@ function TeamManagementContentPage() {
                 alert("신청 반려에 실패하였습니다.");
             });
     };
+    // 1) 팀원 불러오기
+    const loadMembers = useCallback(() => {
+        axios
+            .get(`/api/teams/${teamId}/members`)
+            .then(res => setMembers(res.data))
+            .catch(err => console.error("팀원 조회 실패:", err));
+    }, [teamId]);
+
+    // 2) 신청 목록 불러오기
+    const loadApplications = useCallback(() => {
+        axios
+            .get(`/api/team-applications/${teamId}`)
+            .then(res => setApplications(res.data))
+            .catch(err => console.error("신청 목록 실패:", err));
+    }, [teamId]);
+
+    // 마운트 및 teamId 변경 시 한 번에 호출
+    useEffect(() => {
+        loadMembers();
+        loadApplications();
+    }, [loadMembers, loadApplications]);
+
 
     return (
         <div className="dashboard-content">
@@ -126,13 +160,13 @@ function TeamManagementContentPage() {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown onTeamSelect={handleTeamSelect} />
+                    <TeamDropdown onTeamSelect={handleTeamSelect}/>
                 </div>
             </div>
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
                     <div className="list-tab-container">
                         <div
                             className={`tab-item ${isMainPage ? "active" : ""}`}
@@ -167,7 +201,7 @@ function TeamManagementContentPage() {
                 </button>
 
                 {/* 모달 */}
-                {showModal && <ManagementDetailsModal onClose={() => setShowModal(false)} />}
+                {showModal && <ManagementDetailsModal onClose={() => setShowModal(false)}/>}
             </div>
 
             {/* 팀 신청 목록 영역 */}
@@ -200,6 +234,31 @@ function TeamManagementContentPage() {
                     </ul>
                 )}
             </div>
+            <div className="management-actions">
+                <button onClick={() => setShowKick(true)}>멤버 추방</button>
+                <button onClick={() => setShowPromote(true)}>멤버 등급 상승</button>
+                <button onClick={() => setShowLeave(true)}>팀 탈퇴</button>
+                <button onClick={() => setShowDisband(true)}>팀 해체</button>
+            </div>
+            {showKick && (
+                <TeamKickMemberModal
+                    teamId={teamId}
+                    members={members}
+                    onClose={() => setShowKick(false)}
+                    onKicked={() => loadMembers()}
+                />
+            )}
+            {showPromote && (
+                <TeamPromoteMemberModal
+                    teamId={teamId}
+                    members={members}
+                    onClose={() => setShowPromote(false)}
+                />
+            )}
+            {showLeave && <TeamLeaveTeamModal teamId={teamId} onClose={() => setShowLeave(false)} />}
+            {showDisband && (
+                <TeamDisbandTeamModal teamId={teamId} onClose={() => setShowDisband(false)} />
+            )}
         </div>
     );
 }
