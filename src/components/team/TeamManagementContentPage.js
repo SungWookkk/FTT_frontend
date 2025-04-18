@@ -4,7 +4,7 @@ import TeamDropdown from "./TeamDropdown";
 import "../team/css/TeamManagementContentPage.css";
 import axios from "axios";
 import TeamKickMemberModal from "./management/TeamKickMemberModal";
-import TeamPromoteMemberModal from "./management/TeamPromoteMemberModal";
+import TeamRoleModal from "./management/TeamRoleModal";
 import TeamLeaveTeamModal from "./management/TeamLeaveTeamModal";
 import TeamDisbandTeamModal from "./management/TeamDisbandTeamModal";
 
@@ -132,12 +132,20 @@ function TeamManagementContentPage() {
             });
     };
     // 1) 팀원 불러오기
-    const loadMembers = useCallback(() => {
-        axios
-            .get(`/api/teams/${teamId}/members`)
-            .then(res => setMembers(res.data))
-            .catch(err => console.error("팀원 조회 실패:", err));
-    }, [teamId]);
+    const loadMembers = useCallback(() => { //TEAMCONTROLLER에서 불러옴
+        const url = `/api/teams/${teamId}/members`;
+        console.log("[DEBUG] loadMembers 호출, URL →", url);
+
+        axios.get(url)
+            .then(res => {
+                console.log("[DEBUG] loadMembers 응답 성공:", res.data);
+                setMembers(res.data);
+            })
+            .catch(err => {
+                console.error("[DEBUG] loadMembers 에러:", err.response || err);
+            });
+    }, [teamId])
+
 
     // 2) 신청 목록 불러오기
     const loadApplications = useCallback(() => {
@@ -153,6 +161,9 @@ function TeamManagementContentPage() {
         loadApplications();
     }, [loadMembers, loadApplications]);
 
+    useEffect(() => {
+        console.log("[DEBUG] members 상태 업데이트 →", members);
+    }, [members]);
 
     return (
         <div className="dashboard-content">
@@ -249,9 +260,13 @@ function TeamManagementContentPage() {
                 />
             )}
             {showPromote && (
-                <TeamPromoteMemberModal
+                <TeamRoleModal
                     teamId={teamId}
-                    members={members}
+                   members={members.map(m => ({
+                     id: m.id,
+                     username: m.username,
+                     role: m.role
+                   }))}
                     onClose={() => setShowPromote(false)}
                 />
             )}
