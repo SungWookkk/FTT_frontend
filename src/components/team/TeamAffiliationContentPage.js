@@ -47,7 +47,6 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                             data = null;
                         }
                     }
-                    console.log("백엔드에서 받은 팀 데이터:", data);
                     if (data) {
                         if (!data.members || !Array.isArray(data.members)) {
                             data.members = [];
