@@ -12,3 +12,6 @@ npm install react-transition-group
 
 4/5 Kanban 보드 형태를 위한 설치
 npm install react-beautiful-dnd
+
+4/19 icon 사용을 위한 react-icons 설치
+npm install react-icons
