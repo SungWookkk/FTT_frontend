@@ -8,12 +8,14 @@ import TeamReadingList from "./TeamReadingList";
 import TeamStatusMessage from "./TeamStatusMessage";
 import TeamTodoListContent from "./TeamTodoListContent";
 import { useAuth } from "../../Auth/AuthContext";
+import TeamLeaveTeamModal from "./management/TeamLeaveTeamModal";
 
 function TeamAffiliationContentPage({ team: propTeam }) {
     // URL에서 teamId 추출
     const { teamId } = useParams();
     const { auth } = useAuth();
     const currentUserId = auth.userId;
+    const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
     const [team, setTeam] = useState(
         propTeam
             ? { ...propTeam, members: Array.isArray(propTeam.members) ? propTeam.members : [] }
@@ -100,6 +102,8 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
                     <TeamDropdown onTeamSelect={handleTeamSelect} disableAutoSelect={true} />
+                    {/* 팀 탈퇴 버튼 */}
+                    <button className="btn-team-del" onClick={() => setIsLeaveModalOpen(true)}>팀 탈퇴</button>
                 </div>
             </div>
 
@@ -150,6 +154,13 @@ function TeamAffiliationContentPage({ team: propTeam }) {
                 <TeamReadingList teamId={team.id} />
                 <TeamTodoListContent teamId={team.id} />
             </div>
+            {/* 탈퇴 모달 */}
+            {isLeaveModalOpen && (
+                <TeamLeaveTeamModal
+                    teamId={team.id}
+                    onClose={() => setIsLeaveModalOpen(false)}
+                />
+            )}
         </div>
     );
 }

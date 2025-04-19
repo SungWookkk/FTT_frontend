@@ -31,3 +31,89 @@
     color: #2a2e34;
     font-weight: 700;
 }
+
+/* 팀 탈퇴 버튼 */
+.btn-team-del {
+    background-color: #f95656;
+    color: #ffffff;
+    border: 1px solid #f95656;
+    padding: 6px 12px;
+    margin-left: 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-team-del:hover {
+    background-color: #e04040;
+    border-color: #e04040;
+}
+.team-leave-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.team-leave-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.team-leave-title {
+    margin: 0 0 12px;
+    font-size: 1.4rem;
+    color: #2a2e34;
+    text-align: center;
+}
+
+.team-leave-message {
+    margin-bottom: 24px;
+    font-size: 1rem;
+    color: #555;
+    text-align: center;
+}
+
+.team-leave-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.team-leave-btn {
+    background-color: #f95656;
+    color: #fff;
+    border: 1px solid #f95656;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.team-leave-btn:hover {
+    background-color: #e04040;
+    border-color: #e04040;
+}
+
+.team-leave-cancel {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.team-leave-cancel:hover {
+    background-color: #f2f2f2;
+}
