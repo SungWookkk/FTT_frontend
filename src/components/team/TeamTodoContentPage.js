@@ -54,7 +54,7 @@ function TeamTodoContentPage() {
         done: "priority",
     });
     const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
-    const [folded, setFolded] = useState(false);
+    const [folded, setFolded] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     //  컴포넌트 마운트 시(or teamId 변경 시), 서버에서 작업 목록 불러오기
@@ -63,6 +63,8 @@ function TeamTodoContentPage() {
             .get(`/api/team/${teamId}/tasks`) // 실제 API 엔드포인트
             .then((res) => {
                 const tasks = res.data || []; // 서버에서 받아온 작업 배열
+                // 작업이 하나도 없으면 접힌 상태, 있으면 펼침
+                setFolded(tasks.length === 0);
 
                 // status에 따라 분류 (실제 status 값 확인 필요: ex. "TODO", "진행중", "DONE" 등)
                 const onHoldTasks = tasks.filter((task) => task.status === "TODO" || task.status === "진행 예정");
