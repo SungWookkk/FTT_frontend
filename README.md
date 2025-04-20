@@ -24,3 +24,7 @@ npm install date-fns`
 4/20 sockjs‑client 설치(브라우저와 서버 간에 WebSocket이 지원되지 않을 때에도 HTTP 롱폴링, XHR 스트리밍 등으로 투명하게 대체해 주는 클라이언트 라이브러리 new SockJS("/ws") 처럼 사용하면, 내부적으로 WebSocket이 가능하면 WebSocket을, 아니면 폴백(fallback) 기법을 선택해 연결을 생성 )
 
 `npm install sockjs-client stompjs`
+
+**변경**
+>> `npm uninstall stompjs
+npm install @stomp/stompjs sockjs-client`
