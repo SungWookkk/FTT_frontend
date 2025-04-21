@@ -7,6 +7,7 @@
     import TeamRoleModal from "./management/TeamRoleModal";
     import TeamLeaveTeamModal from "./management/TeamLeaveTeamModal";
     import TeamDisbandTeamModal from "./management/TeamDisbandTeamModal";
+    import { FaTrash } from 'react-icons/fa';
 
     const ManagementDetailsModal = ({ onClose }) => {
         return (
@@ -165,6 +166,15 @@
             console.log("[DEBUG] members 상태 업데이트 →", members);
         }, [members]);
 
+
+        // 전체 목록 비우기
+        const clearApplications = () => {
+            if (window.confirm("정말 모든 신청 목록을 삭제하시겠습니까?")) {
+                setApplications([]);
+            }
+        };
+
+
         return (
             <div className="dashboard-content">
                 {/* 상단 헤더 */}
@@ -217,7 +227,16 @@
 
                 {/* 팀 신청 목록 영역 */}
                 <div className="team-application-section">
-                    <h3 className="section-title-manage">팀 신청 목록</h3>
+                    <h3 className="section-title-manage">
+                        팀 신청 목록
+                        <button
+                            className="clear-list-btn"
+                            onClick={clearApplications}
+                            title="전체 삭제"
+                        >
+                            <FaTrash/>
+                        </button>
+                    </h3>
                     {applications.length === 0 ? (
                         <p className="no-applications">현재 신청된 팀 가입 요청이 없습니다.</p>
                     ) : (

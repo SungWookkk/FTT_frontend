@@ -41,6 +41,9 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          # V8 힙 메모리 한도를 4GB로 확장
+          export NODE_OPTIONS="--max_old_space_size=4096"
+      
           if [ -d "/home/ubuntu/ftt_frontend/" ]; then
             cd /home/ubuntu/ftt_frontend/
           else
