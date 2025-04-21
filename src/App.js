@@ -21,6 +21,7 @@ import TeamAffiliationPage from "./components/team/TeamAffiliationPage";
 import TeamTodoPage from "./components/team/TeamTodoPage";
 import TeamManagementPage from "./components/team/TeamManagementPage";
 import TeamCommunityPage from "./components/team/TeamCommunityPage";
+import ChannelDetailPage from "./components/team/ChannelDetailPage";
 
 const App = () => {
     return (
@@ -62,6 +63,7 @@ const App = () => {
                         <Route path="/team/:teamId/todo" component={TeamTodoPage} />
                         <Route path="/team/:teamId/management" component={TeamManagementPage} />
                         <Route path="/team/:teamId/community" component={TeamCommunityPage} />
+                        <Route path="/team/:teamId/community/:channelId?" component={ChannelDetailPage}/>
                     </Switch>
                 </div>
             </Router>
