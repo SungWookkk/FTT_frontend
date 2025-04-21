@@ -3,6 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import TeamDropdown from "./TeamDropdown";
 import { Client } from "@stomp/stompjs";
 import { useAuth } from "../../Auth/AuthContext";
+import axios from "axios";
 
 function ChannelDetailContentPage() {
     const { teamId, channelId } = useParams();
@@ -28,6 +29,14 @@ function ChannelDetailContentPage() {
         // 채널이 바뀔 때마다 이전 메시지·상태 초기화
         setMessages([]);
         setConnectionStatus("연결 중...");
+
+        // 2) 과거 메시지 조회
+              axios.get(`/api/chat/channels/${channelId}/messages`)
+                   .then(res => {
+                           setMessages(res.data);
+                       })
+                .catch(err => console.error("히스토리 불러오기 실패:", err));
+
 
         console.log("웹소켓 연결 시도 중...", channelId);
 
