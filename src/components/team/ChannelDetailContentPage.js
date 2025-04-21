@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import TeamDropdown from "./TeamDropdown";
 import { Client } from "@stomp/stompjs";
+import { useAuth } from "../../Auth/AuthContext";
 
 function ChannelDetailContentPage() {
     const { teamId, channelId } = useParams();
     const history = useHistory();
     const location = useLocation();
+    const { auth } = useAuth();              // auth.userId, auth.username 등 제공된다고 가정
 
     const [stompClient, setStompClient] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -23,28 +25,31 @@ function ChannelDetailContentPage() {
     useEffect(() => {
         if (!channelId) return;
 
+        // 채널이 바뀔 때마다 이전 메시지·상태 초기화
+        setMessages([]);
+        setConnectionStatus("연결 중...");
+
         console.log("웹소켓 연결 시도 중...", channelId);
 
-        // 1) STOMP Client 생성 (순수 WebSocket)
         const client = new Client({
             brokerURL: `ws://localhost:8080/ws`,
             reconnectDelay: 5000,
         });
 
-        // 2) 연결 성공 시
         client.onConnect = () => {
             console.log("웹소켓 연결 성공!");
             setConnectionStatus("연결됨");
 
+            // 구독 전에 기존 클라이언트에 남은 구독 해제
+            client.activeSubscriptions?.forEach(sub => sub.unsubscribe?.());
+
             // 채널별 구독
             client.subscribe(`/topic/chat/${channelId}`, (frame) => {
-                console.log("메시지 수신:", frame.body);
-                const receivedMsg = JSON.parse(frame.body);
-                setMessages((prev) => [...prev, receivedMsg]);
+                const msg = JSON.parse(frame.body);
+                setMessages(prev => [...prev, msg]);
             });
         };
 
-        // 3) 연결 에러 시
         client.onStompError = (frame) => {
             console.error("STOMP 오류:", frame);
             setConnectionStatus(`STOMP 오류: ${frame.headers["message"]}`);
@@ -54,11 +59,9 @@ function ChannelDetailContentPage() {
             setConnectionStatus(`WS 오류: ${evt}`);
         };
 
-        // 4) activate 해서 연결 시작
         client.activate();
         setStompClient(client);
 
-        // 5) 언마운트 시 연결 해제
         return () => {
             if (client && client.active) {
                 client.deactivate();
@@ -69,12 +72,15 @@ function ChannelDetailContentPage() {
 
     const sendTestMessage = () => {
         if (!stompClient || !stompClient.connected || !text.trim()) {
-            console.log("메시지를 보낼 수 없습니다:", stompClient?.connected ? "텍스트 없음" : "연결 안됨");
+            console.log(
+                "메시지를 보낼 수 없습니다:",
+                stompClient?.connected ? "텍스트 없음" : "연결 안됨"
+            );
             return;
         }
 
         const message = {
-            sender: "테스트사용자",
+            sender: { id: auth.userId },         // 로그인된 사용자 닉네임 사용
             content: text,
             channelId: parseInt(channelId, 10),
         };
@@ -92,22 +98,42 @@ function ChannelDetailContentPage() {
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
-                    <TeamDropdown onTeamSelect={handleTeamSelect} disableAutoSelect={true} />
+                    <TeamDropdown
+                        onTeamSelect={handleTeamSelect}
+                        disableAutoSelect={true}
+                    />
                 </div>
             </div>
 
             <div className="list-tap">
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                    }}
+                >
                     <div className="list-tab-container">
-                        <div className={`tab-item ${isMainPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}`)}>
+                        <div
+                            className={`tab-item ${isMainPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}`)}
+                        >
                             메인
                         </div>
-                        <div className={`tab-item ${isTodoPage ? "active" : ""}`} onClick={() => history.push(`/team/${teamId}/todo`)}>
+                        <div
+                            className={`tab-item ${isTodoPage ? "active" : ""}`}
+                            onClick={() => history.push(`/team/${teamId}/todo`)}
+                        >
                             팀 Todo
                         </div>
                         <div
-                            className={`tab-item ${!isMainPage && !isTodoPage ? "active" : ""}`}
-                            onClick={() => history.push(`/team/${teamId}/community`)}
+                            className={`tab-item ${
+                                !isMainPage && !isTodoPage ? "active" : ""
+                            }`}
+                            onClick={() =>
+                                history.push(`/team/${teamId}/community/${channelId}`)
+                            }
                         >
                             소통
                         </div>
@@ -126,7 +152,9 @@ function ChannelDetailContentPage() {
 
             {/* 채팅 UI */}
             <div style={{ padding: 20, border: "1px solid #ddd", marginTop: 20 }}>
-                <h3>채널 {channelId} - 채팅 ({connectionStatus})</h3>
+                <h3>
+                    채널 {channelId} - 채팅 ({connectionStatus})
+                </h3>
                 <div
                     style={{
                         height: 200,
