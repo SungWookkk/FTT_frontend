@@ -6,78 +6,105 @@ import "../team/css/ChatSidebar.css";
 import AddChannelModal from "./AddChannelModal";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
+import { Client } from "@stomp/stompjs";
 
 function ChatSidebar({ onBack }) {
     const { teamId } = useParams();
     const { auth } = useAuth();
-    // 실제 팀원 엔티티 기반 state
     const [members, setMembers] = useState([]);
-
-    // 임시 더미 데이터 (로컬 테스트용)
-    const dummyChannels = [
-        { id: 1, channelName: "General" },
-        { id: 2, channelName: "공지사항" },
-        { id: 3, channelName: "자유 채널" }
-    ];
-
-    const [channels, setChannels] = useState(dummyChannels);
+    const [channels, setChannels] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // 1) 채널 목록
     useEffect(() => {
-        if (teamId) {
-            axios
-                .get(`/api/team/${teamId}/channels`)
-                .then((res) => {
-                    if (res.data && res.data.length > 0) {
-                        setChannels(res.data);
-                    }
-                })
-                .catch((err) => {
-                    console.error("채널 목록 불러오기 실패:", err);
-                });
-        }
+        if (!teamId) return;
+        axios.get(`/api/team/${teamId}/channels`)
+            .then(res => setChannels(res.data))
+            .catch(console.error);
     }, [teamId]);
 
+    // 2) 팀원 로딩 (offline 으로 세팅)
     useEffect(() => {
+        if (!teamId) return;
         axios.get(`/api/teams/${teamId}/members`)
             .then(res => {
-                // res.data 는 UserInfo[] 형식
-                setMembers(
-                    res.data.map(u => ({
-                        id: u.id,
-                        name: u.username,
-                        status: "offline"   // 나중에 WebSocket Presence 로 업데이팅
-                    }))
-                );
+                setMembers(res.data.map(u => ({
+                    id: u.id,
+                    name: u.username,
+                    status: "offline"
+                })));
             })
-            .catch(err => console.error("팀원 조회 실패:", err));
+            .catch(console.error);
     }, [teamId]);
 
-    const handleAddChannelClick = () => {
-        setIsModalOpen(true);
-    };
+    // 3) → 팀원 로딩이 끝나면(=members.length>0) STOMP Presence 로직 실행
+    useEffect(() => {
+        if (!auth?.userId || !teamId || members.length === 0) return;
 
-    const handleCreateChannel = (newChannelName) => {
+        const presenceClient = new Client({
+            brokerURL: "ws://localhost:8080/ws",
+            reconnectDelay: 5000,
+        });
+
+        presenceClient.onConnect = () => {
+            console.log("Presence STOMP connected");
+
+            // (A) 구독 먼저
+            presenceClient.subscribe(
+                `/topic/presence/${teamId}`,
+                ({ body }) => {
+                    const onlineIds = JSON.parse(body);
+                    console.log("Presence update received:", onlineIds);
+                    setMembers(prev =>
+                        prev.map(m => ({
+                            ...m,
+                            status: onlineIds.includes(m.id) ? "online" : "offline"
+                        }))
+                    );
+                }
+            );
+
+            // (B) 구독이 걸리고 나서야 join 알림
+            presenceClient.publish({
+                destination: "/app/presence/join",
+                body: JSON.stringify({ userId: auth.userId, teamId }),
+            });
+            console.log("Sent presence/join");
+        };
+
+        presenceClient.activate();
+
+        const handleLeave = () => {
+            presenceClient.publish({
+                destination: "/app/presence/leave",
+                body: JSON.stringify({ userId: auth.userId, teamId }),
+            });
+            presenceClient.deactivate();
+            console.log("Sent presence/leave");
+        };
+        window.addEventListener("beforeunload", handleLeave);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleLeave);
+            handleLeave();
+        };
+    }, [auth?.userId, teamId, members.length]);
+
+    const handleAddChannelClick = () => setIsModalOpen(true);
+    const handleCreateChannel = newChannelName => {
         const payload = {
             channelName: newChannelName,
             description: "",
             createdBy: { id: auth.userId }
         };
-
-        axios
-            .post(`/api/team/${teamId}/channels`, payload)
-            .then((res) => {
-                setChannels((prev) => [...prev, res.data]);
+        axios.post(`/api/team/${teamId}/channels`, payload)
+            .then(res => {
+                setChannels(prev => [...prev, res.data]);
                 setIsModalOpen(false);
             })
-            .catch((err) => {
-                console.error("채널 생성 실패:", err);
-            });
+            .catch(err => console.error("채널 생성 실패:", err));
     };
-
-    const handleCancelAddChannel = () => {
-        setIsModalOpen(false);
-    };
+    const handleCancelAddChannel = () => setIsModalOpen(false);
 
     return (
         <div className="sidebar-container1">
@@ -86,10 +113,7 @@ function ChatSidebar({ onBack }) {
                 <span className="user-name">팀 채팅 공간</span>
                 <div
                     className="basic-button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onBack && onBack();
-                    }}
+                    onClick={e => { e.stopPropagation(); onBack && onBack(); }}
                     title="기본 사이드바로 돌아가기"
                 >
                     기본
@@ -100,24 +124,21 @@ function ChatSidebar({ onBack }) {
                 <ul className="sidebar-menu1">
                     <li className="channel-header">
                         <span className="channel-title">채널 목록</span>
-                        <button
-                            className="add-channel-button"
-                            onClick={handleAddChannelClick}
-                        >
+                        <button className="add-channel-button" onClick={handleAddChannelClick}>
                             + 채널 추가
                         </button>
                     </li>
                 </ul>
 
                 <ul className="sidebar-menu1 channel-list-scroll">
-                    {channels.map((channel) => (
+                    {channels.map(channel => (
                         <li key={channel.id}>
                             <NavLink
                                 to={`/team/${teamId}/community/${channel.id}`}
                                 exact
                                 className="sidebar-button"
                                 activeClassName="active-channel"
-                                style={{textDecoration: "none"}}
+                                style={{ textDecoration: "none" }}
                             >
                                 {channel.channelName}
                             </NavLink>
@@ -151,7 +172,7 @@ function ChatSidebar({ onBack }) {
 
             <div className="help-section1">
                 <button className="help-button1">공유</button>
-                <div className="div-cu-simple-bar1"/>
+                <div className="div-cu-simple-bar1" />
                 <button className="share-button1">도움말</button>
             </div>
 

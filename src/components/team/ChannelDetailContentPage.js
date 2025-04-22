@@ -15,7 +15,7 @@ function ChannelDetailContentPage() {
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
     const [connectionStatus, setConnectionStatus] = useState("연결 중...");
-
+    const [members, setMembers] = useState([]);
     const handleTeamSelect = (selectedTeam) => {
         history.push(`/team/${selectedTeam.id}`);
     };
@@ -23,81 +23,99 @@ function ChannelDetailContentPage() {
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
 
+    // avoid “assigned but never used” lint error by logging members
     useEffect(() => {
-        if (!channelId) return;
+        console.log("현재 팀원 상태:", members);
+    }, [members]);
 
-        // 채널이 바뀔 때마다 이전 메시지·상태 초기화
+    useEffect(() => {
+        if (!channelId || !auth?.userId) return;
+
+        // 1) 초기화
         setMessages([]);
         setConnectionStatus("연결 중...");
 
-        // 2) 과거 메시지 조회
-              axios.get(`/api/chat/channels/${channelId}/messages`)
-                   .then(res => {
-                           setMessages(res.data);
-                       })
-                .catch(err => console.error("히스토리 불러오기 실패:", err));
+        // 2) 과거 메시지 히스토리 조회
+        axios
+            .get(`/api/chat/channels/${channelId}/messages`)
+            .then((res) => setMessages(res.data))
+            .catch((err) => console.error("히스토리 불러오기 실패:", err));
 
-
-        console.log("웹소켓 연결 시도 중...", channelId);
-
+        // 3) STOMP 클라이언트 생성
         const client = new Client({
-            brokerURL: `ws://localhost:8080/ws`,
+            brokerURL: "ws://localhost:8080/ws",
             reconnectDelay: 5000,
         });
 
         client.onConnect = () => {
-            console.log("웹소켓 연결 성공!");
             setConnectionStatus("연결됨");
 
-            // 구독 전에 기존 클라이언트에 남은 구독 해제
-            client.activeSubscriptions?.forEach(sub => sub.unsubscribe?.());
-
-            // 채널별 구독
+            // A) 채널별 메시지 구독
             client.subscribe(`/topic/chat/${channelId}`, (frame) => {
                 const msg = JSON.parse(frame.body);
-                setMessages(prev => [...prev, msg]);
+                setMessages((prev) => [...prev, msg]);
+            });
+
+            // B) Presence 목록 구독
+            client.subscribe(`/topic/presence/${teamId}`, (frame) => {
+                const onlineIds = JSON.parse(frame.body);
+                setMembers((prev) =>
+                    prev.map((u) => ({
+                        ...u,
+                        status: onlineIds.includes(u.id) ? "online" : "offline",
+                    }))
+                );
+            });
+
+            // C) 나 입장 알림
+            client.publish({
+                destination: "/app/presence/join",
+                body: JSON.stringify({ userId: auth.userId, teamId: parseInt(teamId, 10) }),
             });
         };
 
         client.onStompError = (frame) => {
             console.error("STOMP 오류:", frame);
-            setConnectionStatus(`STOMP 오류: ${frame.headers["message"]}`);
+            setConnectionStatus(`STOMP 오류: ${frame.headers?.message || "unknown"}`);
         };
         client.onWebSocketError = (evt) => {
             console.error("웹소켓 오류:", evt);
-            setConnectionStatus(`WS 오류: ${evt}`);
+            setConnectionStatus(`WS 오류: ${evt.type}`);
         };
 
         client.activate();
         setStompClient(client);
 
+        // 언마운트 시: leave 알림 + 연결 해제
         return () => {
-            if (client && client.active) {
-                client.deactivate();
-                console.log("웹소켓 연결 해제");
+            if (client.connected) {
+                client.publish({
+                    destination: "/app/presence/leave",
+                    body: JSON.stringify({ userId: auth.userId, teamId: parseInt(teamId, 10) }),
+                });
             }
+            client.deactivate();
+            console.log("웹소켓 연결 해제");
         };
-    }, [channelId]);
+    }, [channelId, teamId, auth.userId]);
 
+    // 메시지 전송
     const sendTestMessage = () => {
-        if (!stompClient || !stompClient.connected || !text.trim()) {
+        if (!stompClient?.connected || !text.trim()) {
             console.log(
                 "메시지를 보낼 수 없습니다:",
                 stompClient?.connected ? "텍스트 없음" : "연결 안됨"
             );
             return;
         }
-
-        const message = {
-            sender: { id: auth.userId },         // 로그인된 사용자 닉네임 사용
+        const payload = {
+            sender: { id: auth.userId },
             content: text,
             channelId: parseInt(channelId, 10),
         };
-
-        console.log("메시지 전송:", message);
         stompClient.publish({
             destination: `/app/chat/send/${channelId}`,
-            body: JSON.stringify(message),
+            body: JSON.stringify(payload),
         });
         setText("");
     };

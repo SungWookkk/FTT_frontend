@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { AuthProvider } from "./Auth/AuthContext";
+import {AuthProvider, useAuth} from "./Auth/AuthContext";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -22,10 +22,55 @@ import TeamTodoPage from "./components/team/TeamTodoPage";
 import TeamManagementPage from "./components/team/TeamManagementPage";
 import TeamCommunityPage from "./components/team/TeamCommunityPage";
 import ChannelDetailPage from "./components/team/ChannelDetailPage";
+import { Client } from "@stomp/stompjs";
+
+function PresenceManager() {
+    const { auth } = useAuth();
+
+    useEffect(() => {
+        // 로그인 전이나 auth가 없으면 아무 동작도 하지 않음
+        if (!auth?.userId) return;
+
+        const presenceClient = new Client({
+            brokerURL: "ws://localhost:8080/ws",
+            reconnectDelay: 5000,
+        });
+
+        presenceClient.onConnect = () => {
+            // 서버에 접속 알림
+            presenceClient.publish({
+                destination: "/app/presence/join",
+                body: JSON.stringify({ userId: auth.userId, teamId: auth.teamId }),
+            });
+        };
+
+        presenceClient.activate();
+
+        const handleUnload = () => {
+            presenceClient.publish({
+                destination: "/app/presence/leave",
+                body: JSON.stringify({ userId: auth.userId, teamId: auth.teamId }),
+            });
+            presenceClient.deactivate();
+        };
+        window.addEventListener("beforeunload", handleUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleUnload);
+            presenceClient.deactivate();
+        };
+    }, [auth]);
+
+    return null;  // UI를 렌더링할 필요는 없습니다
+}
+
 
 const App = () => {
+
     return (
         <AuthProvider>
+            {/* ② 전역 Presence 연결은 이 컴포넌트 하나로 관리 */}
+            <PresenceManager />
             <Router>
                 <MainNavigation/>
                 <div className="app-container">
