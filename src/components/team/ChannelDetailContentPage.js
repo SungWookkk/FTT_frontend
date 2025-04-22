@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import TeamDropdown from "./TeamDropdown";
 import { Client } from "@stomp/stompjs";
 import { useAuth } from "../../Auth/AuthContext";
 import axios from "axios";
-
+import "../team/css/ChannelDetailContentPage.css"
+import userinfo from "../../Auth/css/img/default-user.svg";
 function ChannelDetailContentPage() {
     const { teamId, channelId } = useParams();
     const history = useHistory();
     const location = useLocation();
-    const { auth } = useAuth();              // auth.userId, auth.username 등 제공된다고 가정
-
+    const { auth } = useAuth();
+    const [hoveredMessage, setHoveredMessage] = useState(null);
     const [stompClient, setStompClient] = useState(null);
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
     const [connectionStatus, setConnectionStatus] = useState("연결 중...");
     const [members, setMembers] = useState([]);
+    const textareaRef = useRef(null);
     const handleTeamSelect = (selectedTeam) => {
         history.push(`/team/${selectedTeam.id}`);
     };
@@ -23,7 +25,16 @@ function ChannelDetailContentPage() {
     const isMainPage = location.pathname === `/team/${teamId}`;
     const isTodoPage = location.pathname === `/team/${teamId}/todo`;
 
-    // avoid “assigned but never used” lint error by logging members
+
+    // 입력 시마다 높이 자동 조절
+    const handleTextChange = (e) => {
+        setText(e.target.value);
+        const ta = textareaRef.current;
+        if (!ta) return;
+        ta.style.height = 'auto';
+        ta.style.height = ta.scrollHeight + 'px';
+    };
+
     useEffect(() => {
         console.log("현재 팀원 상태:", members);
     }, [members]);
@@ -168,53 +179,97 @@ function ChannelDetailContentPage() {
                 </div>
             </div>
 
-            <div className="alert-banner-todo">
-                <p className="alert-text">
-                    <span className="highlight-text">팀</span>
-                    <span className="normal-text">은 공동의 목표를 위해 함께 </span>
-                    <span className="highlight-text">소통하고 협업</span>
-                    <span className="normal-text">하는 공간입니다.</span>
-                </p>
-            </div>
 
-            {/* 채팅 UI */}
-            <div style={{ padding: 20, border: "1px solid #ddd", marginTop: 20 }}>
-                <h3>
-                    채널 {channelId} - 채팅 ({connectionStatus})
-                </h3>
-                <div
-                    style={{
-                        height: 200,
-                        overflowY: "auto",
-                        border: "1px solid #ccc",
-                        padding: 8,
-                        marginBottom: 8,
-                    }}
-                >
-                    {messages.map((m, i) => (
-                        <div key={i}>
-                            <strong>{m.sender}:</strong> {m.content}
-                        </div>
-                    ))}
+            <div className="channel-detail-wrapper">
+                {/* 1) 채널 설명 */}
+                <div className="channel-info">
+                    <h2># 일반 - ({connectionStatus})</h2>
+                    <p>
+                        고객님이 이 채널을 생성한 날짜는: 2025년 4월 22일입니다.
+                        #일반 채널의 맨 첫 부분입니다. … (채널 설명)
+                    </p>
                 </div>
-                <input
-                    type="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    style={{ width: "80%", padding: 8 }}
-                    placeholder="메시지를 입력하세요"
-                />
-                <button
-                    onClick={sendTestMessage}
-                    style={{
-                        padding: "8px 12px",
-                        marginLeft: 8,
-                        backgroundColor: stompClient?.connected ? "#4CAF50" : "#cccccc",
-                    }}
-                    disabled={!stompClient?.connected}
-                >
-                    전송
-                </button>
+
+                <div className="messages-container">
+                    {messages.map((m, i) => {
+                        const time = new Date(m.timestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        });
+
+                        return (
+                            <div
+                                className="message"
+                                key={i}
+                                onMouseEnter={() => setHoveredMessage(i)}
+                                onMouseLeave={() => setHoveredMessage(null)}
+                            >
+                                {/* 아바타 */}
+                                <img src={userinfo} alt="avatar" className="avatar" />
+
+                                {/* 내용 영역 */}
+                                <div className="message-content">
+                                    <div className="message-header">
+                                        <span className="message-username">{m.sender}</span>
+                                        <span className="message-timestamp">{time}</span>
+                                    </div>
+                                    <div className="message-text">{m.content}</div>
+                                </div>
+
+                                {/* 액션 아이콘 */}
+                                {hoveredMessage === i && (
+                                    <div className="message-actions">
+                                        <button title="확인">✅</button>
+                                        <button title="눈">👀</button>
+                                        <button title="하이파이브">🙌</button>
+                                        <button title="반응">😊</button>
+                                        <button title="댓글">💬</button>
+                                        <button title="더보기">⋯</button>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* 3) 입력 폼 */}
+                <div className="chat-input-container">
+                    <div className="chat-input-box">
+                        <div className="chat-toolbar">
+                            <button className="icon-btn"><b>B</b></button>
+                            <button className="icon-btn"><i>I</i></button>
+                            <button className="icon-btn"><s>S</s></button>
+                            <button className="icon-btn">🔗</button>
+                            <button className="icon-btn">• • •</button>
+                            <button className="icon-btn"><code>{'</>'}</code></button>
+                        </div>
+
+                        <textarea
+                            ref={textareaRef}
+                            value={text}
+                            onChange={handleTextChange}
+                            placeholder={`#일반 채널에 메시지 보내기`}
+                        />
+
+                        <div className="chat-actions">
+                            <button className="action-btn">Aa</button>
+                            <button className="action-btn">😊</button>
+                            <button className="action-btn">@</button>
+                            <button className="action-btn">📎</button>
+                            <button className="action-btn">🎥</button>
+                            <button className="action-btn">🎤</button>
+                            <button className="action-btn">✏️</button>
+                        </div>
+                    </div>
+
+                    <button
+                        className="send-btn"
+                        onClick={sendTestMessage}
+                        disabled={!stompClient?.connected || !text.trim()}
+                    >
+                        전송
+                    </button>
+                </div>
             </div>
         </div>
     );
