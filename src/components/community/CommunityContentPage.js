@@ -1,25 +1,46 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
+import "../community/css/CommunityContentPage.css";
+import "../community/css/CommunityBestPost.css";
+import CommunityBestPost from "./CommunityBestPost";
 
 function CommunityContentPage() {
-    return(
+    return (
         <div className="dashboard-content">
             {/* 작업공간 헤더 */}
             <div className="dashboard-header">
                 <div className="dashboard-title">
                     <span className="title-text">사용자 커뮤니티</span>
                 </div>
-
             </div>
 
             {/* 목록 선택 탭 */}
             <div className="list-tap">
-                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
-                    <div className="list-tab-container">
-                        <div className="tab-item active">메인</div>
-                        <div className="tab-item">게시글</div>
-                        <div className="tab-item">내 작성 관리</div>
-                    </div>
+                <div className="list-tab-container">
+                    <NavLink
+                        to="/community"
+                        exact
+                        className="tab-item"
+                        activeClassName="active"
+                    >
+                        메인
+                    </NavLink>
 
+                    <NavLink
+                        to="/community/board"
+                        className="tab-item"
+                        activeClassName="active"
+                    >
+                        게시글
+                    </NavLink>
+
+                    <NavLink
+                        to="/community/my-page"
+                        className="tab-item"
+                        activeClassName="active"
+                    >
+                        내 작성 관리
+                    </NavLink>
                 </div>
             </div>
 
@@ -39,6 +60,8 @@ function CommunityContentPage() {
                     <span className="normal-text">를 이루어 보아요! </span>
                 </p>
             </div>
+            {/*  Best 게시글 컴포넌트 */}
+            <CommunityBestPost />
         </div>
     );
 }

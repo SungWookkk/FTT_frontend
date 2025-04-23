@@ -1,0 +1,95 @@
+.cbp-box {
+    width: 646px;
+    height: 220px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    margin: 24px 0 24px 30px;
+    display: flex;
+    flex-direction: column;
+}
+/* 헤더 */
+.cbp-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.cbp-icon {
+    font-size: 20px;
+    margin-right: 8px;
+}
+.cbp-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* 리스트 */
+.cbp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.cbp-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    position: relative;
+}
+
+/* 구분선 */
+.cbp-item + .cbp-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+/* 왼쪽 텍스트 영역 */
+.cbp-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cbp-dot {
+    width: 8px;
+    height: 8px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.cbp-text {
+    font-size: 16px;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 좋아요/싫어요 */
+.cbp-item-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.cbp-like,
+.cbp-dislike {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 16px;
+    color: #666;
+}

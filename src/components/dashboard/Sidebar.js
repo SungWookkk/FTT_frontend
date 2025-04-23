@@ -92,7 +92,7 @@ const Sidebar = ({onToggle}) => {
                             <span>뱃지</span>
                         </Link>
                     </li>
-                    <li className={location.pathname === "/community" ? "active" : ""}>
+                    <li className={location.pathname.startsWith("/community") ? "active" : ""}>
                         <Link to="/community">
                             <img className="icon" src={CommunityIcon} alt="Community Icon"/>
                             <span>커뮤니티</span>
