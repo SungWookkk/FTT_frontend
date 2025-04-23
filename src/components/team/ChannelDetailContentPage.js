@@ -205,7 +205,7 @@ function ChannelDetailContentPage() {
                                 onMouseLeave={() => setHoveredMessage(null)}
                             >
                                 {/* 아바타 */}
-                                <img src={userinfo} alt="avatar" className="avatar" />
+                                <img src={userinfo} alt="avatar" className="avatar1" />
 
                                 {/* 내용 영역 */}
                                 <div className="message-content">
