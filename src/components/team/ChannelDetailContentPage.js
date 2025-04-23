@@ -192,10 +192,23 @@ function ChannelDetailContentPage() {
 
                 <div className="messages-container">
                     {messages.map((m, i) => {
+                        // 현재 메시지 시간 (HH:mm)
                         const time = new Date(m.timestamp).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                         });
+
+                        // 이전 메시지
+                        const prev = messages[i - 1];
+                        const prevTime = prev
+                            ? new Date(prev.timestamp).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })
+                            : null;
+
+                        // 같은 유저 && 같은 시간(분) 이면 header 숨김
+                        const showHeader = !prev || prev.sender !== m.sender || prevTime !== time;
 
                         return (
                             <div
@@ -204,18 +217,25 @@ function ChannelDetailContentPage() {
                                 onMouseEnter={() => setHoveredMessage(i)}
                                 onMouseLeave={() => setHoveredMessage(null)}
                             >
-                                {/* 아바타 */}
-                                <img src={userinfo} alt="avatar" className="avatar1" />
+                                {showHeader && (
+                                    <img src={userinfo} alt="avatar" className="avatar1" />
+                                )}
 
-                                {/* 내용 영역 */}
                                 <div className="message-content">
-                                    <div className="message-header">
-                                        <span className="message-username">{m.sender}</span>
-                                        <span className="message-timestamp">{time}</span>
-                                    </div>
-                                    <div className="message-text">{m.content}</div>
-                                </div>
+                                    {showHeader && (
+                                        <div className="message-header">
+                                            <span className="message-username">{m.sender}</span>
+                                            <span className="message-timestamp">{time}</span>
+                                        </div>
+                                    )}
 
+                                    {/* 메시지 본문은 항상 렌더 */}
+                                    <div
+                                        className={`message-text-block ${showHeader ? "" : "indent"}`}
+                                    >
+                                        {m.content}
+                                    </div>
+                                </div>
                                 {/* 액션 아이콘 */}
                                 {hoveredMessage === i && (
                                     <div className="message-actions">
