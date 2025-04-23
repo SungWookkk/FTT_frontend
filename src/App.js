@@ -25,43 +25,52 @@ import ChannelDetailPage from "./components/team/ChannelDetailPage";
 import { Client } from "@stomp/stompjs";
 
 function PresenceManager() {
-    const { auth } = useAuth();
+    const { auth, updatePresence } = useAuth();
 
     useEffect(() => {
-        // 로그인 전이나 auth가 없으면 아무 동작도 하지 않음
-        if (!auth?.userId) return;
+        // 팀 정보가 준비되지 않았다면 중단
+        if (!auth.userId || auth.teams.length === 0) return;
 
-        const presenceClient = new Client({
+        const client = new Client({
             brokerURL: "ws://localhost:8080/ws",
             reconnectDelay: 5000,
         });
 
-        presenceClient.onConnect = () => {
-            // 서버에 접속 알림
-            presenceClient.publish({
-                destination: "/app/presence/join",
-                body: JSON.stringify({ userId: auth.userId, teamId: auth.teamId }),
+        client.onConnect = () => {
+            // 각 팀마다 join + subscribe
+            auth.teams.forEach((tid) => {
+                client.publish({
+                    destination: "/app/presence/join",
+                    body: JSON.stringify({ userId: auth.userId, teamId: tid }),
+                });
+                client.subscribe(`/topic/presence/${tid}`, (frame) => {
+                    const online = JSON.parse(frame.body);
+                    updatePresence(tid, online);
+                });
             });
         };
 
-        presenceClient.activate();
+        client.activate();
 
-        const handleUnload = () => {
-            presenceClient.publish({
-                destination: "/app/presence/leave",
-                body: JSON.stringify({ userId: auth.userId, teamId: auth.teamId }),
+        // 언마운트 시 leave
+        const onUnload = () => {
+            auth.teams.forEach((tid) => {
+                client.publish({
+                    destination: "/app/presence/leave",
+                    body: JSON.stringify({ userId: auth.userId, teamId: tid }),
+                });
             });
-            presenceClient.deactivate();
+            client.deactivate();
         };
-        window.addEventListener("beforeunload", handleUnload);
+        window.addEventListener("beforeunload", onUnload);
 
         return () => {
-            window.removeEventListener("beforeunload", handleUnload);
-            presenceClient.deactivate();
+            window.removeEventListener("beforeunload", onUnload);
+            client.deactivate();
         };
-    }, [auth]);
+    }, [auth.userId, auth.teams, updatePresence]);
 
-    return null;  // UI를 렌더링할 필요는 없습니다
+    return null;
 }
 
 
@@ -69,7 +78,7 @@ const App = () => {
 
     return (
         <AuthProvider>
-            {/* ② 전역 Presence 연결은 이 컴포넌트 하나로 관리 */}
+            {/* 전역 Presence 연결은 이 컴포넌트 하나로 관리 */}
             <PresenceManager />
             <Router>
                 <MainNavigation/>

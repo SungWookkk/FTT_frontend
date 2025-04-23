@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useState } from "react";
+// src/Auth/AuthContext.js
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+    // 로컬스토리지에서 뱃지 복원
     const storedActiveBadge = localStorage.getItem("activeBadge");
     const initialActiveBadge =
         !storedActiveBadge || storedActiveBadge === "undefined"
@@ -13,39 +14,75 @@ export const AuthProvider = ({ children }) => {
             : JSON.parse(storedActiveBadge);
 
     const [auth, setAuth] = useState({
-        token: localStorage.getItem("token"),           // 토큰 값
-        userName: localStorage.getItem("userName"),       // 사용자 이름
-        userId: localStorage.getItem("userId"),           // 사용자 ID
-        userRole: localStorage.getItem("userRole"),       // 사용자 역할
-        profileImage: localStorage.getItem("profileImage"), // 프로필 사진 URL
-        activeBadge: initialActiveBadge,                  // 활성 뱃지
+        token: localStorage.getItem("token"),           // 토큰
+        userName: localStorage.getItem("userName"),     // 사용자 이름
+        userId: localStorage.getItem("userId"),         // 사용자 ID
+        userRole: localStorage.getItem("userRole"),     // 역할
+        profileImage: localStorage.getItem("profileImage"), // 프로필 URL
+        activeBadge: initialActiveBadge,                // 활성 뱃지
+        teams: [],                                      // 내가 속한 팀 ID 리스트
+        presence: {},
     });
 
-    // 로그인 함수 (기존 그대로)
-    const login = async (userId, password) => {
-        try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
-                userId,
-                password,
-            });
-            const { token, userName, userId: id, userRole, profileImage, activeBadge } = response.data;
+    // 1) 토큰/유저아이디가 세팅되면 내가 속한 팀 목록을 불러와 auth.teams 에 저장
+    useEffect(() => {
+        if (!auth.token || !auth.userId) return;
 
-            localStorage.setItem("token", token);
-            localStorage.setItem("userName", userName);
-            localStorage.setItem("userId", id);
-            localStorage.setItem("userRole", userRole);
-            localStorage.setItem("profileImage", profileImage);
-            // activeBadge가 undefined인 경우 null로 저장
-            localStorage.setItem("activeBadge", activeBadge ? JSON.stringify(activeBadge) : "null");
+        const fetchTeams = async () => {
+            try {
+                const res = await axios.get(
+                    `http://localhost:8080/api/teams/user/${auth.userId}`,
+                    { headers: { Authorization: `Bearer ${auth.token}` } }
+                );
+                const teamIds = res.data.map((t) => t.id);
+                setAuth((a) => ({ ...a, teams: teamIds }));
+            } catch (e) {
+                console.error("팀 목록 불러오기 실패:", e);
+            }
+        };
+        fetchTeams();
+    }, [auth.token, auth.userId]);
 
-            setAuth({ token, userName, userId: id, userRole, profileImage, activeBadge });
-        } catch (error) {
-            console.error("로그인 오류:", error.response || error.message);
-            throw new Error("아이디 또는 비밀번호가 올바르지 않습니다.");
-        }
+    // 2) PresenceManager 에서 호출할 수 있도록, 특정 팀의 onlineId 목록을 저장하는 헬퍼
+    const updatePresence = (teamId, onlineIds) => {
+        setAuth((a) => ({
+            ...a,
+            presence: { ...a.presence, [teamId]: onlineIds },
+        }));
     };
 
-    // 로그아웃 함수
+    // 3) 로그인
+    const login = async (userId, password) => {
+        const response = await axios.post("http://localhost:8080/api/auth/login", {
+            userId,
+            password,
+        });
+        const { token, userName, userId: id, userRole, profileImage, activeBadge } =
+            response.data;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("userId", id);
+        localStorage.setItem("userRole", userRole);
+        localStorage.setItem("profileImage", profileImage);
+        localStorage.setItem(
+            "activeBadge",
+            activeBadge ? JSON.stringify(activeBadge) : "null"
+        );
+
+        setAuth({
+            token,
+            userName,
+            userId: id,
+            userRole,
+            profileImage,
+            activeBadge,
+            teams: [],
+            presence: {},
+        });
+    };
+
+    // 4) 로그아웃
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
@@ -53,17 +90,28 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("userRole");
         localStorage.removeItem("profileImage");
         localStorage.removeItem("activeBadge");
-        setAuth({ token: null, userName: null, userId: null, userRole: null, profileImage: null, activeBadge: null });
+        setAuth({
+            token: null,
+            userName: null,
+            userId: null,
+            userRole: null,
+            profileImage: null,
+            activeBadge: null,
+            teams: [],
+            presence: {},
+        });
     };
 
-    // 활성 뱃지 업데이트 함수
+    // 5) 뱃지 업데이트
     const updateActiveBadge = (badge) => {
         localStorage.setItem("activeBadge", JSON.stringify(badge));
-        setAuth((prev) => ({ ...prev, activeBadge: badge }));
+        setAuth((a) => ({ ...a, activeBadge: badge }));
     };
 
     return (
-        <AuthContext.Provider value={{ auth, login, logout, updateActiveBadge }}>
+        <AuthContext.Provider
+            value={{ auth, login, logout, updateActiveBadge, updatePresence }}
+        >
             {children}
         </AuthContext.Provider>
     );
