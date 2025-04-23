@@ -268,6 +268,12 @@ function ChannelDetailContentPage() {
                             ref={textareaRef}
                             value={text}
                             onChange={handleTextChange}
+                            onKeyDown={(e) => {
+                                         if (e.key === "Enter" && !e.shiftKey) {
+                                                e.preventDefault();      // 줄바꿈 방지
+                                                sendTestMessage();       // 전송 함수 호출
+                                              }
+                                        }}
                             placeholder={`#일반 채널에 메시지 보내기`}
                         />
 

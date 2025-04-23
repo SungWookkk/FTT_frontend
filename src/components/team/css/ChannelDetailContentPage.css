@@ -62,7 +62,7 @@
 .message-actions {
     position: absolute;
     top: 8px;
-    right: 16px;
+    right: 200px;
     display: flex;
     gap: 6px;
     background: #fff;
