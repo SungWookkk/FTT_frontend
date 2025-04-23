@@ -6,7 +6,6 @@ import Signup from "./Auth/Signup";
 import Dashboard from "./components/dashboard/Dashboard";
 import MainNavigation from "./MainNavigation";
 import "./App.css";
-import CommunityBestPosts from "./components/community/CommunityBestPosts";
 import TodoList from "./components/todolist/TodoList";
 import TodoListWritePage from "./components/todolist/TodoListWritePage";
 import TodoListAllListViewPage from "./components/todolist/TodoListAllListViewPage";
@@ -23,6 +22,7 @@ import TeamManagementPage from "./components/team/TeamManagementPage";
 import TeamCommunityPage from "./components/team/TeamCommunityPage";
 import ChannelDetailPage from "./components/team/ChannelDetailPage";
 import { Client } from "@stomp/stompjs";
+import CommunityPage from "./components/community/CommunityPage";
 
 function PresenceManager() {
     const { auth, updatePresence } = useAuth();
@@ -88,7 +88,7 @@ const App = () => {
                         <Route path="/login" component={Login}/>
                         <Route path="/signup" component={Signup}/>
                         <Route path="/dashboard" component={Dashboard}/>
-                        <Route path="/community" component={CommunityBestPosts}/>
+                        <Route path="/community" component={CommunityPage}/>
                         <Route path="/dasboard" component={Dashboard}/>
 
                         {/*TodoList 관련*/}
