@@ -1,0 +1,97 @@
+.clp-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    right: 50px;
+    overflow: hidden;
+}
+
+.clp-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 306px);  /* 컬럼 4개 */
+   grid-template-rows: repeat(2, 105px);     /* 행 2개 */
+   gap: 44px;
+    transition: none;
+}
+.clp-grid.sliding {
+    animation: slideLeft 0.8s ease-in-out forwards;
+}
+
+/* keyframes: 0%는 원위치, 100%는 -100% 폭만큼 이동 */
+@keyframes slideLeft {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+}
+.clp-card {
+    width: 306px;
+    height: 105px;
+    background: #fff;
+    border: 1px solid #E4E5E8;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    padding: 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.clp-title {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+    line-height: 1.2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.clp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.clp-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clp-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.clp-author-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+}
+
+.clp-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clp-like,
+.clp-comment {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #666;
+}
+
+.clp-next-btn {
+    margin-left: 40px;
+    background: none;
+    border: none;
+    font-size: 34px;
+    cursor: pointer;
+    align-self: center;
+    color: #666;
+}
