@@ -1,0 +1,18 @@
+/* posts-wrapper: 두 박스 가로 배치 */
+.posts-wrapper {
+    display: flex;
+    gap: 40px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.cbp-box,
+.chp-box {
+    margin: 0;
+}
+
+.time-post{
+    font-weight: 700;
+    font-size: 20px;
+    padding: 10px 0 20px 30px;
+}

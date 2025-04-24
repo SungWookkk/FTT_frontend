@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import "../community/css/CommunityContentPage.css";
 import "../community/css/CommunityBestPost.css";
 import CommunityBestPost from "./CommunityBestPost";
+import CommunityDayHotPost from "./CommunityDayHotPost";
+import CommunityLivePost from "./CommunityLivePost";
 
 function CommunityContentPage() {
     return (
@@ -61,7 +63,28 @@ function CommunityContentPage() {
                 </p>
             </div>
             {/*  Best 게시글 컴포넌트 */}
-            <CommunityBestPost />
+            <div className="posts-wrapper">
+                 <CommunityBestPost/>
+                 <CommunityDayHotPost/>
+            </div>
+            <div className="time-post">
+                <h1>실시간 게시글</h1>
+            </div>
+            {/* 알림 배너 */}
+            <div className="alert-banner-todo">
+                <p className="alert-text-todo">
+                    <span className="highlight-text">실시간</span>
+                    <span className="normal-text">으로 </span>
+                    <span className="normal-text">작성된 </span>
+                    <span className="highlight-text">게시글을 </span>
+                    <span className="normal-text">보며, </span>
+                    <span className="highlight-text">다른 사용자</span>
+                    <span className="normal-text">들이 </span>
+                    <span className="highlight-text">무슨 생각</span>
+                    <span className="normal-text">을 하는지 확인해 보아요!</span>
+                </p>
+            </div>
+            <CommunityLivePost />
         </div>
     );
 }
