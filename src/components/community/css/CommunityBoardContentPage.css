@@ -24,8 +24,16 @@
 .board-subtitle {
     font-size: 14px;
     color: #666;
-    margin: 8px 0 16px;
+    margin: 0;
 }
+/* subtitle + category 를 한 줄에 배치 */
+.board-subheader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;    /* 필요에 따라 위아래 간격 조정 */
+}
+
 
 .board-table-wrapper {
     width: 100%;
@@ -115,4 +123,33 @@
     color: #4b5ef5;
     border-color: #4b5ef5;
     position: relative;
+}
+.category-btn-wrapper {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    right: 650px;
+    bottom: 10px;
+}
+
+.modal-category-btn {
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+.modal-category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.modal-category-btn.selected {
+    background-color: #636ae8;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(99,106,232,0.3);
 }
