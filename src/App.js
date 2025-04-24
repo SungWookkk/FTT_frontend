@@ -23,6 +23,7 @@ import TeamCommunityPage from "./components/team/TeamCommunityPage";
 import ChannelDetailPage from "./components/team/ChannelDetailPage";
 import { Client } from "@stomp/stompjs";
 import CommunityPage from "./components/community/CommunityPage";
+import CommunityBoardPage from "./components/community/CommunityBoardPage";
 
 function PresenceManager() {
     const { auth, updatePresence } = useAuth();
@@ -88,8 +89,11 @@ const App = () => {
                         <Route path="/login" component={Login}/>
                         <Route path="/signup" component={Signup}/>
                         <Route path="/dashboard" component={Dashboard}/>
-                        <Route path="/community" component={CommunityPage}/>
                         <Route path="/dasboard" component={Dashboard}/>
+
+                        {/*커뮤니티 관련*/}
+                        <Route exact path="/community" component={CommunityPage}/>
+                        <Route path="/community/board" component={CommunityBoardPage}/>
 
                         {/*TodoList 관련*/}
                         <Route exact path="/todo" component={TodoList}/>
