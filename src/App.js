@@ -24,6 +24,7 @@ import ChannelDetailPage from "./components/team/ChannelDetailPage";
 import { Client } from "@stomp/stompjs";
 import CommunityPage from "./components/community/CommunityPage";
 import CommunityBoardPage from "./components/community/CommunityBoardPage";
+import CommunityMyPage from "./components/community/CommunityMyPage";
 
 function PresenceManager() {
     const { auth, updatePresence } = useAuth();
@@ -94,7 +95,7 @@ const App = () => {
                         {/*커뮤니티 관련*/}
                         <Route exact path="/community" component={CommunityPage}/>
                         <Route path="/community/board" component={CommunityBoardPage}/>
-
+                        <Route path="/community/my-page" component={CommunityMyPage}/>
                         {/*TodoList 관련*/}
                         <Route exact path="/todo" component={TodoList}/>
                         <Route path="/todo/write" component={TodoListWritePage}/>
