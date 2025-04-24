@@ -83,3 +83,8 @@
     cursor: pointer;
     font-size: 12px;
 }
+.my-content-header{
+    position: relative;
+    right: 330px;
+    padding: 5px;
+}

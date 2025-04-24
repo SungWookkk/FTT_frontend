@@ -66,10 +66,12 @@ function CommunityMyContentPage() {
             </div>
 
         <div className="my-content-container">
+            <div className="my-content-header">
             <h2 className="my-content-title">내 작성 관리</h2>
             <p className="my-content-subtitle">
-                내가 작성한 게시글 목록을 확인하고, 상태를 관리할 수 있습니다.
+                내가 작성한 게시글 목록, 작성한 댓글을 확인하고 상태를 관리할 수 있습니다.
             </p>
+            </div>
 
             <div className="my-content-list">
                 {myPosts.map(post => (
