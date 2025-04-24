@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../community/css/CommunityBoardContentPage.css';
 import {NavLink} from "react-router-dom";
 
@@ -14,10 +14,41 @@ const sampleRows = [
     { no: 9, title: 'LH 청년매입주택 서류 제출에 합격했는데 여기서 선정이 될까요?', date: '2025.01.09', views: 22761, likes: 54, dislikes: 12 },
     { no: 10, title: '현 시점 나의 인생을 위하여 내가 하고 있는 것 목록', date: '2025.01.12', views: 31535, likes: 51, dislikes: 1 },
     { no: 11, title: '현 시점 나의 인생을 위하여 내가 하고 있는 것 목록', date: '2025.01.12', views: 31535, likes: 51, dislikes: 1 },
-    { no: 12, title: '현 시점 나의 인생을 위하여 내가 하고 있는 것 목록', date: '2025.01.12', views: 31535, likes: 51, dislikes: 1 }
+    { no: 12, title: '현 시점 나의 인생을 위하여 내가 하고 있는 것 목록', date: '2025.01.12', views: 31535, likes: 51, dislikes: 1 },
+    { no: 13, title: '현 시점 나의 인생을 위하여 내가 하고 있는 것 목록', date: '2025.01.12', views: 31535, likes: 51, dislikes: 1 }
 ];
 
 function CommunityBoardContentPage() {
+    const [tab, setTab] = useState('recent');  // 'recent' | 'best' | 'hot'
+    const [currentPage, setCurrentPage] = useState(1);
+
+
+    // 탭에 따라 정렬된 데이터
+    const rows = (() => {
+        switch (tab) {
+            case 'best':
+                // 좋아요 ≥ 50 순서로 필터 + 정렬 (예시)
+                return sampleRows.filter(r => r.likes >= 50);
+            case 'hot':
+                // 이번 주 조회수 순 정렬 (예시)
+                return [...sampleRows].sort((a, b) => b.views - a.views);
+            case 'recent':
+            default:
+                // 최근 작성 순 (sampleRows의 순서 그대로)
+                return sampleRows;
+        }
+    })();
+
+    // pagination 설정
+    const rowsPerPage = 12;
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    const start = (currentPage - 1) * rowsPerPage;
+    const visibleRows = rows.slice(start, start + rowsPerPage);
+
+    const goPrev = () => setCurrentPage(p => Math.max(1, p - 1));
+    const goNext = () => setCurrentPage(p => Math.min(totalPages, p + 1));
+
+
     return (
         <div className="dashboard-content">
             {/* 작업공간 헤더 */}
@@ -73,48 +104,78 @@ function CommunityBoardContentPage() {
                     <span className="normal-text">를 이루어 보아요! </span>
                 </p>
             </div>
-        <div className="board-container">
-            <h2 className="board-title">Best 게시글</h2>
-            <h2 className="board-title">주간 Hot 게시글</h2>
+            <div className="board-container">
+                {/* 탭 버튼 */}
+                <div className="board-tabs">
+                    <button
+                        className={`board-tab ${tab==='recent' ? 'active' : ''}`}
+                        onClick={() => setTab('recent')}
+                    >
+                        최신 게시글
+                    </button>
+                    <button
+                        className={`board-tab ${tab==='best' ? 'active' : ''}`}
+                        onClick={() => setTab('best')}
+                    >
+                        Best 게시글
+                    </button>
+                    <button
+                        className={`board-tab ${tab==='hot' ? 'active' : ''}`}
+                        onClick={() => setTab('hot')}
+                    >
+                        주간 Hot 게시글
+                    </button>
+                </div>
 
-            <p className="board-subtitle">Best 게시글은 좋아요 개수가 50개 이상의 게시글만 등록 됩니다.</p>
-            <div className="board-table-wrapper">
-                <table className="board-table">
-                    <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>날짜</th>
-                        <th>조회</th>
-                        <th>공감 수</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {sampleRows.map(row => (
-                        <tr key={row.no}>
-                            <td>{row.no}</td>
-                            <td className="title-cell">{row.title}</td>
-                            <td>{row.date}</td>
-                            <td>{row.views}</td>
-                            <td>
-                                <span className="like">👍 {row.likes}</span>
-                                <span className="dislike">👎 {row.dislikes}</span>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-                {/* Pagination placeholder */}
+                {/* 서브타이틀 */}
+                <p className="board-subtitle">
+                    {tab==='recent' && '실시간으로 올라오는 순서대로 정렬됩니다.'}
+                    {tab==='best'    && 'Best 게시글은 좋아요 개수가 50개 이상의 게시글만 등록 됩니다.'}
+                    {tab==='hot'     && '주간 Hot 게시글은 이번 주 조회수 순으로 정렬됩니다.'}
+                </p>
+
+                {/* 테이블 */}
+                <div className="board-table-wrapper">
+                    <table className="board-table">
+                        <thead><tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>날짜</th>
+                            <th>조회</th>
+                            <th>공감 수</th>
+                        </tr></thead>
+                        <tbody>
+                         {visibleRows.map(row => (
+                             <tr key={row.no}>
+                                 <td>{row.no}</td>
+                                 <td className="title-cell">{row.title}</td>
+                                 <td>{row.date}</td>
+                                 <td>{row.views}</td>
+                                 <td>
+                                     <span className="like">👍 {row.likes}</span>
+                                     <span className="dislike">👎 {row.dislikes}</span>
+                                 </td>
+                             </tr>))}
+                        </tbody>
+                    </table>
+                {/* 페이지네이션 */}
                 <div className="board-pagination">
-                    <button disabled>{'<'}</button>
-                    {[...Array(10)].map((_, i) => (
-                        <button key={i} className={i===0 ? 'active' : ''}>{i+1}</button>
+                    <button onClick={goPrev} disabled={currentPage===1}>&lt;</button>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i+1}
+                            className={currentPage===i+1 ? 'active' : ''}
+                            onClick={() => setCurrentPage(i+1)}
+                        >
+                            {i+1}
+                        </button>
                     ))}
-                    <button>{'>'}</button>
+                    <button onClick={goNext} disabled={currentPage===totalPages}>&gt;</button>
+                  </div>
                 </div>
             </div>
         </div>
     );
 }
+
 export default CommunityBoardContentPage;
