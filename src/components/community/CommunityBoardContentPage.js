@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../community/css/CommunityBoardContentPage.css';
-import {NavLink} from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
 
 const sampleRows = [
     { no: 1, title: '자기 관리를 위한 필수 요소에 대한 설명……', date: '2024.12.27', views: 58372, likes: 175, dislikes: 46, category: '공부' },
@@ -24,7 +24,7 @@ function CommunityBoardContentPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const categories = ['전체','공부','운동','코딩','AI','취업','알바','주식'];
     const [currentCategory, setCurrentCategory] = useState('전체');
-
+    const history = useHistory();
 
 
     // 탭에 따라 정렬된 데이터
@@ -52,6 +52,10 @@ function CommunityBoardContentPage() {
     const goPrev = () => setCurrentPage(p => Math.max(1, p - 1));
     const goNext = () => setCurrentPage(p => Math.min(totalPages, p + 1));
 
+    // row 클릭 핸들러
+    const onRowClick = (no) => {
+       history.push(`/community/board/${no}`);
+    };
 
     return (
         <div className="dashboard-content">
@@ -163,7 +167,9 @@ function CommunityBoardContentPage() {
                         </tr></thead>
                         <tbody>
                          {visibleRows.map(row => (
-                             <tr key={row.no}>
+                             <tr key={row.no}
+                                 className="clickable-row"
+                                 onClick={() => onRowClick(row.no)}>
                                  <td>{row.no}</td>
                                  <td className="title-cell">{row.title}</td>
                                  <td>{row.date}</td>
