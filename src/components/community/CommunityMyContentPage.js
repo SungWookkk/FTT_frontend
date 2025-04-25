@@ -3,54 +3,81 @@ import '../community/css/CommunityMyContentPage.css';
 import { NavLink } from 'react-router-dom';
 
 function CommunityMyContentPage() {
+    // 1) 내 게시글 데이터
     const sortedPosts = useMemo(() => {
         const posts = [
-            { id: 1, title: '첫 번째 내 작성 게시글', date: '2025.01.15', status: '답변 대기' },
-            { id: 2, title: '두 번째 내 작성 게시글', date: '2025.01.10', status: '답변 완료' },
-            { id: 3, title: '세 번째 내 작성 게시글', date: '2025.01.05', status: '답변 대기' },
-            { id: 4, title: '네 번째 내 작성 게시글', date: '2025.01.04', status: '답변 완료' },
-            { id: 5, title: '다섯 번째 내 작성 게시글', date: '2025.01.03', status: '답변 대기' },
-            { id: 6, title: '여섯 번째 내 작성 게시글', date: '2025.01.02', status: '답변 완료' },
-            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01', status: '답변 대기' },
-            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01', status: '답변 대기' },
-            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01', status: '답변 대기' },
-            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01', status: '답변 대기' },
+            { id: 1, title: '첫 번째 내 작성 게시글', date: '2025.01.15' },
+            { id: 2, title: '두 번째 내 작성 게시글', date: '2025.01.10' },
+            { id: 3, title: '세 번째 내 작성 게시글', date: '2025.01.05' },
+            { id: 4, title: '네 번째 내 작성 게시글', date: '2025.01.04' },
+            { id: 5, title: '다섯 번째 내 작성 게시글', date: '2025.01.03' },
+            { id: 6, title: '여섯 번째 내 작성 게시글', date: '2025.01.02' },
+            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01' },
         ];
-        // 날짜 내림차순 정렬
-        return posts.sort((a, b) => {
-            const da = new Date(a.date.replace(/\./g, '-'));
-            const db = new Date(b.date.replace(/\./g, '-'));
-            return db - da;
-        });
+        return posts.sort((a, b) => new Date(b.date.replace(/\./g,'-')) - new Date(a.date.replace(/\./g,'-')));
     }, []);
 
-    // 2) 검색어 상태
-    const [searchTerm, setSearchTerm] = useState('');
+    // 2) 내 댓글 데이터
+    const myComments = useMemo(() => [
+        { id: 1, content: '첫 번째 내 작성 댓글', date: '2025.01.14' },
+        { id: 2, content: '두 번째 내 작성 댓글', date: '2025.01.12' },
+        { id: 3, content: '세 번째 내 작성 댓글', date: '2025.01.10' },
+        { id: 4, content: '네 번째 내 작성 댓글', date: '2025.01.08' },
+        { id: 5, content: '다섯 번째 내 작성 댓글', date: '2025.01.05' },
+    ], []);
 
-    // 3) 검색어 기반 필터링
+    // 3) 내가 좋아요 누른 게시글
+    const myLikedPosts = useMemo(() => [
+        { id: 1, title: '첫 번째 좋아요 누른 게시글', date: '2025.01.13' },
+        { id: 2, title: '두 번째 좋아요 누른 게시글', date: '2025.01.11' },
+        { id: 3, title: '세 번째 좋아요 누른 게시글', date: '2025.01.09' },
+        { id: 4, title: '네 번째 좋아요 누른 게시글', date: '2025.01.07' },
+        { id: 5, title: '다섯 번째 좋아요 누른 게시글', date: '2025.01.05' },
+    ], []);
+
+    // 검색어 상태 분리
+    const [postSearch, setPostSearch] = useState('');
+    const [commentSearch, setCommentSearch] = useState('');
+    const [likedSearch, setLikedSearch] = useState('');
+
+    // 필터링 로직 분리
     const filteredPosts = useMemo(() => {
-        const term = searchTerm.trim().toLowerCase();
+        const term = postSearch.trim().toLowerCase();
         if (!term) return sortedPosts;
         return sortedPosts.filter(p =>
             p.title.toLowerCase().includes(term) ||
             p.date.includes(term)
         );
-    }, [searchTerm, sortedPosts]);
+    }, [postSearch, sortedPosts]);
 
-    // 페이지 사이즈 & 페이지
+    const filteredComments = useMemo(() => {
+        const term = commentSearch.trim().toLowerCase();
+        if (!term) return myComments;
+        return myComments.filter(c =>
+            c.content.toLowerCase().includes(term) ||
+            c.date.includes(term)
+        );
+    }, [commentSearch, myComments]);
+
+    const filteredLiked = useMemo(() => {
+        const term = likedSearch.trim().toLowerCase();
+        if (!term) return myLikedPosts;
+        return myLikedPosts.filter(l =>
+            l.title.toLowerCase().includes(term) ||
+            l.date.includes(term)
+        );
+    }, [likedSearch, myLikedPosts]);
+
+    // 무한스크롤: 게시글만
     const pageSize = 5;
     const [page, setPage] = useState(1);
-
-    // Intersection Observer refs
     const listRef = useRef(null);
     const loadMoreRef = useRef(null);
 
-    // 4) 검색어가 바뀌면 페이지 리셋
-    useEffect(() => {
-        setPage(1);
-    }, [searchTerm]);
+    // 페이지 리셋: 게시글 검색어만
+    useEffect(() => setPage(1), [postSearch]);
 
-    // 5) Intersection Observer: 컨테이너 바닥에 닿으면 page++
+    // Intersection Observer: 게시글 리스트에만 적용
     useEffect(() => {
         if (!listRef.current || !loadMoreRef.current) return;
         const obs = new IntersectionObserver(
@@ -59,16 +86,12 @@ function CommunityMyContentPage() {
                     setPage(p => p + 1);
                 }
             },
-            {
-                root: listRef.current,
-                threshold: 1.0,
-            }
+            { root: listRef.current, threshold: 1.0 }
         );
         obs.observe(loadMoreRef.current);
         return () => obs.disconnect();
     }, [filteredPosts.length, page]);
 
-    // 6) 실제 화면에 보여줄 게시글
     const displayedPosts = filteredPosts.slice(0, page * pageSize);
 
     return (
@@ -112,35 +135,87 @@ function CommunityMyContentPage() {
                 </p>
             </div>
 
-            <div className="my-content-container">
-                <div className="my-content-header">
-                    <h2 className="my-content-title">내 작성 관리</h2>
-                    <p className="my-content-subtitle">
-                        내가 작성한 게시글 목록, 작성한 댓글을 확인하고 상태를 관리할 수 있습니다.
-                    </p>
+            <div className="my-content-wrapper">
+                {/* 1) 내 작성 게시글 */}
+                <div className="my-content-container">
+                    <div className="my-content-header">
+                        <h2 className="my-content-title">내 작성 관리</h2>
+                        <p className="my-content-subtitle">
+                            내가 작성한 게시글 목록을 확인하고 관리할 수 있습니다.
+                        </p>
+                    </div>
+                    <div className="search-wrapper">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="제목 또는 날짜로 검색..."
+                            value={postSearch}
+                            onChange={e => setPostSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="my-content-list" ref={listRef}>
+                        {displayedPosts.map(p => (
+                            <div key={p.id} className="my-content-item">
+                                <span className="item-title">{p.title}</span>
+                                <span className="item-date">{p.date}</span>
+                            </div>
+                        ))}
+                        <div ref={loadMoreRef} className="load-sentinel" />
+                    </div>
                 </div>
 
-                {/* --- 검색창 추가 --- */}
-                <div className="search-wrapper">
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="제목 또는 날짜로 검색..."
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
+                {/* 2) 내 작성 댓글 */}
+                <div className="my-content-container">
+                    <div className="my-content-header">
+                        <h2 className="my-content-title">내 작성 댓글</h2>
+                        <p className="my-content-subtitle">
+                            내가 작성한 댓글 목록을 확인하고 관리할 수 있습니다.
+                        </p>
+                    </div>
+                    <div className="search-wrapper">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="댓글 내용 또는 날짜로 검색..."
+                            value={commentSearch}
+                            onChange={e => setCommentSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="my-content-list" style={{ maxHeight: '50vh' }}>
+                        {filteredComments.map(c => (
+                            <div key={c.id} className="my-content-item">
+                                <span className="item-title">{c.content}</span>
+                                <span className="item-date">{c.date}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                {/* 스크롤 가능한 리스트 */}
-                <div className="my-content-list" ref={listRef}>
-                    {displayedPosts.map(post => (
-                        <div key={post.id} className="my-content-item">
-                            <span className="item-title">{post.title}</span>
-                            <span className="item-date">{post.date}</span>
-                        </div>
-                    ))}
-
-                    <div ref={loadMoreRef} className="load-sentinel" />
+                {/* 3) 내가 좋아요 누른 게시글 */}
+                <div className="my-content-container">
+                    <div className="my-content-header">
+                        <h2 className="my-content-title">내가 좋아요 누른 게시글</h2>
+                        <p className="my-content-subtitle">
+                            내가 좋아요를 누른 게시글 목록을 확인하고 관리할 수 있습니다.
+                        </p>
+                    </div>
+                    <div className="search-wrapper">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="제목 또는 날짜로 검색..."
+                            value={likedSearch}
+                            onChange={e => setLikedSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="my-content-list" style={{ maxHeight: '50vh' }}>
+                        {filteredLiked.map(l => (
+                            <div key={l.id} className="my-content-item">
+                                <span className="item-title">{l.title}</span>
+                                <span className="item-date">{l.date}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

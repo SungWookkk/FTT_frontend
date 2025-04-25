@@ -7,6 +7,11 @@
     background: #fff;
     border-radius: 8px;
 }
+.my-content-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
 .my-content-title {
     font-size: 20px;
     font-weight: 600;
@@ -28,8 +33,13 @@
     overflow-y: auto;
     padding-right: 8px;
     margin-top: 20px;
+    /* 스크롤바 숨기기 */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
-
+.my-content-list::-webkit-scrollbar {
+    display: none;
+}
 
 .my-content-item {
     display: flex;
