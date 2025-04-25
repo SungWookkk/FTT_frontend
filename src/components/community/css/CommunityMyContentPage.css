@@ -9,7 +9,7 @@
 }
 .my-content-wrapper {
     display: flex;
-    gap: 12px;
+    margin-top: 10px;
 }
 
 .my-content-title {
@@ -104,6 +104,7 @@
 }
 .my-content-header {
     padding: 0;
+    text-align: center;
 }
 .load-sentinel {
     width: 100%;
@@ -122,4 +123,10 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    position: relative;
+    left: 60px;
+}
+.section-header3{
+    width: 100%;
+    align-items: center;
 }

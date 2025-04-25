@@ -13,6 +13,9 @@ function CommunityMyContentPage() {
             { id: 5, title: '다섯 번째 내 작성 게시글', date: '2025.01.03' },
             { id: 6, title: '여섯 번째 내 작성 게시글', date: '2025.01.02' },
             { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01' },
+            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01' },
+            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01' },
+            { id: 7, title: '일곱 번째 내 작성 게시글', date: '2025.01.01' },
         ];
         return posts.sort((a, b) => new Date(b.date.replace(/\./g,'-')) - new Date(a.date.replace(/\./g,'-')));
     }, []);
@@ -144,6 +147,13 @@ function CommunityMyContentPage() {
                             내가 작성한 게시글 목록을 확인하고 관리할 수 있습니다.
                         </p>
                     </div>
+
+                    {/* 2) 구분선 섹션 헤더 */}
+                    <div
+                        className="section-header3"
+                        style={{ borderBottom: '5px solid rgb(52, 152, 219)' }}
+                    >
+                    </div>
                     <div className="search-wrapper">
                         <input
                             type="text"
@@ -172,6 +182,13 @@ function CommunityMyContentPage() {
                             내가 작성한 댓글 목록을 확인하고 관리할 수 있습니다.
                         </p>
                     </div>
+
+                    {/* 2) 구분선 섹션 헤더 */}
+                    <div
+                        className="section-header3"
+                        style={{ borderBottom: '5px solid rgb(39, 174, 96)' }}
+                    >
+                    </div>
                     <div className="search-wrapper">
                         <input
                             type="text"
@@ -198,6 +215,13 @@ function CommunityMyContentPage() {
                         <p className="my-content-subtitle">
                             내가 좋아요를 누른 게시글 목록을 확인하고 관리할 수 있습니다.
                         </p>
+                    </div>
+
+                    {/* 2) 구분선 섹션 헤더 */}
+                    <div
+                        className="section-header3"
+                        style={{ borderBottom: '5px solid rgb(231, 76, 60)' }}
+                    >
                     </div>
                     <div className="search-wrapper">
                         <input
