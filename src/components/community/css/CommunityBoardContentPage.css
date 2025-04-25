@@ -153,3 +153,13 @@
     color: #fff;
     box-shadow: 0 4px 8px rgba(99,106,232,0.3);
 }
+/* 테이블 row 부드러운 배경 전환 */
+.board-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* 호버 시 반투명 회색 + pointer 커서 */
+.board-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}

@@ -25,22 +25,7 @@ function CommunityBoardContentPage() {
     const categories = ['전체','공부','운동','코딩','AI','취업','알바','주식'];
     const [currentCategory, setCurrentCategory] = useState('전체');
 
-    //  탭 기준으로 정렬된 배열
-    const sorted = (() => {
-        switch (tab) {
-            case 'best':
-                return sampleRows.filter(r => r.likes >= 50);
-            case 'hot':
-                return [...sampleRows].sort((a,b) => b.views - a.views);
-            default:
-                return sampleRows;
-        }
-    })();
 
-    // 카테고리 필터링
-    const filtered = sorted.filter(r =>
-        currentCategory === '전체' || r.category === currentCategory
-    );
 
     // 탭에 따라 정렬된 데이터
     const rows = (() => {
