@@ -20,7 +20,18 @@
     flex-direction: row;
 }
 
+.board-create{
+    position: relative;
+    right: 200px;
+    background-color: #f2f1fe;
+    color: #4f5762;
+    width: 113px;
+    font-weight: 500;
+}
 
+.board-create:hover {
+    background-color: #e2e6f6;
+}
 .board-subtitle {
     font-size: 14px;
     color: #666;

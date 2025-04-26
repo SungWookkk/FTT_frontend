@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../community/css/CommunityBoardContentPage.css';
 import {NavLink, useHistory} from "react-router-dom";
+import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
 
 const sampleRows = [
     { no: 1, title: '자기 관리를 위한 필수 요소에 대한 설명……', date: '2024.12.27', views: 58372, likes: 175, dislikes: 46, category: '공부' },
@@ -24,6 +25,7 @@ function CommunityBoardContentPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const categories = ['전체','공부','운동','코딩','AI','취업','알바','주식'];
     const [currentCategory, setCurrentCategory] = useState('전체');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const history = useHistory();
 
 
@@ -57,15 +59,30 @@ function CommunityBoardContentPage() {
        history.push(`/community/board/${no}`);
     };
 
+    const openCreateModal = () => setIsCreateModalOpen(true);
+    const closeCreateModal = () => setIsCreateModalOpen(false);
+
+    const handleSavePost = ({ title, content }) => {
+        // TODO: axios.post('/api/community/posts', { title, content })
+        //       .then(...)
+        closeCreateModal();
+    };
+
     return (
         <div className="dashboard-content">
-            {/* 작업공간 헤더 */}
-            <div className="dashboard-header">
-                <div className="dashboard-title">
-                    <span className="title-text">사용자 커뮤니티</span>
+                {/* 작업공간 헤더 */}
+                <div className="dashboard-header">
+                    <div className="dashboard-title">
+                        <span className="title-text">사용자 커뮤니티</span>
+                    </div>
+                    {/* 생성하기 버튼 */}
+                    <button
+                        className="btn board-create"
+                        onClick={openCreateModal}
+                    >
+                        생성하기
+                    </button>
                 </div>
-            </div>
-
             {/* 목록 선택 탭 */}
             <div className="list-tap">
                 <div className="list-tab-container">
@@ -197,6 +214,12 @@ function CommunityBoardContentPage() {
                   </div>
                 </div>
             </div>
+            {/* 생성 모달 */}
+                        <CommunityBoardCreateModal
+                          isOpen={isCreateModalOpen}
+                          onClose={closeCreateModal}
+                          onSave={handleSavePost}
+                        />
         </div>
     );
 }

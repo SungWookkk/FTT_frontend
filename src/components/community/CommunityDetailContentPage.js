@@ -1,6 +1,7 @@
 import {NavLink, useParams} from "react-router-dom";
-import React from "react";
+import React, {useState} from "react";
 import "../community/css/CommunityDetailContentPage.css"
+import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
 function CommunityDetailContentPage() {
     const { no } = useParams(); // 경로에서 게시글 번호 추출
     const post = {
@@ -29,7 +30,15 @@ function CommunityDetailContentPage() {
         { id: 1, author: "댓글작성자1", date: "2025.01.02", content: "첫 번째 댓글 예시asdasdasdssssssssssssss입니다." },
         { id: 2, author: "댓글작성자2", date: "2025.01.03", content: "두 번째 댓글 예시입니다." },
     ];
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+    const openCreateModal = () => setIsCreateModalOpen(true);
+    const closeCreateModal = () => setIsCreateModalOpen(false);
+    const handleSavePost = ({ title, content }) => {
+        // TODO: axios.post('/api/community/posts', { title, content })
+        //       .then(...)
+        closeCreateModal();
+    };
     return(
         <div className="dashboard-content">
             {/* 작업공간 헤더 */}
@@ -37,6 +46,13 @@ function CommunityDetailContentPage() {
                 <div className="dashboard-title">
                     <span className="title-text">사용자 커뮤니티</span>
                 </div>
+                {/* 생성하기 버튼 */}
+                <button
+                    className="btn board-create"
+                    onClick={openCreateModal}
+                >
+                    생성하기
+                </button>
             </div>
 
             {/* 목록 선택 탭 */}
@@ -122,11 +138,17 @@ function CommunityDetailContentPage() {
                         ))}
                     </ul>
                     <div className="comment-input">
-                        <textarea placeholder="댓글을 입력하세요..." rows="3" />
+                        <textarea placeholder="댓글을 입력하세요..." rows="3"/>
                         <button className="btn-submit">등록</button>
                     </div>
                 </div>
             </div>
+            {/* 생성 모달 */}
+            <CommunityBoardCreateModal
+                isOpen={isCreateModalOpen}
+                onClose={closeCreateModal}
+                onSave={handleSavePost}
+            />
         </div>
     );
 }

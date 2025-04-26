@@ -1,12 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import { NavLink } from "react-router-dom";
 import "../community/css/CommunityContentPage.css";
 import "../community/css/CommunityBestPost.css";
 import CommunityBestPost from "./CommunityBestPost";
 import CommunityDayHotPost from "./CommunityDayHotPost";
 import CommunityLivePost from "./CommunityLivePost";
+import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
 
 function CommunityContentPage() {
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const openCreateModal = () => setIsCreateModalOpen(true);
+    const closeCreateModal = () => setIsCreateModalOpen(false);
+    const handleSavePost = ({ title, content }) => {
+        // TODO: axios.post('/api/community/posts', { title, content })
+        //       .then(...)
+        closeCreateModal();
+    };
+
     return (
         <div className="dashboard-content">
             {/* 작업공간 헤더 */}
@@ -14,6 +25,13 @@ function CommunityContentPage() {
                 <div className="dashboard-title">
                     <span className="title-text">사용자 커뮤니티</span>
                 </div>
+                {/* 생성하기 버튼 */}
+                <button
+                    className="btn board-create"
+                    onClick={openCreateModal}
+                >
+                    생성하기
+                </button>
             </div>
 
             {/* 목록 선택 탭 */}
@@ -64,8 +82,8 @@ function CommunityContentPage() {
             </div>
             {/*  Best 게시글 컴포넌트 */}
             <div className="posts-wrapper">
-                 <CommunityBestPost/>
-                 <CommunityDayHotPost/>
+                <CommunityBestPost/>
+                <CommunityDayHotPost/>
             </div>
             <div className="time-post">
                 <h1>실시간 게시글</h1>
@@ -84,7 +102,12 @@ function CommunityContentPage() {
                     <span className="normal-text">을 하는지 확인해 보아요!</span>
                 </p>
             </div>
-            <CommunityLivePost />
+            <CommunityLivePost/>
+            <CommunityBoardCreateModal
+                isOpen={isCreateModalOpen}
+                onClose={closeCreateModal}
+                onSave={handleSavePost}
+            />
         </div>
     );
 }
