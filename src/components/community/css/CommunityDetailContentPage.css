@@ -9,8 +9,7 @@
     top: 11px;
 }
 
-
-/* 좌측 게시물 박스*/
+/* ── 좌측 게시물 박스 ── */
 .detail-post-container {
     background: #fff;
     border-radius: 8px;
@@ -63,7 +62,8 @@
     background: #e3f2fd;
     color: #1565c0;
 }
-/* 우측 댓글 박스: 전체의 1/3 차지 */
+
+/* ── 우측 댓글 박스 ── */
 .detail-comment-container {
     background: #fff;
     border-radius: 8px;
@@ -80,48 +80,192 @@
     font-weight: 600;
     padding: 8px;
     background-color: #636ae8;
-    color: #ffffff;
+    color: #fff;
     border-radius: 8px;
 }
 
+/* ── 댓글 리스트 ── */
 .comment-list {
     list-style: none;
     padding: 0;
     margin: 0 0 16px;
 }
 
+/* ── 댓글 아이템 ── */
 .comment-item {
-    border-bottom: 1px solid #eee;
-    padding: 12px 0;
-}
-
-.comment-item p:first-child {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.comment-input {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    width: 100%;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
 }
 
-.comment-input textarea {
+/* ── 댓글 헤더 ── */
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    background: #5865f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #2e2e2e;
+}
+
+.comment-time {
+    margin-left: auto;
+    font-size: 12px;
+    color: #888;
+    position: relative;
+    top: 3px;
+}
+
+.reply-toggle-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* ── 댓글 본문 ── */
+.comment-text {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.4;
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
     width: 100%;
+    margin-bottom: 8px;
+}
+
+/* ── 대댓글 리스트 ── */
+.reply-list {
+    list-style: none;
+    padding: 0 0 0 52px;
+    margin: 8px 0 16px;
+}
+
+/* ── 대댓글 아이템 ── */
+.reply-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* ── 대댓글 헤더 ── */
+.reply-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.reply-avatar {
+    width: 28px;
+    height: 28px;
+    background: #5865f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.reply-author {
+    font-weight: 600;
+    font-size: 13px;
+    color: #2e2e2e;
+}
+
+.reply-time {
+    margin-left: auto;
+    font-size: 11px;
+    color: #888;
+}
+
+/* ── 대댓글 본문 ── */
+.reply-text {
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    line-height: 1.4;
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+/* ── 대댓글 입력 박스 ── */
+.reply-box {
+    display: flex;
+    gap: 8px;
+    margin-left: 52px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.reply-box textarea {
+    flex: 1;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: vertical;
 }
 
-.comment-input .btn-submit {
-    align-self: flex-end;
-    padding: 8px 16px;
-    background: #4b5ef5;
+.reply-submit-btn {
+    padding: 6px 12px;
+    background: #5865f2;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+/* ── 최상위 댓글 입력 박스 ── */
+.comment-input {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.comment-input textarea {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-submit-btn {
+    padding: 8px 16px;
+    background: #5865f2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-meta-info {
+    display: flex;
+    gap: 8px;
 }

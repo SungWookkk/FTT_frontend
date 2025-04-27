@@ -12,9 +12,12 @@ function CommunityDetailContentPage() {
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
+    const [replyInputs, setReplyInputs] = useState({});
+    const [replyBoxOpen, setReplyBoxOpen] = useState({});
     const [loading, setLoading] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+    // 게시글 + 댓글 트리 로드
     useEffect(() => {
         if (!auth.token || !auth.userId) return;
 
@@ -23,28 +26,18 @@ function CommunityDetailContentPage() {
                 // 1) 게시글
                 const postRes = await axios.get(
                     `/api/community/posts/${no}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`,
-                            "X-User-Id": auth.userId
-                        }
-                    }
+                    { headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId } }
                 );
                 setPost(postRes.data);
 
-
-                // 댓글 리스트 가져오기 (BE Comment 엔티티 반환)
-                const commentsRes = await axios.get(`/api/community/posts/${no}/comments`, {
-                    headers: {
-                        Authorization: `Bearer ${auth.token}`,
-                        "X-User-Id": auth.userId
-                    }
-                });
-                const data = commentsRes.data;
-                setComments(Array.isArray(data) ? data : []); //  배열 보장
-            } catch (error) {
-                console.error(error);
-                setComments([]); // 에러 시 빈 배열
+                // 2) 댓글 + 대댓글 트리
+                const commentsRes = await axios.get(
+                    `/api/community/posts/${no}/comments`,
+                    { headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId } }
+                );
+                setComments(Array.isArray(commentsRes.data) ? commentsRes.data : []);
+            } catch (err) {
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -53,47 +46,72 @@ function CommunityDetailContentPage() {
         fetchData();
     }, [no, auth.token, auth.userId]);
 
-    // 댓글 등록 핸들러
+    // 최상위 댓글 등록
     const handleCommentSubmit = async () => {
-        if (!newComment.trim()) return; //  공백 방지
+        if (!newComment.trim()) return;
+        setLoading(true);
         try {
-            const res = await axios.post(
+            await axios.post(
                 `/api/community/posts/${no}/comments`,
-                // 서버는 Comment 엔티티 사용, content만 필요
                 { content: newComment },
-                {
-                    headers: {
-                        Authorization: `Bearer ${auth.token}`,
-                        "X-User-Id": auth.userId
-                    }
-                }
+                { headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId } }
             );
-            setComments(prev => [...prev, res.data]);
             setNewComment("");
-        } catch (error) {
-            console.error(error);
+            // 댓글 다시 로드
+            const res = await axios.get(`/api/community/posts/${no}/comments`, {
+                headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId }
+            });
+            setComments(Array.isArray(res.data) ? res.data : []);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) {
-        return <div className="dashboard-content">로딩 중...</div>;
-    }
-    if (!post) {
-        return <div className="dashboard-content">게시글을 불러올 수 없습니다.</div>;
-    }
-
-    const openCreateModal = () => setIsCreateModalOpen(true);
-    const closeCreateModal = () => setIsCreateModalOpen(false);
-    const handleSavePost = ({ title, content }) => {
-        // TODO: 수정 로직
-        closeCreateModal();
+    // 대댓글 토글
+    const toggleReply = (id) => {
+        setReplyBoxOpen(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
-    // 작성자 표시용 헬퍼
-    const renderAuthorName = (authorId) => {
-        // 현재 로그인 유저라면 auth.userName 사용, 아니면 ID 그대로 표시
-        return authorId === auth.userId ? auth.userName : authorId;
+    // 대댓글 입력값 관리
+    const handleReplyChange = (id, value) => {
+        setReplyInputs(prev => ({ ...prev, [id]: value }));
     };
+
+    // 대댓글 등록
+    const handleReplySubmit = async (parentId) => {
+        const text = (replyInputs[parentId] || "").trim();
+        if (!text) return;
+        setLoading(true);
+        try {
+            await axios.post(
+                `/api/community/posts/${no}/comments`,
+                { content: text },
+                {
+                    params: { parentId },
+                    headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId }
+                }
+            );
+            setReplyInputs(prev => ({ ...prev, [parentId]: "" }));
+            setReplyBoxOpen(prev => ({ ...prev, [parentId]: false }));
+            // 댓글 다시 로드
+            const res = await axios.get(`/api/community/posts/${no}/comments`, {
+                headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId }
+            });
+            setComments(Array.isArray(res.data) ? res.data : []);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) return <div className="dashboard-content">로딩 중...</div>;
+    if (!post)    return <div className="dashboard-content">게시글을 불러올 수 없습니다.</div>;
+
+    const renderAuthorName = (authorId) =>
+        authorId === auth.userId ? auth.userName : authorId;
 
     return (
         <div className="dashboard-content">
@@ -102,11 +120,10 @@ function CommunityDetailContentPage() {
                 <div className="dashboard-title">
                     <span className="title-text">사용자 커뮤니티</span>
                 </div>
-                <button className="btn board-create" onClick={openCreateModal}>
+                <button className="btn board-create" onClick={() => setIsCreateModalOpen(true)}>
                     생성하기
                 </button>
             </div>
-
             {/* 네비게이션 탭 */}
             <div className="list-tap">
                 <div className="list-tab-container">
@@ -115,82 +132,89 @@ function CommunityDetailContentPage() {
                     <NavLink to="/community/my-page" className="tab-item" activeClassName="active">내 작성 관리</NavLink>
                 </div>
             </div>
-
-            {/* 알림 배너 */}
-            <div className="alert-banner-todo">
-                <p className="alert-text-todo">
-                    <span className="normal-text">다른 사용자와 </span>
-                    <span className="highlight-text">소통하는 공간 </span>
-                    <span className="normal-text">입니다! </span>
-                    <span className="highlight-text">서로</span>
-                    <span className="normal-text">를 </span>
-                    <span className="highlight-text">응원</span>
-                    <span className="normal-text">하고 </span>
-                    <span className="highlight-text">격려</span>
-                    <span className="normal-text">하며, </span>
-                    <span className="highlight-text">목표</span>
-                    <span className="normal-text">를 이루어 보아요! </span>
-                </p>
-            </div>
-
-            {/* 상세 콘텐츠 */}
+            {/* 게시글 + 댓글 레이아웃 */}
             <div className="detail-page-layout">
                 {/* 게시글 */}
                 <div className="detail-post-container">
                     <h1 className="detail-title">{post.title}</h1>
                     <div className="detail-meta">
                         <span>작성자: <strong>{renderAuthorName(post.authorId)}</strong></span>
-                        <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
-                        <span>게시글 번호: {post.id}</span>
+                        <span>작성일: {new Date(post.createdAt).toISOString().slice(0,10)}</span>
+                        <span>번호: {post.id}</span>
                     </div>
                     <div className="detail-body">
-                        {post.content.split("\n").map((line, idx) => (
-                            <p key={idx}>{line}</p>
-                        ))}
+                        {post.content.split("\n").map((line, i) => <p key={i}>{line}</p>)}
                     </div>
                     <div className="detail-actions">
-                        <button className="btn-like">👍 좋아요 <span className="count">{post.likesCount}</span></button>
-                        <button className="btn-comment">💬 댓글 ({Array.isArray(comments) ? comments.length : 0})</button>
+                        <button className="btn-like">👍 {post.likesCount}</button>
+                        <button className="btn-comment">💬 {comments.length}</button>
                     </div>
                 </div>
-
-
-                {/* 댓글 */}
+                {/* 댓글 + 대댓글 */}
                 <div className="detail-comment-container">
                     <h2>댓글 ({comments.length})</h2>
                     <ul className="comment-list">
-                        {comments.length > 0 ? (
-                            comments.map(c => (
-                                <li key={c.id} className="comment-item">
-                                    <p>
-                                        <strong>{renderAuthorName(c.authorId)}</strong>
-                                        ({new Date(c.createdAt).toISOString().slice(0, 10)})
-                                    </p>
-                                    <p>{c.content}</p>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="no-comments">등록된 댓글이 없습니다.</li>
-                        )}
+                        {comments.map(c => (
+                            <li key={c.id} className="comment-item">
+                                <div className="comment-header">
+                                    <div className="avatar-placeholder">
+                                        {renderAuthorName(c.authorId)[0]}
+                                    </div>
+                                    <div className="comment-meta-info">
+                                        <span className="comment-author">@{renderAuthorName(c.authorId)}</span>
+                                        <span className="comment-time">{new Date(c.createdAt).toLocaleString()}</span>
+                                    </div>
+                                    <button className="reply-toggle-btn" onClick={() => toggleReply(c.id)}>답글</button>
+                                </div>
+                                <p className="comment-text">{c.content}</p>
+                                {replyBoxOpen[c.id] && (
+                                    <div className="reply-box">
+                                        <textarea
+                                            rows={2}
+                                            placeholder="대댓글을 입력하세요..."
+                                            value={replyInputs[c.id] || ""}
+                                            onChange={e => handleReplyChange(c.id, e.target.value)}
+                                        />
+                                        <button className="reply-submit-btn" onClick={() => handleReplySubmit(c.id)}>등록</button>
+                                    </div>
+                                )}
+                                {c.replies && c.replies.length > 0 && (
+                                    <ul className="reply-list">
+                                        {c.replies.map(r => (
+                                            <li key={r.id} className="reply-item">
+                                                <div className="reply-header">
+                                                    <div className="avatar-placeholder reply-avatar">
+                                                        {renderAuthorName(r.authorId)[0]}
+                                                    </div>
+                                                    <div className="reply-meta-info">
+                                                        <span className="reply-author">@{renderAuthorName(r.authorId)}</span>
+                                                        <span className="reply-time">{new Date(r.createdAt).toLocaleString()}</span>
+                                                    </div>
+                                                </div>
+                                                <p className="reply-text">{r.content}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        ))}
                     </ul>
                     <div className="comment-input">
                         <textarea
+                            rows={3}
                             placeholder="댓글을 입력하세요..."
-                            rows="3"
-                            value={newComment} // 수정: 입력값 바인딩
-                            onChange={e => setNewComment(e.target.value)} //  입력 이벤트
+                            value={newComment}
+                            onChange={e => setNewComment(e.target.value)}
                         />
-                        <button className="btn-submit" onClick={handleCommentSubmit}>등록</button>
+                        <button className="comment-submit-btn" onClick={handleCommentSubmit}>등록</button>
                     </div>
                 </div>
             </div>
-
-
             {/* 생성 모달 */}
             <CommunityBoardCreateModal
                 isOpen={isCreateModalOpen}
-                onClose={closeCreateModal}
-                onSave={handleSavePost}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSave={() => setIsCreateModalOpen(false)}
             />
         </div>
     );
