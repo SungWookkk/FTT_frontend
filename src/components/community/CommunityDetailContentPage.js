@@ -89,6 +89,12 @@ function CommunityDetailContentPage() {
         closeCreateModal();
     };
 
+    // 작성자 표시용 헬퍼
+    const renderAuthorName = (authorId) => {
+        // 현재 로그인 유저라면 auth.userName 사용, 아니면 ID 그대로 표시
+        return authorId === auth.userId ? auth.userName : authorId;
+    };
+
     return (
         <div className="dashboard-content">
             {/* 헤더 */}
@@ -133,12 +139,11 @@ function CommunityDetailContentPage() {
                 <div className="detail-post-container">
                     <h1 className="detail-title">{post.title}</h1>
                     <div className="detail-meta">
-                        <span>작성자: <strong>{post.authorId}</strong></span>
+                        <span>작성자: <strong>{renderAuthorName(post.authorId)}</strong></span>
                         <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
                         <span>게시글 번호: {post.id}</span>
                     </div>
                     <div className="detail-body">
-                        {/* 수정: 언제나 배열이 보장된 후 map 호출 */}
                         {post.content.split("\n").map((line, idx) => (
                             <p key={idx}>{line}</p>
                         ))}
@@ -157,7 +162,10 @@ function CommunityDetailContentPage() {
                         {comments.length > 0 ? (
                             comments.map(c => (
                                 <li key={c.id} className="comment-item">
-                                    <p><strong>{c.authorId}</strong> ({new Date(c.createdAt).toISOString().slice(0,10)})</p>
+                                    <p>
+                                        <strong>{renderAuthorName(c.authorId)}</strong>
+                                        ({new Date(c.createdAt).toISOString().slice(0, 10)})
+                                    </p>
                                     <p>{c.content}</p>
                                 </li>
                             ))
@@ -170,7 +178,7 @@ function CommunityDetailContentPage() {
                             placeholder="댓글을 입력하세요..."
                             rows="3"
                             value={newComment} // 수정: 입력값 바인딩
-                            onChange={e => setNewComment(e.target.value)} // 수정: 입력 이벤트
+                            onChange={e => setNewComment(e.target.value)} //  입력 이벤트
                         />
                         <button className="btn-submit" onClick={handleCommentSubmit}>등록</button>
                     </div>
