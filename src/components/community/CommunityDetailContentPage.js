@@ -10,7 +10,8 @@ function CommunityDetailContentPage() {
     const { auth } = useAuth();
 
     const [post, setPost] = useState(null);
-    const [comments, setComments] = useState([]); // 초기값은 빈 배열
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -31,21 +32,19 @@ function CommunityDetailContentPage() {
                 );
                 setPost(postRes.data);
 
-                // 2) 댓글 — setComments 전에 배열 여부 검사
-                const commentsRes = await axios.get(
-                    `/api/community/posts/${no}/comments`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`,
-                            "X-User-Id": auth.userId
-                        }
+
+                // 댓글 리스트 가져오기 (BE Comment 엔티티 반환)
+                const commentsRes = await axios.get(`/api/community/posts/${no}/comments`, {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`,
+                        "X-User-Id": auth.userId
                     }
-                );
+                });
                 const data = commentsRes.data;
-                setComments(Array.isArray(data) ? data : []);
-            } catch (err) {
-                console.error(err);
-                setComments([]);
+                setComments(Array.isArray(data) ? data : []); //  배열 보장
+            } catch (error) {
+                console.error(error);
+                setComments([]); // 에러 시 빈 배열
             } finally {
                 setLoading(false);
             }
@@ -53,6 +52,28 @@ function CommunityDetailContentPage() {
 
         fetchData();
     }, [no, auth.token, auth.userId]);
+
+    // 댓글 등록 핸들러
+    const handleCommentSubmit = async () => {
+        if (!newComment.trim()) return; //  공백 방지
+        try {
+            const res = await axios.post(
+                `/api/community/posts/${no}/comments`,
+                // 서버는 Comment 엔티티 사용, content만 필요
+                { content: newComment },
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`,
+                        "X-User-Id": auth.userId
+                    }
+                }
+            );
+            setComments(prev => [...prev, res.data]);
+            setNewComment("");
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     if (loading) {
         return <div className="dashboard-content">로딩 중...</div>;
@@ -128,18 +149,15 @@ function CommunityDetailContentPage() {
                     </div>
                 </div>
 
+
                 {/* 댓글 */}
                 <div className="detail-comment-container">
-                    <h2>댓글 ({Array.isArray(comments) ? comments.length : 0})</h2>
+                    <h2>댓글 ({comments.length})</h2>
                     <ul className="comment-list">
-                        {/* 수정: comments가 배열일 때만 map, 아닐 땐 안내문 표시 */}
-                        {Array.isArray(comments) && comments.length > 0 ? (
+                        {comments.length > 0 ? (
                             comments.map(c => (
                                 <li key={c.id} className="comment-item">
-                                    <p>
-                                        <strong>{c.authorId}</strong>
-                                        ({new Date(c.createdAt).toISOString().slice(0,10)})
-                                    </p>
+                                    <p><strong>{c.authorId}</strong> ({new Date(c.createdAt).toISOString().slice(0,10)})</p>
                                     <p>{c.content}</p>
                                 </li>
                             ))
@@ -148,11 +166,17 @@ function CommunityDetailContentPage() {
                         )}
                     </ul>
                     <div className="comment-input">
-                        <textarea placeholder="댓글을 입력하세요..." rows="3"/>
-                        <button className="btn-submit">등록</button>
+                        <textarea
+                            placeholder="댓글을 입력하세요..."
+                            rows="3"
+                            value={newComment} // 수정: 입력값 바인딩
+                            onChange={e => setNewComment(e.target.value)} // 수정: 입력 이벤트
+                        />
+                        <button className="btn-submit" onClick={handleCommentSubmit}>등록</button>
                     </div>
                 </div>
             </div>
+
 
             {/* 생성 모달 */}
             <CommunityBoardCreateModal
