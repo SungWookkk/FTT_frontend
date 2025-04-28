@@ -146,7 +146,7 @@ function CommunityDetailContentPage() {
                             alt="avatar"
                             className="avatar-placeholder"
                         />
-                        <span>작성자: <strong>{renderAuthorName(post.authorId)}</strong></span>
+                        <span>작성자: <strong>{renderAuthorName(post.authorName)}</strong></span>
                         <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
                         <span>번호: {post.id}</span>
                     </div>
@@ -173,7 +173,7 @@ function CommunityDetailContentPage() {
                                         className="avatar-placeholder"
                                     />
                                     <div className="comment-meta-info">
-                                        <span className="comment-author">{renderAuthorName(c.authorId)}</span>
+                                        <span className="comment-author">{renderAuthorName(c.authorName)}</span>
                                         <span className="comment-time">{new Date(c.createdAt).toLocaleString()}</span>
                                     </div>
                                     <button
@@ -214,7 +214,7 @@ function CommunityDetailContentPage() {
                                                     />
                                                     <div className="reply-meta-info">
                                                         <span
-                                                            className="reply-author">{renderAuthorName(r.authorId)}</span>
+                                                            className="reply-author">{renderAuthorName(r.authorName)}</span>
                                                         <span
                                                             className="reply-time">{new Date(r.createdAt).toLocaleString()}</span>
                                                     </div>
