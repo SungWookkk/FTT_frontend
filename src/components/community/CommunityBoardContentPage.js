@@ -162,10 +162,12 @@ function CommunityBoardContentPage() {
                         <thead>
                         <tr>
                             <th>번호</th>
+                            <th>등급</th>
                             <th>작성자</th>
                             <th>제목</th>
                             <th>날짜</th>
-                            <th>조회</th><th>공감 수</th>
+                            <th>조회</th>
+                            <th>공감 수</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -176,6 +178,16 @@ function CommunityBoardContentPage() {
                                 onClick={() => onRowClick(row.id)}
                             >
                                 <td>{row.id}</td>
+
+                                <td className="grade-cell">
+                                    {auth.activeBadge?.imageUrl && (
+                                        <img
+                                            src={auth.activeBadge.imageUrl}
+                                            alt={auth.activeBadge.name}
+                                            className="badge-icon"
+                                        />
+                                    )}
+                                </td>
                                 <td className="writer-cell">
                                     <img
                                         src={row.authorProfileImage || defaultUser}

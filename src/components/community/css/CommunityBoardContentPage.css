@@ -194,3 +194,16 @@
     font-weight: 600;
     color: #333;
 }
+/* 등급 열 중앙 정렬 */
+.grade-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* 뱃지 아이콘 */
+.badge-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: inline-block;
+}
