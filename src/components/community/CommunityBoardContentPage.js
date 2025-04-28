@@ -4,6 +4,7 @@ import '../community/css/CommunityBoardContentPage.css';
 import { NavLink, useHistory } from "react-router-dom";
 import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
 import { useAuth } from "../../Auth/AuthContext";
+import defaultUser from "../../Auth/css/img/default-user.svg";
 
 function CommunityBoardContentPage() {
     const [posts, setPosts] = useState([]);
@@ -14,7 +15,6 @@ function CommunityBoardContentPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const history = useHistory();
     const { auth } = useAuth();
-
     // 1) 서버에서 게시글 가져오기 (useCallback으로 감싸 ESLint 경고 해소)
     const fetchPosts = useCallback(() => {
         if (!auth.token || !auth.userId) return;
@@ -161,7 +161,11 @@ function CommunityBoardContentPage() {
                     <table className="board-table">
                         <thead>
                         <tr>
-                            <th>번호</th><th>제목</th><th>날짜</th><th>조회</th><th>공감 수</th>
+                            <th>번호</th>
+                            <th>작성자</th>
+                            <th>제목</th>
+                            <th>날짜</th>
+                            <th>조회</th><th>공감 수</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -172,8 +176,16 @@ function CommunityBoardContentPage() {
                                 onClick={() => onRowClick(row.id)}
                             >
                                 <td>{row.id}</td>
+                                <td className="writer-cell">
+                                    <img
+                                        src={row.authorProfileImage || defaultUser}
+                                        alt="avatar"
+                                        className="avatar-img-sm"
+                                    />
+                                    <span className="writer-name">{row.authorName}</span>
+                                </td>
                                 <td className="title-cell">{row.title}</td>
-                                <td>{new Date(row.createdAt).toISOString().slice(0,10)}</td>
+                                <td>{new Date(row.createdAt).toISOString().slice(0, 10)}</td>
                                 <td>{row.viewsCount}</td>
                                 <td>👍 {row.likesCount}</td>
                             </tr>
@@ -182,7 +194,7 @@ function CommunityBoardContentPage() {
                     </table>
 
                     <div className="board-pagination">
-                        <button onClick={goPrev} disabled={currentPage===1}>&lt;</button>
+                        <button onClick={goPrev} disabled={currentPage === 1}>&lt;</button>
                         {Array.from({ length: totalPages }, (_, i) => (
                             <button
                                 key={i+1}

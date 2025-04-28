@@ -174,3 +174,23 @@
     background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer;
 }
+/* 작성자 셀 내부 */
+.writer-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 아바타 작은 사이즈 */
+.avatar-img-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 닉네임 */
+.writer-name {
+    font-weight: 600;
+    color: #333;
+}
