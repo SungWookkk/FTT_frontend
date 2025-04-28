@@ -269,3 +269,11 @@
     display: flex;
     gap: 8px;
 }
+/* 아바타(댓글/대댓글) 스타일: img 태그 전용 */
+.avatar-placeholder,
+.reply-avatar {
+    width: 40px;       /* 댓글 아바타는 40x40 */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover; /* 사진 비율 유지하며 자르기 */
+}
