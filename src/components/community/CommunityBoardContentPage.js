@@ -180,13 +180,14 @@ function CommunityBoardContentPage() {
                                 <td>{row.id}</td>
 
                                 <td className="grade-cell">
-                                    {auth.activeBadge?.imageUrl && (
-                                        <img
-                                            src={auth.activeBadge.imageUrl}
-                                            alt={auth.activeBadge.name}
+                                    {row.authorBadgeImageUrl
+                                        ? <img
+                                            src={row.authorBadgeImageUrl}
+                                            alt="badge"
                                             className="badge-icon"
                                         />
-                                    )}
+                                        : <span>–</span>
+                                    }
                                 </td>
                                 <td className="writer-cell">
                                     <img

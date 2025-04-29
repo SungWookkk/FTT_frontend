@@ -207,3 +207,13 @@
     object-fit: contain;
     display: inline-block;
 }
+
+.badge-icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0;
+    vertical-align: middle;
+}
