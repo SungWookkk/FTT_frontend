@@ -146,9 +146,18 @@ function CommunityDetailContentPage() {
                             alt="avatar"
                             className="avatar-placeholder"
                         />
+                        {post.authorBadgeImageUrl && (
+                            <img
+                                src={post.authorBadgeImageUrl}
+                                alt="badge"
+                                className="badge-icon-lg"
+                            />
+                        )}
+                        <div className="post-info">
                         <span>작성자: <strong>{renderAuthorName(post.authorName)}</strong></span>
                         <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
                         <span>번호: {post.id}</span>
+                        </div>
                     </div>
                     <div className="detail-body">
                         {post.content.split("\n").map((line, i) => (
@@ -172,6 +181,13 @@ function CommunityDetailContentPage() {
                                         alt="avatar"
                                         className="avatar-placeholder"
                                     />
+                                    {c.authorBadgeUrl && (
+                                        <img
+                                            src={c.authorBadgeUrl}
+                                            alt="badge"
+                                            className="badge-icon-lg"
+                                        />
+                                    )}
                                     <div className="comment-meta-info">
                                         <span className="comment-author">{renderAuthorName(c.authorName)}</span>
                                         <span className="comment-time">{new Date(c.createdAt).toLocaleString()}</span>
@@ -212,6 +228,13 @@ function CommunityDetailContentPage() {
                                                         alt="avatar"
                                                         className="reply-avatar"
                                                     />
+                                                    {r.authorBadgeUrl && (
+                                                        <img
+                                                            src={r.authorBadgeUrl}
+                                                            alt="badge"
+                                                            className="badge-icon-lg"
+                                                        />
+                                                    )}
                                                     <div className="reply-meta-info">
                                                         <span
                                                             className="reply-author">{renderAuthorName(r.authorName)}</span>

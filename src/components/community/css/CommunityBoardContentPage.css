@@ -83,13 +83,14 @@
 }
 
 .board-pagination {
-    position: absolute;
     bottom: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
     left: 0;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+    margin-top: 20px;
+    margin-right: 20px
 }
 
 .board-pagination button {

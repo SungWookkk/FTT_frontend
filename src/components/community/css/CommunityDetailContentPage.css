@@ -269,11 +269,25 @@
     display: flex;
     gap: 8px;
 }
-/* 아바타(댓글/대댓글) 스타일: img 태그 전용 */
+/* 아바타(댓글/대댓글) 스타일*/
 .avatar-placeholder,
 .reply-avatar {
-    width: 40px;       /* 댓글 아바타는 40x40 */
-    height: 40px;
+    width: 40px;
     border-radius: 50%;
-    object-fit: cover; /* 사진 비율 유지하며 자르기 */
+    object-fit: cover;
+    height: 40px;
+}
+/* 게시글/댓글 내 배지 아이콘  */
+.badge-icon-lg {
+    display: inline-block;
+    width: 40px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+.post-info{
+    position: relative;
+    top: -3px;
+    gap: 11px;
+    display: flex;
+    right: 10px;
 }
