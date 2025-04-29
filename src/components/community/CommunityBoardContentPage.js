@@ -16,22 +16,25 @@ function CommunityBoardContentPage() {
     const history = useHistory();
     const { auth } = useAuth();
     // 1) 서버에서 게시글 가져오기 (useCallback으로 감싸 ESLint 경고 해소)
-    const fetchPosts = useCallback(() => {
-        if (!auth.token || !auth.userId) return;
-        axios.get('/api/community/posts', {
-            headers: {
-                Authorization: `Bearer ${auth.token}`,
-                'X-User-Id': auth.userId
-            }
+    const fetchPosts = useCallback((category = '전체') => {
+        if (!auth.token) return;
+        const params = category !== '전체' ? `?category=${category}` : '';
+        axios.get(`/api/community/posts${params}`, {
+            headers: { Authorization: `Bearer ${auth.token}`, 'X-User-Id': auth.userId }
         })
             .then(res => setPosts(res.data))
-            .catch(err => console.error(err));
+            .catch(console.error);
     }, [auth.token, auth.userId]);
+// 카테고리 버튼 클릭 핸들러
+    const onCategorySelect = (cat) => {
+        setCurrentCategory(cat);
+        fetchPosts(cat);
+    };
 
-    // 2) 마운트 및 auth 변경 시 fetch
+// useEffect → fetchPosts(currentCategory)
     useEffect(() => {
-        fetchPosts();
-    }, [fetchPosts]);
+        fetchPosts(currentCategory);
+    }, [currentCategory, fetchPosts]);
 
     // 3) 탭별/카테고리별/페이징 처리
     const filteredByTab = (() => {
@@ -63,9 +66,9 @@ function CommunityBoardContentPage() {
     const closeCreateModal = () => setIsCreateModalOpen(false);
 
     // 4) 새 글 저장 → 목록 갱신
-    const handleSavePost = ({ title, content }) => {
+    const handleSavePost = ({ title, content, category }) => {
         axios.post('/api/community/posts',
-            { title, content },
+            { title, content, category },
             {
                 headers: {
                     Authorization: `Bearer ${auth.token}`,
@@ -145,15 +148,18 @@ function CommunityBoardContentPage() {
                         {tab==='hot' && '조회수 순으로 정렬됩니다.'}
                     </p>
                     <div className="category-btn-wrapper">
-                        {categories.map(cat => (
-                            <button
-                                key={cat}
-                                className={`modal-category-btn ${cat===currentCategory?'selected':''}`}
-                                onClick={() => { setCurrentCategory(cat); setCurrentPage(1); }}
-                            >
-                                {cat}
-                            </button>
-                        ))}
+                    {categories.map(cat => (
+                                   <button
+                                       key={cat}
+                                       className={`modal-category-btn ${cat===currentCategory?'selected':''}`}
+                                       onClick={() => {
+                                           setCurrentPage(1);
+                                           onCategorySelect(cat);
+                                       }}
+                                   >
+                                       {cat}
+                                   </button>
+                               ))}
                     </div>
                 </div>
 

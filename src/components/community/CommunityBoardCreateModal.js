@@ -1,24 +1,19 @@
+// src/community/CommunityBoardCreateModal.js
 import React, { useState } from 'react';
 import '../community/css/CommunityBoardCreateModal.css';
 
-/**
- * 게시글 생성 모달
- *
- * Props:
- * - isOpen: boolean, 모달 오픈 여부
- * - onClose: function, 모달 닫기 함수
- * - onSave: function({ title, content }), 저장 시 호출
- */
+const categories = ['전체','공부','운동','코딩','AI','취업','알바','주식'];
+
 function CommunityBoardCreateModal({ isOpen, onClose, onSave }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [category, setCategory] = useState('전체');
 
     if (!isOpen) return null;
 
     const handleSave = () => {
-        onSave({ title, content });
-        setTitle('');
-        setContent('');
+        onSave({ title, content, category });
+        setTitle(''); setContent(''); setCategory('전체');
     };
 
     return (
@@ -26,6 +21,12 @@ function CommunityBoardCreateModal({ isOpen, onClose, onSave }) {
             <div className="modal" onClick={e => e.stopPropagation()}>
                 <h2>새 게시글 작성</h2>
                 <div className="modal-body">
+                    <label>
+                        카테고리
+                        <select value={category} onChange={e => setCategory(e.target.value)}>
+                            {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </label>
                     <label>
                         제목
                         <input
@@ -53,4 +54,5 @@ function CommunityBoardCreateModal({ isOpen, onClose, onSave }) {
         </div>
     );
 }
+
 export default CommunityBoardCreateModal;
