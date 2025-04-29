@@ -18,6 +18,7 @@ function CommunityDetailContentPage() {
     const [replyBoxOpen, setReplyBoxOpen] = useState({});
     const [loading, setLoading] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [liked, setLiked] = useState(false);
 
     // 게시글 + 댓글 트리 로드
     useEffect(() => {
@@ -112,6 +113,25 @@ function CommunityDetailContentPage() {
         }
     };
 
+    // **새로 추가**: 좋아요 버튼 클릭 시 호출
+    const handleLikeToggle = async () => {
+        try {
+            const res = await axios.post(
+                `/api/community/posts/${no}/like`,
+                {},
+                { headers: { Authorization: `Bearer ${auth.token}`, "X-User-Id": auth.userId } }
+            );
+            const { likesCount, liked: nowLiked } = res.data;
+            setPost(p => ({ ...p, likesCount }));
+            setLiked(nowLiked);
+            window.alert(nowLiked ? "좋아요를 하였습니다!" : "좋아요를 취소하였습니다!");
+        } catch (err) {
+            console.error("좋아요 처리 실패", err);
+            window.alert("좋아요 처리 중 오류가 발생했습니다.");
+        }
+    };
+
+
     if (loading) return <div className="dashboard-content">로딩 중...</div>;
     if (!post) return <div className="dashboard-content">게시글을 불러올 수 없습니다.</div>;
 
@@ -165,7 +185,14 @@ function CommunityDetailContentPage() {
                         ))}
                     </div>
                     <div className="detail-actions">
-                        <button className="btn-like">👍 {post.likesCount}</button>
+                        {/* 좋아요 토글 버튼 */}
+                        <button
+                            className="btn-like"
+                            onClick={handleLikeToggle}
+                            style={{background: liked ? "#e57373" : undefined}}
+                        >
+                            👍 {post.likesCount}
+                        </button>
                         <button className="btn-comment">💬 {comments.length}</button>
                     </div>
                 </div>
