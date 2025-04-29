@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from "../../Auth/AuthContext";
 import defaultUser from "../../Auth/css/img/default-user.svg";
 import '../community/css/CommunityLivePost.css';
+import { useHistory } from 'react-router-dom';
 
 export default function CommunityLivePost() {
     const { auth } = useAuth();
@@ -12,7 +13,7 @@ export default function CommunityLivePost() {
 
     const perPage = 8;
     const totalPages = Math.ceil(posts.length / perPage);
-
+    const history = useHistory();
     // 1) 마운트 시 API 에서 글 + 작성자 정보(이름/프사/뱃지) 가져오기
     useEffect(() => {
         if (!auth.token || !auth.userId) return;
@@ -47,7 +48,8 @@ export default function CommunityLivePost() {
             <div className="clp-grid-container">
                 <div className={`clp-grid ${isSliding ? 'sliding' : ''}`}>
                     {visible.map((p) => (
-                        <div key={p.id} className="clp-card">
+                        <div key={p.id} className="clp-card clickable"
+                             onClick={() => history.push(`/community/board/${p.id}`)}>
                             <p className="clp-title">{p.title}</p>
                             <p className="clp-content">{p.content.length > 60
                                 ? p.content.slice(0, 60) + '…'
