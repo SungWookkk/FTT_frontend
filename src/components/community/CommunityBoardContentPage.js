@@ -184,7 +184,7 @@ function CommunityBoardContentPage() {
                                         ? <img
                                             src={row.authorBadgeImageUrl}
                                             alt="badge"
-                                            className="badge-icon"
+                                            className="badge-icon1"
                                         />
                                         : <span>–</span>
                                     }
