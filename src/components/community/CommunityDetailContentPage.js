@@ -1,4 +1,3 @@
-// src/community/CommunityDetailContentPage.js
 import { NavLink, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "../community/css/CommunityDetailContentPage.css";
