@@ -14,7 +14,10 @@ function CommunityBoardContentPage() {
     const [currentCategory, setCurrentCategory] = useState('전체');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const history = useHistory();
+    const [searchTerm, setSearchTerm] = useState('');
     const { auth } = useAuth();
+
+
     // 1) 서버에서 게시글 가져오기 (useCallback으로 감싸 ESLint 경고 해소)
     const fetchPosts = useCallback((category = '전체') => {
         if (!auth.token) return;
@@ -49,9 +52,21 @@ function CommunityBoardContentPage() {
         }
     })();
 
-    const filtered = currentCategory === '전체'
-        ? filteredByTab
-        : filteredByTab.filter(p => p.category === currentCategory);
+
+        // 3-1) 카테고리 필터
+            let filtered = currentCategory === '전체'
+            ? filteredByTab
+               : filteredByTab.filter(p => p.category === currentCategory);
+
+            // 3-2) 검색어 필터 (제목, 본문, 작성자)
+                if (searchTerm.trim()) {
+              const kw = searchTerm.toLowerCase();
+              filtered = filtered.filter(p =>
+                    p.title.toLowerCase().includes(kw) ||
+                    p.content.toLowerCase().includes(kw) ||
+                    p.authorName.toLowerCase().includes(kw)
+                  );
+            }
 
     const rowsPerPage = 12;
     const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -161,6 +176,15 @@ function CommunityBoardContentPage() {
                                    </button>
                                ))}
                     </div>
+                                        <div className="search-wrapper2">
+                                          <input
+                                            type="text"
+                                            value={searchTerm}
+                                            onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                                            placeholder="제목·내용·작성자 검색..."
+                                            className="search-input2"
+                                          />
+                                        </div>
                 </div>
 
                 <div className="board-table-wrapper">

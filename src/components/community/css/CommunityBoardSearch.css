@@ -1,0 +1,36 @@
+.cbs-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cbs-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.cbs-input:focus {
+    outline: none;
+    border-color: #4b5ef5;
+    box-shadow: 0 0 0 2px rgba(75, 94, 245, 0.2);
+}
+
+.cbs-button {
+    padding: 8px 16px;
+    background-color: #4b5ef5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cbs-button:hover {
+    background-color: #3a4ac3;
+}
