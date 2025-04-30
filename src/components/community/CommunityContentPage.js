@@ -1,15 +1,19 @@
-import React, {useState} from "react";
-import { NavLink } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {NavLink, useHistory} from "react-router-dom";
 import "../community/css/CommunityContentPage.css";
 import "../community/css/CommunityBestPost.css";
 import CommunityBestPost from "./CommunityBestPost";
 import CommunityDayHotPost from "./CommunityDayHotPost";
-import CommunityLivePost from "./CommunityLivePost";
 import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
+import {useAuth} from "../../Auth/AuthContext";
+import axios from "axios";
+import CommunityLivePost from "./CommunityLivePost";
 
 function CommunityContentPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
+    const [allPosts, setAllPosts] = useState([]);
+    const { auth } = useAuth();
+    const history = useHistory();
     const openCreateModal = () => setIsCreateModalOpen(true);
     const closeCreateModal = () => setIsCreateModalOpen(false);
     const handleSavePost = ({ title, content }) => {
@@ -17,6 +21,20 @@ function CommunityContentPage() {
         //       .then(...)
         closeCreateModal();
     };
+
+    useEffect(() => {
+            if (!auth.token) return;
+            axios.get('/api/community/posts', {
+                  headers: { Authorization: `Bearer ${auth.token}`, 'X-User-Id': auth.userId }
+            })
+            .then(res => {
+                  // 조회수 순으로 정렬
+                      const sortedByViews = res.data.slice().sort((a,b) => b.viewsCount - a.viewsCount);
+                  setAllPosts(sortedByViews);
+                })
+            .catch(console.error);
+          }, [auth.token, auth.userId]);
+
 
     return (
         <div className="dashboard-content">
@@ -83,8 +101,11 @@ function CommunityContentPage() {
             {/*  Best 게시글 컴포넌트 */}
             <div className="posts-wrapper">
                 <CommunityBestPost/>
-                <CommunityDayHotPost/>
-            </div>
+                <CommunityDayHotPost
+                     posts={allPosts}
+                     onSelect={id => history.push(`/community/board/${id}`)}
+                   />
+                 </div>
             <div className="time-post">
                 <h1>실시간 게시글</h1>
             </div>

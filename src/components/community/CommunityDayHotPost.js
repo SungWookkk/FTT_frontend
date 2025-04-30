@@ -1,33 +1,40 @@
 import React from 'react';
 import '../community/css/CommunityDayHotPost.css';
 
-const hotPosts = [
-    { title: '취업 준비를 하려는데 고민이 있습니다. 조언 부탁드려요.', like: 72, dislike: 23 },
-    { title: '요즘 AI 기능 어떤가요? 제 생각에는….', like: 68, dislike: 34 },
-    { title: '아니 제가 대학교를 졸업을 하고나서….', like: 55, dislike: 13 },
-];
+/**
+ * props.posts: 조회수 기준으로 이미 정렬된 게시글 배열
+ * props.onSelect: 클릭 시 상세페이지로 이동할 때 호출되는 콜백 (id 인자)
+ */
+const CommunityDayHotPost = ({ posts, onSelect }) => {
+    // 상위 3개만
+    const hot3 = posts.slice(0, 3);
 
-const CommunityDayHotPost = () => (
-    <div className="chp-box">
-        <div className="chp-header">
-            <span className="chp-icon">🔥</span>
-            <span className="chp-title">주간 Hot 게시글</span>
+    return (
+        <div className="chp-box">
+            <div className="chp-header">
+                <span className="chp-icon">🔥</span>
+                <span className="chp-title">주간 Hot 게시글</span>
+            </div>
+            <ul className="chp-list">
+                {hot3.map(p => (
+                    <li
+                        key={p.id}
+                        className="chp-item"
+                        onClick={() => onSelect(p.id)}
+                    >
+                        <div className="chp-item-left">
+                            <span className="chp-dot" />
+                            <span className="chp-text">{p.title}</span>
+                        </div>
+                        <div className="chp-item-right">
+                            <span className="chp-like">👍 {p.viewsCount}</span>
+                            <span className="chp-dislike">👎 {p.likesCount}</span>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
-        <ul className="chp-list">
-            {hotPosts.map((p, i) => (
-                <li key={i} className="chp-item">
-                    <div className="chp-item-left">
-                        <span className="chp-dot" />
-                        <span className="chp-text">{p.title}</span>
-                    </div>
-                    <div className="chp-item-right">
-                        <span className="chp-like">👍 {p.like}</span>
-                        <span className="chp-dislike">👎 {p.dislike}</span>
-                    </div>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
+    );
+};
 
 export default CommunityDayHotPost;
