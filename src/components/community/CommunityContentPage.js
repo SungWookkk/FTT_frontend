@@ -100,7 +100,10 @@ function CommunityContentPage() {
             </div>
             {/*  Best 게시글 컴포넌트 */}
             <div className="posts-wrapper">
-                <CommunityBestPost/>
+                <CommunityBestPost
+                    posts={allPosts}
+                    onSelect={id => history.push(`/community/board/${id}`)}
+                />
                 <CommunityDayHotPost
                      posts={allPosts}
                      onSelect={id => history.push(`/community/board/${id}`)}

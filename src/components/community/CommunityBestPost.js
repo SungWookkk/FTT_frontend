@@ -1,33 +1,52 @@
+// src/community/CommunityBestPost.js
 import React from 'react';
-import '../community/css/CommunityContentPage.css';
+import '../community/css/CommunityBestPost.css';
 
-const posts = [
-    { title: '자기 관리를 위한 필수 요소에 대한 설명……', like: 175, dislike: 46 },
-    { title: '제가 지금까지 인생을 살아오며 느낀점이 이거입니다.', like: 146, dislike: 12 },
-    { title: '이거 디자인을 하면서 느낀건데 창작이 어려워요.', like: 89, dislike: 24 },
-];
+/**
+ * props.posts: 모든 게시글 배열 (likesCount 기준 정렬되어 있으면 더 좋습니다)
+ * props.onSelect: 글 클릭 시 상세페이지로 이동하는 콜백 (id 인자)
+ */
+const CommunityBestPost = ({ posts = [], onSelect }) => {
+    // 좋아요 50개 이상인 글만 필터 → 상위 3개
+    const best3 = posts
+        .filter(p => p.likesCount >= 50)
+        .slice(0, 3);
 
-const CommunityBestPost = () => (
-    <div className="cbp-box">
-        <div className="cbp-header">
-            <span className="cbp-icon">🔥</span>
-            <span className="cbp-title">Best 게시글</span>
+    return (
+        <div className="cbp-box">
+            <div className="cbp-header">
+                <span className="cbp-icon">🏆</span>
+                <span className="cbp-title">Best 게시글</span>
+            </div>
+
+            {best3.length === 0 ? (
+                <div className="cbp-empty">
+                    아직 좋아요가 50개가 넘는 게시글이 없어요!
+                </div>
+            ) : (
+                <ul className="cbp-list">
+                    {best3.map(p => (
+                        <li
+                            key={p.id}
+                            className="cbp-item"
+                            onClick={() => onSelect(p.id)}
+                        >
+                            <div className="cbp-item-left">
+                                <span className="cbp-dot" />
+                                <span className="cbp-text">{p.title}</span>
+                            </div>
+                            <div className="cbp-item-right">
+                                {/* 조회수는 텍스트 */}
+                                <span className="cbp-views">조회수 {p.viewsCount}</span>
+                                {/* 👍 은 좋아요 수 */}
+                                <span className="cbp-like">👍 {p.likesCount}</span>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
-        <ul className="cbp-list">
-            {posts.map((p, i) => (
-                <li key={i} className="cbp-item">
-                    <div className="cbp-item-left">
-                        <span className="cbp-dot" />
-                        <span className="cbp-text">{p.title}</span>
-                    </div>
-                    <div className="cbp-item-right">
-                        <span className="cbp-like">👍 {p.like}</span>
-                        <span className="cbp-dislike">👎 {p.dislike}</span>
-                    </div>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
+    );
+};
 
 export default CommunityBestPost;
