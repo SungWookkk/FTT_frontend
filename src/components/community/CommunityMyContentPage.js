@@ -1,13 +1,13 @@
 // src/community/CommunityMyContentPage.js
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import '../community/css/CommunityMyContentPage.css';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useHistory} from 'react-router-dom';
 import { useAuth } from '../../Auth/AuthContext';
 import axios from 'axios';
 
 function CommunityMyContentPage() {
     const { auth } = useAuth();
-
+    const history = useHistory();
     //내가 쓴 글
     const [myPosts, setMyPosts] = useState([]);
     //  쓴 댓글
@@ -174,7 +174,11 @@ function CommunityMyContentPage() {
                     <div className="my-content-list" ref={listRef}>
                         {displayedPosts.length > 0 ? (
                             displayedPosts.map(p => (
-                                <div key={p.id} className="my-content-item">
+                                <div
+                                    key={p.id}
+                                    className="my-content-item"
+                                    onClick={() => history.push(`/community/board/${p.id}`)}
+                                >
                                     <span className="item-title">{p.title}</span>
                                     <span
                                         className="item-date">{new Date(p.createdAt).toISOString().slice(0, 10)}</span>
@@ -209,7 +213,11 @@ function CommunityMyContentPage() {
                     <div className="my-content-list" style={{maxHeight: '50vh'}}>
                         {filteredComments.length > 0 ? (
                             filteredComments.map(c => (
-                                <div key={c.id} className="my-content-item">
+                                <div
+                                    key={c.id}
+                                    className="my-content-item"
+                                    onClick={() => history.push(`/community/board/${c.post.id}`)}
+                                >
                                     <span className="item-title">{c.content}</span>
                                     <span
                                         className="item-date">{new Date(c.createdAt).toISOString().slice(0, 10)}</span>
@@ -242,10 +250,14 @@ function CommunityMyContentPage() {
                 <div className="my-content-list" style={{ maxHeight: '50vh' }}>
                     {filteredLiked.length > 0 ? (
                         filteredLiked.map(l => (
-                            <div key={l.id} className="my-content-item">
+                            <div
+                                key={l.id}
+                                className="my-content-item"
+                                onClick={() => history.push(`/community/board/${l.id}`)}
+                            >
                                 <span className="item-title">{l.title}</span>
                                 <span className="item-date">
-                                        {new Date(l.createdAt).toISOString().slice(0,10)}
+                                        {new Date(l.createdAt).toISOString().slice(0, 10)}
                                     </span>
                             </div>
                         ))
