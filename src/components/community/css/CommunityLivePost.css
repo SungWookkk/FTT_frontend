@@ -15,6 +15,9 @@
    grid-template-rows: repeat(2, 105px);     /* 행 2개 */
    gap: 44px;
     transition: none;
+    position: relative;
+    right: 56px;
+
 }
 .clp-grid.sliding {
     animation: slideLeft 0.8s ease-in-out forwards;
@@ -105,6 +108,8 @@
     cursor: pointer;
     align-self: center;
     color: #666;
+    position: relative;
+    left: 591px;
 }
 
 .clp-card.clickable {
