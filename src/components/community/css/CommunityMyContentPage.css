@@ -130,3 +130,9 @@
     width: 100%;
     align-items: center;
 }
+.empty-text {
+    padding: 16px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
