@@ -11,13 +11,18 @@ const Signup = () => {
         phoneNumber: "",
         birthDate: "",
         password: "",
+        smsOptIn: false,
     });
     const [message, setMessage] = useState("");
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value
+        }));
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -116,6 +121,20 @@ const Signup = () => {
                                 required
                             />
                         </div>
+
+                        {/* SMS 수신 동의 체크박스 */}
+                        <div className="form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="smsOptIn"
+                                    checked={formData.smsOptIn}
+                                    onChange={handleChange}
+                                />
+                                &nbsp;SMS 알림 수신 동의
+                            </label>
+                        </div>
+
                         <button type="submit" className="login-button">
                             회원가입
                         </button>

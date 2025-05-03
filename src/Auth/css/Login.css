@@ -192,3 +192,21 @@
     text-decoration: underline; /* 밑줄 유지 */
     cursor: pointer; /* 포인터 표시 */
 }
+
+/* SMS 수신 동의 체크박스 크기 조정 */
+.form-group input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    transform: scale(1);
+    vertical-align: middle;
+}
+
+/* 체크박스 라벨 텍스트와 좀 더 정렬되도록 */
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: #555;
+}
