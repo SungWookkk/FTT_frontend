@@ -589,7 +589,6 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    overflow-y: auto;
     margin-bottom: 12px;
 }
 .detail-icon i {

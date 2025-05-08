@@ -293,7 +293,6 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    overflow-y: auto;
 }
 
 /* 아이콘 영역 */
