@@ -63,14 +63,14 @@ const StatisticsContentPage = () => {
                 </p>
             </div>
 
-            {/* 카드 요약 영역 */}
             <div className="statistics-cards">
+                <p className="cards-section-title">데이터 통계</p>
+                <div className="info-underline1"/>
                 {CARD_DATA.map((c, idx) => (
                     <div key={idx} className="stat-card">
                         <p className="card-title">{c.title}</p>
                         <p className="card-value">{c.value}</p>
                         {c.subtitle && <p className="card-subtitle">{c.subtitle}</p>}
-                        {/* 간단한 라인 차트 플레이스홀더 */}
                         <div className="card-line-chart">
                             <div className="line-chart-path"/>
                         </div>
