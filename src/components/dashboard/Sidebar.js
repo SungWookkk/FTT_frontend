@@ -6,7 +6,6 @@ import ToDoIcon from "../../../src/Auth/css/img/Todolist.svg";
 import StatisticsIcon from "../../../src/Auth/css/img/statistics.svg";
 import BadgeIcon from "../../../src/Auth/css/img/badge.svg";
 import CommunityIcon from "../../../src/Auth/css/img/community.svg";
-import plus from "../../../src/Auth/css/img/plus.svg";
 import userinfo from "../../../src/Auth/css/img/default-user.svg";
 import SidebarFavorites from "./SidebarFavorites";
 import {useEffect, useState} from "react";
@@ -96,12 +95,6 @@ const Sidebar = ({onToggle}) => {
                         <Link to="/community">
                             <img className="icon" src={CommunityIcon} alt="Community Icon"/>
                             <span>커뮤니티</span>
-                        </Link>
-                    </li>
-                    <li className={location.pathname === "/plus" ? "active" : ""}>
-                        <Link to="/plus">
-                            <img className="icon" src={plus} alt="plus Icon"/>
-                            <span>더보기</span>
                         </Link>
                     </li>
                 </ul>
