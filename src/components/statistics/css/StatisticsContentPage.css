@@ -1,17 +1,17 @@
 .statistics-container {
-    max-width: 1200px;
-    padding: 0 16px;
+    float: left;
+    width: 65%;
+    margin-left: 0;
 }
 
 .statistics-cards {
-    position: relative;         /* 내부 절대위치 요소를 위해 */
+    position: relative;
     display: flex;
     gap: 16px;
-    justify-content: center;    /* 카드 중앙 정렬 */
+    justify-content: center;
     overflow-x: auto;
-    padding: 8px 0 32px;        /* top 패딩으로 언더라인 자리 확보, bottom 패딩 유지 */
+    padding: 8px 0 32px;
     margin-bottom: 32px;
-    /* 스크롤바 숨기기 */
     scrollbar-width: none;
     margin-top: 44px;
 }
@@ -78,7 +78,7 @@
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 32px;
-    margin-left: 356px;
+    margin-left: 330px;
 }
 
 
@@ -187,4 +187,48 @@
     color: #adb3bd;
     font-size: 16px;
     font-weight: 700;
+}
+.all-statisics-container{
+    position: relative;
+    right: 300px;
+    top: 35px;
+
+}
+/* ─────────── 전체 사용자 통계 섹션 ─────────── */
+.user-stats-section {
+    float: right;
+    width: 30%;
+    margin-top: 48px;
+}
+.user-stats-section .cards-section-title {
+    position: relative;
+    top: -29px;
+    left: 40%;
+    transform: translateX(-50%);
+    color: #adb3bd;
+    font-size: 16px;
+    font-weight: 700;
+}
+.user-stats-underline {
+    position: relative;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(220px * 3 + 16px * 2);
+    height: 2px;
+    background-color: #e0e0e0;
+    border-radius: 1px;
+}
+.user-stats-cards {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    position: relative;
+    top: -31px;
+}
+/* float 정리용 clearfix */
+.all-statisics-container::after {
+    content: "";
+    display: block;
+    clear: both;
 }
