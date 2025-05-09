@@ -1,40 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../statistics/css/StatisticsContentPage.css";
-
-const CARD_DATA = [
-    { title: "작업 처리 평균 시간", value: "4시간 20분" },
-    { title: "작성한 작업", value: "2,834개", subtitle: "상위 32%" },
-    { title: "완료한 작업", value: "2,149개", subtitle: "상위 15%" },
-    { title: "실패한 작업", value: "685개", subtitle: "상위 15%" },
-    { title: "작업에 따른 사용자 순위", value: "857위" },
-];
-
-const MONTHS = [
-    { label: "JAN", value: 100 },
-    { label: "FEB", value: 120 },
-    { label: "MAR", value: 150 },
-    { label: "APR", value: 230 },
-    { label: "MAY", value: 260 },
-    { label: "JUN", value: 200 },
-    { label: "JUL", value: 220 },
-    { label: "AUG", value: 140 },
-    { label: "SEP", value: 240 },
-    { label: "OCT", value: 310 },
-    { label: "NOV", value: 360 },
-    { label: "DEC", value: 400 },
-];
+import {useAuth} from "../../Auth/AuthContext";
 
 const StatisticsContentPage = () => {
+    const { auth } = useAuth();
+    const token = auth?.token;
+    // 1) 카드 요약용 데이터
+    const [overviewData, setOverviewData] = useState([]);
+    // 2) 바 차트용 월별 값
+    const [monthlyData, setMonthlyData] = useState([]);
+    // 3) 전체 사용자 통계
+    const [userStats, setUserStats] = useState({
+        totalTasks: "",
+        activeTasks: "",
+        completionRate: ""
+    });
+
+
+    useEffect(() => {
+        if (!token) return; // 로그인 전엔 호출하지 않음
+
+        // 1) 카드형 개요
+        axios.get("/api/statistics/overview", {
+                 headers: { Authorization: `Bearer ${auth.token}` }
+           })
+            .then(res => setOverviewData(res.data))
+            .catch(err => console.error("overview 에러:", err));
+
+        // 2) 월별 차트
+           axios.get("/api/statistics/monthly", {
+                 headers: { Authorization: `Bearer ${auth.token}` }
+           })
+            .then(res => setMonthlyData(res.data))
+            .catch(err => console.error("monthly 에러:", err));
+
+        // 3) 내 과제 통계
+           axios.get("/api/statistics/users", {
+                 headers: { Authorization: `Bearer ${auth.token}` }
+           })
+            .then(res => {
+                const { totalTasks, activeSinceMonth, completionRate } = res.data;
+                setUserStats({
+                    totalTasks: `${totalTasks}개`,
+                    activeTasks: `${activeSinceMonth}개`,
+                    completionRate: `${completionRate.toFixed(1)}%`
+                });
+            })
+            .catch(err => console.error("users 에러:", err));
+    }, [auth.token, token]);
+
     return (
         <div className="dashboard-content">
-            {/* 대시보드 헤더 */}
+            {/* ─────────── 대시보드 헤더 ─────────── */}
             <div className="dashboard-header">
                 <div className="dashboard-title">
                     <span className="title-text">통계</span>
                 </div>
             </div>
 
-            {/* 알림 배너 */}
+            {/* ─────────── 알림 배너 ─────────── */}
             <div className="alert-banner">
                 <p className="alert-text">
                     <span className="normal-text">통계 페이지에서 </span>
@@ -50,7 +75,7 @@ const StatisticsContentPage = () => {
                 <div className="statistics-cards">
                     <p className="cards-section-title">데이터 통계</p>
                     <div className="info-underline1" />
-                    {CARD_DATA.map((c, idx) => (
+                    {overviewData.map((c, idx) => (
                         <div key={idx} className="stat-card">
                             <p className="card-title">{c.title}</p>
                             <p className="card-value">{c.value}</p>
@@ -72,11 +97,17 @@ const StatisticsContentPage = () => {
                             </select>
                         </div>
                         <div className="bar-chart">
-                            {MONTHS.map((m, i) => (
+                            {monthlyData.map((m, i) => (
                                 <div key={i} className="bar-wrapper">
                                     <div
                                         className="bar"
-                                        style={{ height: `${(m.value / 400) * 100}%` }}
+                                        style={{
+                                            height: `${
+                                                monthlyData.length
+                                                    ? (m.value / Math.max(...monthlyData.map(x => x.value))) * 100
+                                                    : 0
+                                            }%`
+                                        }}
                                     />
                                     <span className="bar-label">{m.label}</span>
                                 </div>
@@ -89,27 +120,24 @@ const StatisticsContentPage = () => {
                 <div className="user-stats-section">
                     <p className="cards-section-title">전체 사용자 통계</p>
                     <div className="user-stats-underline" />
-
                     <div className="user-stats-cards">
                         <div className="stat-card">
-                            <p className="card-title">전체 사용자 수</p>
-                            <p className="card-value">1,234명</p>
+                            <p className="card-title">전체 과제 수</p>
+                            <p className="card-value">{userStats.totalTasks}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
                         </div>
-
                         <div className="stat-card">
-                            <p className="card-title">월간 활성 사용자</p>
-                            <p className="card-value">456명</p>
+                            <p className="card-title">한 달간 과제 수</p>
+                            <p className="card-value">{userStats.activeTasks}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
                         </div>
-
                         <div className="stat-card">
                             <p className="card-title">평균 완료율</p>
-                            <p className="card-value">78%</p>
+                            <p className="card-value">{userStats.completionRate}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
