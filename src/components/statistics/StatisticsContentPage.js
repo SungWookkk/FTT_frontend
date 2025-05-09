@@ -11,7 +11,7 @@ const StatisticsContentPage = () => {
     // 2) 바 차트용 월별 값
     const [monthlyData, setMonthlyData] = useState([]);
     // 3) 전체 사용자 통계
-    const [userStats, setUserStats] = useState({
+    const [taskStats, setTaskStats] = useState({
         totalTasks: "",
         activeTasks: "",
         completionRate: ""
@@ -35,19 +35,20 @@ const StatisticsContentPage = () => {
             .then(res => setMonthlyData(res.data))
             .catch(err => console.error("monthly 에러:", err));
 
-        // 3) 내 과제 통계
+        // 3) 전체 task 통계
            axios.get("/api/statistics/users", {
                  headers: { Authorization: `Bearer ${auth.token}` }
            })
             .then(res => {
-                const { totalTasks, activeSinceMonth, completionRate } = res.data;
-                setUserStats({
+                const { totalTasks, activeTasks, completionRate } = res.data;
+                setTaskStats({
                     totalTasks: `${totalTasks}개`,
-                    activeTasks: `${activeSinceMonth}개`,
+                    activeTasks: `${activeTasks}개`,
                     completionRate: `${completionRate.toFixed(1)}%`
                 });
             })
-            .catch(err => console.error("users 에러:", err));
+
+               .catch(err => console.error("users 에러:", err));
     }, [auth.token, token]);
 
     return (
@@ -123,21 +124,21 @@ const StatisticsContentPage = () => {
                     <div className="user-stats-cards">
                         <div className="stat-card">
                             <p className="card-title">전체 과제 수</p>
-                            <p className="card-value">{userStats.totalTasks}</p>
+                            <p className="card-value">{taskStats.totalTasks}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
                         </div>
                         <div className="stat-card">
                             <p className="card-title">한 달간 과제 수</p>
-                            <p className="card-value">{userStats.activeTasks}</p>
+                            <p className="card-value">{taskStats.activeTasks}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
                         </div>
                         <div className="stat-card">
                             <p className="card-title">평균 완료율</p>
-                            <p className="card-value">{userStats.completionRate}</p>
+                            <p className="card-value">{taskStats.completionRate}</p>
                             <div className="card-line-chart">
                                 <div className="line-chart-path" />
                             </div>
