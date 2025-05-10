@@ -72,7 +72,7 @@
 
 /* ─ 바 차트 ─ */
 .statistics-chart {
-    width: 70%;
+    width: 41%;
     background: #ffffff;
     border-radius: 16px;
     padding: 24px;
@@ -231,4 +231,9 @@
     content: "";
     display: block;
     clear: both;
+}
+.user-stats-container{
+    position: relative;
+    top: -283px;
+    right: 64px;
 }

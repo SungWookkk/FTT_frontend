@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../statistics/css/StatisticsContentPage.css";
 import {useAuth} from "../../Auth/AuthContext";
+import StatisticsBarChart from "./StatisticsBarChart";
 
 const StatisticsContentPage = () => {
     const { auth } = useAuth();
@@ -88,36 +89,12 @@ const StatisticsContentPage = () => {
                     ))}
                 </div>
 
-                {/* ─────────── 바 차트 영역 ─────────── */}
-                <div className="statistics-container">
-                    <div className="statistics-chart">
-                        <div className="chart-header">
-                            <p className="chart-title">작업 시작 통계</p>
-                            <select className="chart-select">
-                                <option>Month</option>
-                            </select>
-                        </div>
-                        <div className="bar-chart">
-                            {monthlyData.map((m, i) => (
-                                <div key={i} className="bar-wrapper">
-                                    <div
-                                        className="bar"
-                                        style={{
-                                            height: `${
-                                                monthlyData.length
-                                                    ? (m.value / Math.max(...monthlyData.map(x => x.value))) * 100
-                                                    : 0
-                                            }%`
-                                        }}
-                                    />
-                                    <span className="bar-label">{m.label}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                {/* 바 차트 영역 */}
+                <StatisticsBarChart data={monthlyData} />
 
                 {/* ─────────── 전체 사용자 통계 섹션 ─────────── */}
+
+                <div className="user-stats-container">
                 <div className="user-stats-section">
                     <p className="cards-section-title">전체 사용자 통계</p>
                     <div className="user-stats-underline" />
@@ -145,6 +122,7 @@ const StatisticsContentPage = () => {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );
