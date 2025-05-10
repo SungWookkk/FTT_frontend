@@ -100,6 +100,18 @@
     border-radius: 8px;
     background: #fafafa;
     font-size: 0.9rem;
+    appearance: none;
+    background-size: 12px;
+}
+
+/* 너비를 좀 더 넉넉하게 늘리고 싶을 때 사용하는 클래스 */
+.chart-select--wide {
+    width: 120px;
+}
+
+/* day 뷰를 위한 추가 스타일 (선택 시) */
+.chart-select--wide option[value="day"] {
+    /* 특별히 강조하고 싶으면 여기에 스타일 추가 */
 }
 
 /* 실제 막대그래프 컨테이너 */
@@ -198,7 +210,6 @@
 .user-stats-section {
     float: right;
     width: 30%;
-    margin-top: 48px;
 }
 .user-stats-section .cards-section-title {
     position: relative;
@@ -236,4 +247,32 @@
     position: relative;
     top: -283px;
     right: 64px;
+}
+.statistics-chart--day {
+    overflow-x: auto;
+}
+.statistics-chart--day .bar-chart {
+    white-space: nowrap;
+    padding-bottom: 12px;
+}
+.statistics-chart--day .bar-wrapper {
+    display: inline-block;
+    margin: 0 2px;
+}
+.statistics-chart--day .bar {
+    width: 8px;
+    border-radius: 4px 4px 0 0;
+}
+.statistics-chart--day .bar-label {
+    font-size: 0.6rem;
+    margin-top: 4px;
+}
+
+/* 스크롤바 (WebKit) */
+.statistics-chart--day::-webkit-scrollbar {
+    height: 6px;
+}
+.statistics-chart--day::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
 }

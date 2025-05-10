@@ -17,7 +17,8 @@ const StatisticsContentPage = () => {
         activeTasks: "",
         completionRate: ""
     });
-
+    const [dailyData, setDailyData]     = useState([]);
+    const [viewBy, setViewBy] = useState("month");
 
     useEffect(() => {
         if (!token) return; // 로그인 전엔 호출하지 않음
@@ -50,7 +51,14 @@ const StatisticsContentPage = () => {
             })
 
                .catch(err => console.error("users 에러:", err));
+
+        const now = new Date();
+        axios.get(`/api/statistics/daily?year=${now.getFullYear()}&month=${now.getMonth()+1}`, {
+            headers :{Authorization: `Bearer ${auth.token}`}
+        })
+            .then(res => setDailyData(res.data));
     }, [auth.token, token]);
+
 
     return (
         <div className="dashboard-content">
@@ -89,8 +97,12 @@ const StatisticsContentPage = () => {
                     ))}
                 </div>
 
-                {/* 바 차트 영역 */}
-                <StatisticsBarChart data={monthlyData} />
+                {/* ─────────── 바 차트 ─────────── */}
+                <StatisticsBarChart
+                    data={viewBy==="month" ? monthlyData : dailyData}
+                    viewBy={viewBy}
+                    onViewByChange={setViewBy}
+                />
 
                 {/* ─────────── 전체 사용자 통계 섹션 ─────────── */}
 
