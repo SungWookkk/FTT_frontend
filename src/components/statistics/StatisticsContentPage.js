@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import axios from "axios";
 import "../statistics/css/StatisticsContentPage.css";
 import {useAuth} from "../../Auth/AuthContext";
@@ -59,6 +59,31 @@ const StatisticsContentPage = () => {
             .then(res => setDailyData(res.data));
     }, [auth.token, token]);
 
+    // 일별 뷰시 1일부터 말일까지 모두 표시하도록 data 보강
+    const displayedData = useMemo(() => {
+        if (viewBy === "day") {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            // 해당 월의 일수 계산 (0일자는 전달의 말일)
+            const daysInMonth = new Date(year, month, 0).getDate();
+            // API에서 받아온 dailyData를 Map으로 변환
+            const dayValueMap = new Map(
+                dailyData.map(d => [ Number(d.label), d.value ])
+            );
+            // 1일부터 말일까지 전부 순회하며 값이 없으면 0으로 채움
+            return Array.from({ length: daysInMonth }, (_, idx) => {
+                const day = idx + 1;
+                return {
+                    label: String(day),
+                    value: dayValueMap.get(day) || 0
+                };
+            });
+        }
+        // 월별 뷰는 기존 데이터 그대로
+        return monthlyData;
+    }, [viewBy, dailyData, monthlyData]);
+
 
     return (
         <div className="dashboard-content">
@@ -97,13 +122,12 @@ const StatisticsContentPage = () => {
                     ))}
                 </div>
 
-                {/* ─────────── 바 차트 ─────────── */}
+                {/* 원본 data 대신 보강된 displayedData 사용 */}
                 <StatisticsBarChart
-                    data={viewBy==="month" ? monthlyData : dailyData}
+                    data={displayedData}
                     viewBy={viewBy}
                     onViewByChange={setViewBy}
                 />
-
                 {/* ─────────── 전체 사용자 통계 섹션 ─────────── */}
 
                 <div className="user-stats-container">
