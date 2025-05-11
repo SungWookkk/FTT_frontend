@@ -19,9 +19,10 @@ const StatisticsContentPage = () => {
     });
     const [dailyData, setDailyData]     = useState([]);
     const [viewBy, setViewBy] = useState("month");
-    const [selectedDay, setSelectedDay] = useState(null);
-    const [dailyDetail, setDailyDetail] = useState(null);
-
+    // 클릭한 “일” 또는 “월” 숫자
+    const [selectedX, setSelectedX] = useState(null);
+    // 클릭 디테일 (DailyDetailDto or MonthlyDetailDto)
+    const [detail, setDetail] = useState(null);
 
     useEffect(() => {
         if (!token) return; // 로그인 전엔 호출하지 않음
@@ -56,25 +57,27 @@ const StatisticsContentPage = () => {
                .catch(err => console.error("users 에러:", err));
 
         const now = new Date();
+        axios
+            .get(`/api/statistics/monthly`, { headers: { Authorization: `Bearer ${token}` } })
+            .then(res => setMonthlyData(res.data));
         axios.get(`/api/statistics/daily?year=${now.getFullYear()}&month=${now.getMonth()+1}`, {
             headers :{Authorization: `Bearer ${auth.token}`}
         })
             .then(res => setDailyData(res.data));
     }, [auth.token, token]);
 
-    // 일별 뷰시 1일부터 말일까지 모두 표시하도록 data 보강
+    // 일별/월별 차트용 데이터 보강
     const displayedData = useMemo(() => {
+        const now = new Date();
+        const year = now.getFullYear();
+
         if (viewBy === "day") {
-            const now = new Date();
-            const year = now.getFullYear();
+            // ── Day 뷰: 1일부터 말일까지 ──
             const month = now.getMonth() + 1;
-            // 해당 월의 일수 계산 (0일자는 전달의 말일)
             const daysInMonth = new Date(year, month, 0).getDate();
-            // API에서 받아온 dailyData를 Map으로 변환
             const dayValueMap = new Map(
                 dailyData.map(d => [ Number(d.label), d.value ])
             );
-            // 1일부터 말일까지 전부 순회하며 값이 없으면 0으로 채움
             return Array.from({ length: daysInMonth }, (_, idx) => {
                 const day = idx + 1;
                 return {
@@ -82,22 +85,45 @@ const StatisticsContentPage = () => {
                     value: dayValueMap.get(day) || 0
                 };
             });
+        } else {
+            const monthMap = new Map(
+                monthlyData.map(m => {
+                    // 영문 약어 → 숫자(1~12) 매핑
+                    const num = new Date(`${m.label} 1, ${year}`).getMonth() + 1;
+                    return [num, m.value];
+                })
+            );
+            return Array.from({ length: 12 }, (_, idx) => {
+                const mNum = idx + 1;
+                return {
+                    label: `${mNum}월`,
+                    value: monthMap.get(mNum) || 0
+                };
+            });
         }
-        // 월별 뷰는 기존 데이터 그대로
-        return monthlyData;
     }, [viewBy, dailyData, monthlyData]);
 
     // 막대 클릭 핸들러
-    const handleBarClick = (day) => {
-        if (!day) return;
-        setSelectedDay(day);
+    const handleBarClick = (x) => {
+        setSelectedX(x);
         const now = new Date();
-        axios.get(
-            `/api/statistics/daily/detail?year=${now.getFullYear()}&month=${now.getMonth()+1}&day=${day}`,
-            { headers: { Authorization: `Bearer ${auth.token}` } }
-        )
-            .then(res => setDailyDetail(res.data))
-            .catch(err => console.error("daily detail 에러:", err));
+        if (viewBy === "day") {
+            axios
+                .get(
+                    `/api/statistics/daily/detail?year=${now.getFullYear()}&month=${now.getMonth()+1}&day=${x}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                .then(res => setDetail(res.data))
+                .catch(console.error);
+        } else {
+            axios
+                .get(
+                    `/api/statistics/monthly/detail?year=${now.getFullYear()}&month=${x}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                .then(res => setDetail(res.data))
+                .catch(console.error);
+        }
     };
 
 
@@ -143,22 +169,28 @@ const StatisticsContentPage = () => {
                     data={displayedData}
                     viewBy={viewBy}
                     onViewByChange={setViewBy}
-                    onBarClick={handleBarClick}  // 추가
+                    onBarClick={handleBarClick}
                 />
-                {/* ───── 하단 디테일 바 ───── */}
-                {dailyDetail && (
+                {/* ───── 클릭 디테일 영역 ───── */}
+                {detail && (
                     <div className="daily-detail-container">
-                        <h4>{selectedDay}일 작업 상세</h4>
+                        <h4>
+                            {viewBy === "day"
+                                ? `${selectedX}일 작업 상세`
+                                : `${selectedX}월 작업 상세`}
+                        </h4>
+
                         <div className="detail-bars">
-                            {/* 전체 생성 */}
+                            {/* 생성된 Task (100% 배경) */}
                             <div className="detail-bar">
-                                <span>생성된 Task</span>
+                                <span>{viewBy === "day" ? "생성된 Task" : "생성된 Task"}</span>
                                 <div className="bar-bg">
                                     <div className="bar-fill" style={{ width: "100%" }} />
                                 </div>
-                                <strong>{dailyDetail.total}개</strong>
+                                <strong>{detail.total}개</strong>
                             </div>
-                            {/* 완료 */}
+
+                            {/* 완료 비율 */}
                             <div className="detail-bar">
                                 <span>완료</span>
                                 <div className="bar-bg">
@@ -166,15 +198,16 @@ const StatisticsContentPage = () => {
                                         className="bar-fill"
                                         style={{
                                             width:
-                                                dailyDetail.total > 0
-                                                    ? `${(dailyDetail.completed / dailyDetail.total) * 100}%`
+                                                detail.total > 0
+                                                    ? `${(detail.completed / detail.total) * 100}%`
                                                     : "0%",
                                         }}
                                     />
                                 </div>
-                                <strong>{dailyDetail.completed}개</strong>
+                                <strong>{detail.completed}개</strong>
                             </div>
-                            {/* 실패 */}
+
+                            {/* 실패 비율 */}
                             <div className="detail-bar">
                                 <span>실패</span>
                                 <div className="bar-bg">
@@ -182,17 +215,18 @@ const StatisticsContentPage = () => {
                                         className="bar-fill"
                                         style={{
                                             width:
-                                                dailyDetail.total > 0
-                                                    ? `${(dailyDetail.failed / dailyDetail.total) * 100}%`
+                                                detail.total > 0
+                                                    ? `${(detail.failed / detail.total) * 100}%`
                                                     : "0%",
                                         }}
                                     />
                                 </div>
-                                <strong>{dailyDetail.failed}개</strong>
+                                <strong>{detail.failed}개</strong>
                             </div>
                         </div>
                     </div>
                 )}
+
 
                 {/* ─────────── 전체 사용자 통계 섹션 ─────────── */}
 

@@ -28,12 +28,14 @@ const StatisticsBarChart = ({
             <div className="bar-chart">
                 {data.map((m, i) => (
                     <div
-                        key={i}
-                        className="bar-wrapper"
-                        onClick={() =>
-                            onBarClick(viewBy === "day" ? Number(m.label) : null)
-                        }
-                    >
+                                    key={i}
+                                    className="bar-wrapper"
+                                    onClick={() => {
+                                        // 5월 같은 한글 레이블에서도 숫자만 파싱
+                                        const x = parseInt(m.label, 10);
+                                        onBarClick(x);
+                                    }}
+                                    >
                         <div
                             className="bar"
                             style={{
