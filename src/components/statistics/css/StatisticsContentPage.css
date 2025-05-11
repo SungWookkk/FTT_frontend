@@ -245,7 +245,7 @@
 }
 .user-stats-container{
     position: relative;
-    top: -400px;
+    top: -336px;
     right: 64px;
 }
 .statistics-chart--day {
@@ -253,22 +253,21 @@
 }
 /* 차트 컨테이너도 바닥부터 align */
 .statistics-chart--day .bar-chart {
-    /* 이미 기본 .bar-chart에 align-items:flex-end가 있으나, 안전차원에서 재확인 */
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;        /* 수정: 바닥 기준 정렬 */
+    align-items: flex-end;       /
 }
 
 /* ───────── day 전용: bar-wrapper flex 레이아웃으로 재정의 ───────── */
 .statistics-chart--day .bar-wrapper {
     /* 기존 display:inline-block 삭제 */
 
-    display: flex;                /* 수정: flex 컨테이너로 변경 */
-    flex-direction: column;       /* 수직정렬 */
-    justify-content: flex-end;    /* 바닥(border-bottom)부터 쌓이게 */
-    align-items: center;          /* 가운데 정렬 */
-    margin: 0 2px;                /* 간격 유지 */
-    height: 100%;                 /* wrapper 전체 높이 사용 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 2px;
+    height: 100%;
 }
 .statistics-chart--day .bar {
     width: 8px;
@@ -276,8 +275,7 @@
 }
 /* 라벨 마진 조정: 바 바로 아래에 붙도록 */
 .statistics-chart--day .bar-label {
-    margin-top: 4px;              /* 기존 margin-top 유지 */
-    /* 만약 너무 떴다면 margin-bottom 조정도 가능합니다 */
+    margin-top: 4px;
 }
 /* 스크롤바 (WebKit) */
 .statistics-chart--day::-webkit-scrollbar {
