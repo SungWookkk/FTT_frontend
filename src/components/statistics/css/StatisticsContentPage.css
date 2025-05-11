@@ -245,7 +245,7 @@
 }
 .user-stats-container{
     position: relative;
-    top: -283px;
+    top: -400px;
     right: 64px;
 }
 .statistics-chart--day {
@@ -286,4 +286,48 @@
 .statistics-chart--day::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.2);
     border-radius: 3px;
+}
+.daily-detail-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #0000000d;
+    margin: 24px 24px 0;
+    padding: 16px;
+    position: relative;
+    left: 472px;
+    width: 1200px;
+}
+
+.daily-detail-container h4 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.detail-bars {
+    display: flex;
+    gap: 16px;
+}
+
+.detail-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bar-bg {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 4px 0 8px;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2a56c6, #5b8def);
+    transition: width 0.4s;
 }

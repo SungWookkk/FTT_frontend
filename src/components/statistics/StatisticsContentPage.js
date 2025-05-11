@@ -19,6 +19,9 @@ const StatisticsContentPage = () => {
     });
     const [dailyData, setDailyData]     = useState([]);
     const [viewBy, setViewBy] = useState("month");
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [dailyDetail, setDailyDetail] = useState(null);
+
 
     useEffect(() => {
         if (!token) return; // 로그인 전엔 호출하지 않음
@@ -84,6 +87,19 @@ const StatisticsContentPage = () => {
         return monthlyData;
     }, [viewBy, dailyData, monthlyData]);
 
+    // 막대 클릭 핸들러
+    const handleBarClick = (day) => {
+        if (!day) return;
+        setSelectedDay(day);
+        const now = new Date();
+        axios.get(
+            `/api/statistics/daily/detail?year=${now.getFullYear()}&month=${now.getMonth()+1}&day=${day}`,
+            { headers: { Authorization: `Bearer ${auth.token}` } }
+        )
+            .then(res => setDailyDetail(res.data))
+            .catch(err => console.error("daily detail 에러:", err));
+    };
+
 
     return (
         <div className="dashboard-content">
@@ -127,7 +143,57 @@ const StatisticsContentPage = () => {
                     data={displayedData}
                     viewBy={viewBy}
                     onViewByChange={setViewBy}
+                    onBarClick={handleBarClick}  // 추가
                 />
+                {/* ───── 하단 디테일 바 ───── */}
+                {dailyDetail && (
+                    <div className="daily-detail-container">
+                        <h4>{selectedDay}일 작업 상세</h4>
+                        <div className="detail-bars">
+                            {/* 전체 생성 */}
+                            <div className="detail-bar">
+                                <span>생성된 Task</span>
+                                <div className="bar-bg">
+                                    <div className="bar-fill" style={{ width: "100%" }} />
+                                </div>
+                                <strong>{dailyDetail.total}개</strong>
+                            </div>
+                            {/* 완료 */}
+                            <div className="detail-bar">
+                                <span>완료</span>
+                                <div className="bar-bg">
+                                    <div
+                                        className="bar-fill"
+                                        style={{
+                                            width:
+                                                dailyDetail.total > 0
+                                                    ? `${(dailyDetail.completed / dailyDetail.total) * 100}%`
+                                                    : "0%",
+                                        }}
+                                    />
+                                </div>
+                                <strong>{dailyDetail.completed}개</strong>
+                            </div>
+                            {/* 실패 */}
+                            <div className="detail-bar">
+                                <span>실패</span>
+                                <div className="bar-bg">
+                                    <div
+                                        className="bar-fill"
+                                        style={{
+                                            width:
+                                                dailyDetail.total > 0
+                                                    ? `${(dailyDetail.failed / dailyDetail.total) * 100}%`
+                                                    : "0%",
+                                        }}
+                                    />
+                                </div>
+                                <strong>{dailyDetail.failed}개</strong>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* ─────────── 전체 사용자 통계 섹션 ─────────── */}
 
                 <div className="user-stats-container">

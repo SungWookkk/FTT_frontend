@@ -2,7 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import "../statistics/css/StatisticsContentPage.css";
 
-const StatisticsBarChart = ({ data, title, viewBy, onViewByChange }) => {
+const StatisticsBarChart = ({
+                                data,
+                                title,
+                                viewBy,
+                                onViewByChange,
+                                onBarClick,
+                            }) => {
     const maxVal = data.length ? Math.max(...data.map(x => x.value)) : 0;
 
     return (
@@ -18,12 +24,21 @@ const StatisticsBarChart = ({ data, title, viewBy, onViewByChange }) => {
                     <option value="day">Day</option>
                 </select>
             </div>
+
             <div className="bar-chart">
                 {data.map((m, i) => (
-                    <div key={i} className="bar-wrapper">
+                    <div
+                        key={i}
+                        className="bar-wrapper"
+                        onClick={() =>
+                            onBarClick(viewBy === "day" ? Number(m.label) : null)
+                        }
+                    >
                         <div
                             className="bar"
-                            style={{ height: `${maxVal ? (m.value/maxVal)*100 : 0}%` }}
+                            style={{
+                                height: `${maxVal ? (m.value / maxVal) * 100 : 0}%`,
+                            }}
                         />
                         <span className="bar-label">{m.label}</span>
                     </div>
@@ -34,11 +49,20 @@ const StatisticsBarChart = ({ data, title, viewBy, onViewByChange }) => {
 };
 
 StatisticsBarChart.propTypes = {
-    data: PropTypes.array.isRequired,
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            value: PropTypes.number.isRequired,
+        })
+    ).isRequired,
     title: PropTypes.string,
-    viewBy: PropTypes.oneOf(["month","day"]).isRequired,
-    onViewByChange: PropTypes.func.isRequired
+    viewBy: PropTypes.oneOf(["month", "day"]).isRequired,
+    onViewByChange: PropTypes.func.isRequired,
+    onBarClick: PropTypes.func.isRequired,
 };
-StatisticsBarChart.defaultProps = { title: "작업 시작 통계" };
+
+StatisticsBarChart.defaultProps = {
+    title: "작업 시작 통계",
+};
 
 export default StatisticsBarChart;
