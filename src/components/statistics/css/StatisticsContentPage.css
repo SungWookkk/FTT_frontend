@@ -255,13 +255,11 @@
 .statistics-chart--day .bar-chart {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;       /
+    align-items: flex-end;
 }
 
 /* ───────── day 전용: bar-wrapper flex 레이아웃으로 재정의 ───────── */
 .statistics-chart--day .bar-wrapper {
-    /* 기존 display:inline-block 삭제 */
-
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
