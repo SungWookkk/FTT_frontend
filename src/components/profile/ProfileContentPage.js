@@ -13,6 +13,7 @@ import {useParams} from "react-router-dom";
 
 const ProfileContentPage = ({ ownerId, writerId }) => {
     const { auth, setAuth } = useAuth();
+    const token = auth?.token;
     const fileInputRef = useRef(null);
     const [profileImage, setProfileImage] = useState("");
 
@@ -35,6 +36,9 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
 
     // 라우트 파라미터에서 username 또는 ownerId를 추출
     const { username: routeUsername, ownerId: routeOwnerId } = useParams();
+
+    // 4가지 통계(작성한 작업, 완료한 작업, 실패한 작업, 순위) 담을 배열
+    const [overviewData, setOverviewData] = useState([]);
 
     //--------------------- 사용자 닉네임 가져오기 ---------------
     useEffect(() => {
@@ -174,6 +178,22 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
     // 로그인한 사용자의 id와 프로필 페이지의 사용자 id를 비교
     const isOwner = parseInt(userId) === profileUserId;
 
+    useEffect(() => {
+        if (!token) return;
+        axios
+            .get("/api/statistics/overview", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((res) => {
+                // overviewData는 5개 항목이 오는데,
+                // 첫 번째(평균 처리 시간)만 빼고 나머지 4개를 사용합니다.
+                const stats = res.data.filter(
+                    (dto) => dto.title !== "작업 처리 평균 시간"
+                );
+                setOverviewData(stats);
+            })
+            .catch((err) => console.error("통계 가져오기 실패:", err));
+    }, [token]);
 
     return (
         <div className="dashboard-content">
@@ -254,22 +274,12 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
 
                         {/* 하단 통계 영역 (4개 칸) */}
                         <div className="bottom-stats-container">
-                            <div className="stat-box">
-                                <div className="stat-value">1542</div>
-                                <div className="stat-label">생성한 작업 수</div>
-                            </div>
-                            <div className="stat-box">
-                                <div className="stat-value">1350</div>
-                                <div className="stat-label">완료한 작업 수</div>
-                            </div>
-                            <div className="stat-box">
-                                <div className="stat-value">182</div>
-                                <div className="stat-label">실패한 작업 수</div>
-                            </div>
-                            <div className="stat-box">
-                                <div className="stat-value">2849위</div>
-                                <div className="stat-label">작업에 따른 사용자 랭킹</div>
-                            </div>
+                            {overviewData.map((stat, idx) => (
+                                <div key={idx} className="stat-box">
+                                    <div className="stat-value">{stat.value}</div>
+                                    <div className="stat-label">{stat.title}</div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
