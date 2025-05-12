@@ -105,6 +105,37 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
 
     // Task 저장: 백엔드와 통신
     const handleSave = () => {
+        // ────────────────────────────────────────────────
+        // 필수 입력 검증 추가 (작업 이름 & 작업 내용)
+        // ────────────────────────────────────────────────
+        if (!taskName.trim() || !content.trim()) {
+            alert("작업 이름과 작업 내용은 필수로 입력을 해야합니다");
+            return; // 이름 또는 내용이 없으면 저장 중단
+        }
+
+        //  시작일이 오늘보다 이전인지 체크
+        if (startDate) {
+            // 오늘 날짜(시간 제거)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // 선택된 시작일(시간 제거)
+            const sDate = new Date(
+                startDate.getFullYear(),
+                startDate.getMonth(),
+                startDate.getDate()
+            );
+
+            if (sDate < today) {
+                // YYYY-MM-DD 포맷으로 문자열 만들기
+                const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                const msg = `오늘은 ${fmt(today)}입니다.\n정말 ${fmt(sDate)}로 작업을 생성하시겠습니까?`;
+                if (!window.confirm(msg)) {
+                    return; // "취소" 시 저장 중단
+                }
+            }
+        }
+
         // --------------------
         //  유효성 검사 추가
         // --------------------
