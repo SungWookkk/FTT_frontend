@@ -4,7 +4,6 @@ import {AuthProvider, useAuth} from "./Auth/AuthContext";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import Dashboard from "./components/dashboard/Dashboard";
-import MainNavigation from "./MainNavigation";
 import "./App.css";
 import TodoList from "./components/todolist/TodoList";
 import TodoListWritePage from "./components/todolist/TodoListWritePage";
@@ -84,7 +83,6 @@ const App = () => {
             {/* 전역 Presence 연결은 이 컴포넌트 하나로 관리 */}
             <PresenceManager />
             <Router>
-                <MainNavigation/>
                 <div className="app-container">
                     <Switch>
                         <Route exact path="/" component={Login}/>
