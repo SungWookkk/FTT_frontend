@@ -195,14 +195,17 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
             .catch((err) => console.error("통계 가져오기 실패:", err));
     }, [token]);
 
-    return (
-        <div className="dashboard-content">
-            {/* 대시보드 헤더 */}
-            <div className="dashboard-header">
-                <div className="dashboard-title">
-                    <span className="title-text">프로필</span>
-                </div>
-            </div>
+        return (
+                <div className="dashboard-content">
+                        {/* ─── 대시보드 헤더 (타이틀 + 검색) ─── */}
+                        <div className="dashboard-header">
+                            <div className="dashboard-title">
+                                <span className="title-text">프로필</span>
+                            </div>
+                            <div className="profile-search-container">
+                                <ProfileSearchComponent />
+                            </div>
+                        </div>
 
             {/* 알림 배너 */}
             <div className="alert-banner">
@@ -342,7 +345,6 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
                 </div>
             )}
             <BadgeTestPanel/>
-            <ProfileSearchComponent/>
         </div>
     );
 };

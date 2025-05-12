@@ -88,7 +88,15 @@
 }
 
 
-
+p.introduction {
+    position: absolute;
+    top: 74px;
+    left: 160px;
+    width: 500px;
+    white-space: normal;
+    word-break: break-word;
+    word-wrap: break-word;
+}
 /* 좋아하는 것 */
 .favorite {
     position: absolute;
@@ -437,5 +445,48 @@
 /* 방명록 영역 (가로 전체) */
 .guestbook-section {
     width: 100%;
-    /* Guestbook 자체에서 max-width를 갖도록 해도 됨 */
+}
+
+/* ─── 검색창 컨테이너 ─── */
+.profile-search-container {
+    flex: 1;
+    display: flex;
+    justify-content: right;
+    margin-right: 150px;
+}
+
+/* ─── 검색 폼 ─── */
+.profile-search-form {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #fafafa;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ─── 검색 입력창 ─── */
+.profile-search-input {
+    flex: 1;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    background: transparent;
+}
+
+/* ─── 검색 버튼 ─── */
+.profile-search-btn {
+    border: none;
+    background: #636ae8;
+    color: #fff;
+    padding: 0 12px;
+    height: 36px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.profile-search-btn:hover {
+    background: #5056d6;
 }
