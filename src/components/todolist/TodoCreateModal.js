@@ -136,6 +136,14 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
         console.log("메모:", memo);
         console.log("첨부파일:", uploadedFiles);
 
+        // 1) helper 함수 추가: 로컬 Date → "yyyy-MM-dd" 문자열
+        const formatLocalDate = date => {
+            const y   = date.getFullYear();
+            const m   = String(date.getMonth() + 1).padStart(2, '0');
+            const d   = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        };
+
         // 2) 백엔드로 Task 생성 요청 (파일 업로드 제외)
         const token = localStorage.getItem("token");
         const userId = localStorage.getItem("userId");
@@ -143,8 +151,8 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
             title: taskName,
             description: content,
             priority: priority,
-            startDate: startDate ? startDate.toISOString().slice(0, 10) : null,
-            dueDate: dueDate ? dueDate.toISOString().slice(0, 10) : null,
+            startDate: startDate ? formatLocalDate(startDate) : null,
+            dueDate:   dueDate   ? formatLocalDate(dueDate)   : null,
             assignee: assignee,
             memo: memo,
             userId: userId
