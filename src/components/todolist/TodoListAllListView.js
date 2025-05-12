@@ -473,7 +473,6 @@ function TodoListAllListView() {
                         <div className="tab-item active" onClick={handleAllListViewClick}>
                             전체 목록
                         </div>
-                        <div className="tab-item">팀</div>
                     </div>
                 </div>
 

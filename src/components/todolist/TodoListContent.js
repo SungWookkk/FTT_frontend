@@ -592,7 +592,6 @@ const TodoListContent = () => {
                         <div className="tab-item" onClick={handleAllListViewClick}>
                             전체 목록
                         </div>
-                        <div className="tab-item">팀</div>
                     </div>
 
                 </div>

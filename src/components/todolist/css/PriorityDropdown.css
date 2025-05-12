@@ -3,6 +3,8 @@
     position: relative;
     display: inline-block;
     cursor: pointer;
+    overflow: visible;
+    z-index: 1000;
 }
 .priority-pill {
     display: inline-flex;
@@ -49,10 +51,9 @@
     border-radius: 8px;
     padding: 6px 0;
     min-width: 160px;
-    z-index: 999;
-    animation: fadeIn 0.2s ease;
-    opacity: 0;
-    animation-fill-mode: forwards;
+    opacity: 1;
+    animation: fadeIn 0.2s ease forwards;
+    z-index: 1001;
 }
 @keyframes fadeIn {
     0%   { opacity: 0; transform: translateY(-4px); }
