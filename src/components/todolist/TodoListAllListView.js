@@ -584,7 +584,13 @@ function TodoListAllListView() {
                                             )}
 
                                             <div className="all-list-task-title">{task.title}</div>
-                                            <div className="all-list-task-desc">{task.description}</div>
+                                            <div
+                                              className="all-list-task-desc"
+                                              dangerouslySetInnerHTML={{
+                                                __html: task.description.replace(/^<p>([\s\S]*)<\/p>$/, "$1")
+                                              }}
+                                            />
+
                                         </div>
                                     </CSSTransition>
                                 );
@@ -659,7 +665,13 @@ function TodoListAllListView() {
                                 </div>
                                 <div className="detail-text">
                                     <span className="detail-label">설명</span>
-                                    <span className="detail-value">{selectedTask.description}</span>
+                                    <span className="detail-value">
+                                      {
+                                          selectedTask.description
+                                            .replace(/^<p>([\s\S]*)<\/p>$/, "$1")
+                                            .replace(/<\/?p>/g, "")
+                                        }
+                                    </span>
                                 </div>
                             </div>
 
@@ -1017,13 +1029,17 @@ function TodoListAllListView() {
                             </button>
                         </div>
                         <ReactQuill
-                            theme="snow"
-                            value={tempHTML}
-                            onChange={setTempHTML}
-                            modules={quillModules}
-                            formats={quillFormats}
-                            style={{ height: "300px", marginBottom: "20px" }}
-                        />
+                               theme="snow"
+                               value={tempHTML}
+                               onChange={(html) => {
+                                 // 외곽에만 감싸진 <p>…</p> 태그만 제거
+                                     const stripped = html.replace(/^<p>(.*)<\/p>$/g, "$1");
+                                 setTempHTML(stripped);
+                               }}
+                               modules={quillModules}
+                               formats={quillFormats}
+                               style={{ height: "300px", marginBottom: "20px" }}
+                             />
                         <div className="editor-footer">
                             <button className="btn btn-edit" onClick={closeEditor}>
                                 취소

@@ -46,10 +46,10 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
     const [daysLeft, setDaysLeft] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const fileInputRef = useRef(null);
-
+    const [contentHtml, setContentHtml] = useState("");  // 최종 저장된 HTML
+    const [contentText, setContentText] = useState("");  // 순수 텍스트(검증용)
     // Quill 에디터 모달 상태
     const [isEditorOpen, setIsEditorOpen] = useState(false);
-    const [tempHTML, setTempHTML] = useState(content);
 
     // 파일 첨부 처리
     const handleFileChange = (e) => {
@@ -94,12 +94,12 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
 
     // Quill 에디터 열기/닫기
     const openEditor = () => {
-        setTempHTML(content);
+        setContentHtml(content);
         setIsEditorOpen(true);
     };
     const closeEditor = () => setIsEditorOpen(false);
     const saveEditorContent = () => {
-        setContent(tempHTML);
+        setContent(contentHtml);
         setIsEditorOpen(false);
     };
 
@@ -108,7 +108,7 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
         // ────────────────────────────────────────────────
         // 필수 입력 검증 추가 (작업 이름 & 작업 내용)
         // ────────────────────────────────────────────────
-        if (!taskName.trim() || !content.trim()) {
+        if (!taskName.trim() || !contentText) {
             alert("작업 이름과 작업 내용은 필수로 입력을 해야합니다");
             return; // 이름 또는 내용이 없으면 저장 중단
         }
@@ -180,7 +180,7 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
         const userId = localStorage.getItem("userId");
         const payload = {
             title: taskName,
-            description: content,
+            description: contentHtml,
             priority: priority,
             startDate: startDate ? formatLocalDate(startDate) : null,
             dueDate:   dueDate   ? formatLocalDate(dueDate)   : null,
@@ -278,7 +278,7 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
                                     <span className="detail-label">작업 내용</span>
                                     <span
                                         className="detail-value"
-                                        dangerouslySetInnerHTML={{ __html: content }}
+                                        dangerouslySetInnerHTML={{ __html: contentHtml }}
                                     />
                                 </div>
                             </div>
@@ -563,8 +563,11 @@ const TodoCreateModal = ({ onClose, onTaskCreated }) => {
                             </div>
                             <ReactQuill
                                 theme="snow"
-                                value={tempHTML}
-                                onChange={setTempHTML}
+                                value={contentHtml}
+                               onChange={(html, delta, source, editor) => {
+                                   setContentHtml(html);
+                                   setContentText(editor.getText().trim());
+                               }}
                                 modules={quillModules}
                                 formats={quillFormats}
                                 style={{ height: "300px", marginBottom: "20px" }}
