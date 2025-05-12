@@ -1,71 +1,125 @@
-/* 오버레이: 화면 전체 반투명 배경 */
-.detail-modal-overlay {
+/* 오버레이: 화면 전체 반투명 배경 + 부드러운 페이드인 애니메이션 */
+.detail-modal-overlay2 {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 100;
+    animation: fadeIn2 0.3s ease-out;
 }
 
-/* 모달 박스 */
-.detail-modal-container {
-    background-color: #fff;
-    width: 500px;
-    max-height: 80vh;
+@keyframes fadeIn2 {
+    from { background: rgba(0, 0, 0, 0); }
+    to   { background: rgba(0, 0, 0, 0.6); }
+}
+
+/* 모달 박스: 그라디언트 배경 + 더 깊어진 그림자 + 슬라이드 업 애니메이션 */
+.detail-modal-container2 {
+    background: linear-gradient(135deg, #fafafa, #f0f0f5);
+    width: 520px;
+    max-height: 85vh;
     overflow-y: auto;
-    border-radius: 8px;
+    border-radius: 12px;
     position: relative;
-    padding: 20px 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 24px 32px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    animation: slideUp2 0.4s ease-out forwards;
 }
 
-/* 닫기 버튼 (빨간 동그라미 X) */
-.detail-close-button {
+@keyframes slideUp2 {
+    to { transform: translateY(0); }
+}
+
+/* 닫기 버튼: 호버 시 회전 + 컬러 변화 */
+.detail-close-button2 {
     position: absolute;
     top: 16px; right: 16px;
-    background-color: #ff4c4c;
+    background-color: #ff5a5f;
     color: #fff;
     border: none;
     border-radius: 50%;
-    width: 28px; height: 28px;
-    font-size: 1rem;
-    line-height: 28px;
-    text-align: center;
+    width: 32px; height: 32px;
+    font-size: 1.1rem;
+    line-height: 32px;
     cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.detail-close-button2:hover {
+    background-color: #e04848;
+    transform: rotate(90deg);
 }
 
-/* 모달 제목 */
-.detail-modal-title {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 20px;
+/* 모달 제목: 아래에 포인트 컬러 밑줄 추가 */
+.detail-modal-title2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 24px;
     color: #2a2e34;
+    position: relative;
+}
+.detail-modal-title2::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -6px;
+    width: 60px; height: 4px;
+    background: #636ae8;
+    border-radius: 2px;
 }
 
-/* 각 정보 필드 */
-.detail-field {
-    margin-bottom: 16px;
+/* 각 정보 필드: 플로팅 레이블 + 입력창 같은 박스 */
+.detail-field2 {
+    margin-bottom: 20px;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+.detail-field2:hover {
+    transform: translateX(4px);
 }
 
-/* 필드 레이블 */
-.detail-field label {
+/* 필드 레이블: 플로팅 스타일 */
+.detail-field2 label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 6px;
     color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* 필드 값 */
-.detail-value {
-    background-color: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
+/* 필드 값: 강조된 테두리 + 인셋 그림자 */
+.detail-value2 {
+    display: block;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
     color: #333;
     line-height: 1.4;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.detail-value2:hover {
+    border-color: #636ae8;
+    box-shadow: inset 0 2px 8px rgba(99,106,232,0.2);
+}
+
+/* 스크롤바 커스텀 (Webkit) */
+.detail-modal-container2::-webkit-scrollbar {
+    width: 8px;
+}
+.detail-modal-container2::-webkit-scrollbar-track {
+    background: transparent;
+}
+.detail-modal-container2::-webkit-scrollbar-thumb {
+    background: rgba(99,106,232,0.4);
+    border-radius: 4px;
+}
+.detail-modal-container2::-webkit-scrollbar-thumb:hover {
+    background: rgba(99,106,232,0.6);
 }
