@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import "../team/css/TeamSearchModal.css";
 import TeamApplyModal from "./TeamApplyModal";
+import TeamDetailModal from "./TeamDetailModal";
 
 const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
     // 검색어 및 선택된 카테고리 상태
@@ -15,6 +16,9 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
     // 팀 신청 모달 관련 상태
     const [applyModalOpen, setApplyModalOpen] = useState(false);
     const [selectedTeamForApply, setSelectedTeamForApply] = useState(null);
+    // 모달 오픈 상태 & 선택된 팀
+    const [detailOpen, setDetailOpen] = useState(false);
+    const [selectedTeamDetail, setSelectedTeamDetail] = useState(null);
 
     console.debug("TeamSearchModal - teamsData:", teamsData);
     console.debug("TeamSearchModal - currentUserId:", currentUserId);
@@ -68,6 +72,12 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
     };
 
     if (!isOpen) return null;
+
+    // 행 클릭 핸들러
+    const handleRowClick = (team) => {
+        setSelectedTeamDetail(team);
+        setDetailOpen(true);
+    };
 
     return (
         <>
@@ -136,7 +146,11 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
                             {sortedTeams
                                 .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                                 .map((team, idx) => (
-                                    <tr key={team.id} style={{ cursor: "pointer" }}>
+                                    <tr
+                                         key={team.id}
+                                         style={{ cursor: "pointer" }}
+                                         onClick={() => handleRowClick(team)}
+                                       >
                                         <td>{(currentPage - 1) * pageSize + idx + 1}</td>
                                         <td>{team.teamName}</td>
                                         <td>{team.description}</td>
@@ -183,6 +197,14 @@ const TeamSearchModal = ({ isOpen, onClose, teamsData, currentUserId }) => {
                     userId={currentUserId} // AuthContext에서 전달받은 currentUserId
                 />
             )}
+
+            {/* 팀 상세 모달 */}
+             <TeamDetailModal
+               isOpen={detailOpen}
+               onClose={() => setDetailOpen(false)}
+               team={selectedTeamDetail}
+            />
+
         </>
     );
 };
