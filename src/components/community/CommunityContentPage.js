@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {NavLink, useHistory} from "react-router-dom";
 import "../community/css/CommunityContentPage.css";
 import "../community/css/CommunityBestPost.css";
@@ -14,12 +14,52 @@ function CommunityContentPage() {
     const [allPosts, setAllPosts] = useState([]);
     const { auth } = useAuth();
     const history = useHistory();
+
+
+    // 1) 서버에서 전체 게시글 조회 & 조회수 순 정렬
+    const fetchAllPosts = useCallback(() => {
+        if (!auth.token) return;
+        axios
+            .get("/api/community/posts", {
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                    "X-User-Id": auth.userId
+                }
+            })
+            .then(res => {
+                const sortedByViews = res.data
+                    .slice()
+                    .sort((a, b) => b.viewsCount - a.viewsCount);
+                setAllPosts(sortedByViews);
+            })
+            .catch(console.error);
+    }, [auth.token, auth.userId]);
+
+    useEffect(() => {
+        fetchAllPosts();
+    }, [fetchAllPosts]);
+
     const openCreateModal = () => setIsCreateModalOpen(true);
     const closeCreateModal = () => setIsCreateModalOpen(false);
-    const handleSavePost = ({ title, content }) => {
-        // TODO: axios.post('/api/community/posts', { title, content })
-        //       .then(...)
-        closeCreateModal();
+
+    // 3) 새 글 저장 → API 호출 후 목록 갱신
+    const handleSavePost = async ({ title, content, category }) => {
+        try {
+            await axios.post(
+                "/api/community/posts",
+                { title, content, category },
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`,
+                        "X-User-Id": auth.userId
+                    }
+                }
+            );
+            closeCreateModal();
+            fetchAllPosts();
+        } catch (err) {
+            console.error("게시글 생성 실패:", err);
+        }
     };
 
     useEffect(() => {
@@ -127,6 +167,7 @@ function CommunityContentPage() {
                 </p>
             </div>
             <CommunityLivePost/>
+            {/* 생성 모달 */}
             <CommunityBoardCreateModal
                 isOpen={isCreateModalOpen}
                 onClose={closeCreateModal}
