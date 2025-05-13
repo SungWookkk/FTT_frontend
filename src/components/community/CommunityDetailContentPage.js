@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import {NavLink, useHistory, useParams} from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "../community/css/CommunityDetailContentPage.css";
 import CommunityBoardCreateModal from "./CommunityBoardCreateModal";
@@ -9,7 +9,7 @@ import defaultUser from "../../Auth/css/img/default-user.svg"; // 기본 프로�
 function CommunityDetailContentPage() {
     const { no } = useParams();
     const { auth } = useAuth();
-
+    const history = useHistory();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
@@ -164,6 +164,8 @@ function CommunityDetailContentPage() {
                             src={post.authorProfileImage || defaultUser}
                             alt="avatar"
                             className="avatar-placeholder"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => history.push(`/profile/${post.authorName}`)}
                         />
                         {post.authorBadgeImageUrl && (
                             <img
@@ -173,17 +175,25 @@ function CommunityDetailContentPage() {
                             />
                         )}
                         <div className="post-info">
-                        <span>작성자: <strong>{renderAuthorName(post.authorName)}</strong></span>
-                        <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
-                        <span>번호: {post.id}</span>
+                       <span>
+                            작성자:&nbsp;
+                                       <strong
+                                           style={{cursor: 'pointer'}}
+                                           onClick={() => history.push(`/profile/${post.authorName}`)}
+                                       >
+                              {renderAuthorName(post.authorName)}
+                            </strong>
+                          </span>
+                            <span>작성일: {new Date(post.createdAt).toISOString().slice(0, 10)}</span>
+                            <span>번호: {post.id}</span>
                         </div>
                     </div>
-                    {/* ↓ 수정: split 대신 HTML 렌더링 */}
+                    {/*  split 대신 HTML 렌더링 */}
                     <div className="detail-body"
-                         dangerouslySetInnerHTML={{ __html: post.content }}
+                         dangerouslySetInnerHTML={{__html: post.content}}
                     />
                     <div className="detail-actions">
-                        {/* 좋아요 토글 버튼 */}
+                    {/* 좋아요 토글 버튼 */}
                         <button
                             className="btn-like"
                             onClick={handleLikeToggle}
@@ -201,16 +211,21 @@ function CommunityDetailContentPage() {
                         {comments.map(c => (
                             <li key={c.id} className="comment-item">
                                 <div className="comment-header">
+                                    {/* 수정: 댓글 작성자 클릭 이동 */}
                                     <img
                                         src={c.authorProfileImage || defaultUser}
                                         alt="avatar"
                                         className="avatar-placeholder"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => history.push(`/profile/${c.authorName}`)}
                                     />
                                     {c.authorBadgeUrl && (
                                         <img
                                             src={c.authorBadgeUrl}
                                             alt="badge"
                                             className="badge-icon-lg"
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => history.push(`/profile/${c.authorName}`)}
                                         />
                                     )}
                                     <div className="comment-meta-info">
@@ -252,18 +267,27 @@ function CommunityDetailContentPage() {
                                                         src={r.authorProfileImage || defaultUser}
                                                         alt="avatar"
                                                         className="reply-avatar"
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={() => history.push(`/profile/${r.authorName}`)}
                                                     />
                                                     {r.authorBadgeUrl && (
                                                         <img
                                                             src={r.authorBadgeUrl}
                                                             alt="badge"
                                                             className="badge-icon-lg"
+                                                            style={{ cursor: 'pointer' }}
+                                                            onClick={() => history.push(`/profile/${r.authorName}`)}
                                                         />
                                                     )}
                                                     <div className="reply-meta-info">
-                                                        <span
-                                                            className="reply-author">{renderAuthorName(r.authorName)}</span>
-                                                        <span
+                                                    <span
+                                                        className="reply-author"
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={() => history.push(`/profile/${r.authorName}`)}
+                                                    >
+                                                      {renderAuthorName(r.authorName)}
+                                                    </span>
+                                                                                <span
                                                             className="reply-time">{new Date(r.createdAt).toLocaleString()}</span>
                                                     </div>
                                                 </div>
