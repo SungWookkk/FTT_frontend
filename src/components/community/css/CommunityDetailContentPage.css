@@ -289,3 +289,7 @@
     display: flex;
     right: 10px;
 }
+.detail-body img {
+    max-width: 50%;
+    height: auto;
+}

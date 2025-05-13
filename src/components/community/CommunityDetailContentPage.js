@@ -178,11 +178,10 @@ function CommunityDetailContentPage() {
                         <span>번호: {post.id}</span>
                         </div>
                     </div>
-                    <div className="detail-body">
-                        {post.content.split("\n").map((line, i) => (
-                            <p key={i}>{line}</p>
-                        ))}
-                    </div>
+                    {/* ↓ 수정: split 대신 HTML 렌더링 */}
+                    <div className="detail-body"
+                         dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
                     <div className="detail-actions">
                         {/* 좋아요 토글 버튼 */}
                         <button
