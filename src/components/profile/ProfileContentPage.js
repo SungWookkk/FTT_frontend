@@ -287,7 +287,7 @@ const ProfileContentPage = ({ ownerId, writerId }) => {
                     </div>
 
                     {/* 커뮤니티 게시글 목록 (프로필 카드 하단) */}
-                    <ProfileCommunity/>
+                    <ProfileCommunity userId={profileUserId} />
                 </div>
 
                 {/* ------ 가운데 세로 구분선 ------ */}
