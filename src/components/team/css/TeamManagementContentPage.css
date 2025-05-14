@@ -1,3 +1,8 @@
+.dashboard-content {
+    flex-wrap: wrap;
+}
+
+/* 관리 배너 */
 .management-alert-banner {
     background-color: #f2f1fe;
     height: 44px;
@@ -9,322 +14,149 @@
     width: 100%;
     position: relative;
 }
-
-/* 가운데 표시할 텍스트 */
 .management-alert-text {
-    font-size: 13.7px;
-    font-family: "Inter", sans-serif;
-    color: #2a2e34;
-    line-height: 16px;
-    white-space: normal;
-    width: 100%;
-    text-align: center;
-    margin: 0;
-    position: relative;
-    right: 70px;
+    font-size: 13.7px; font-family: "Inter",sans-serif;
+    color: #2a2e34; line-height: 16px;
+    width: 100%; text-align: center; margin: 0;
+    position: relative; right: 70px;
 }
-
-/* 강조 텍스트(굵게) */
-.management-alert-text .management-highlight {
-    font-weight: 700;
-}
-
-/* 일반 텍스트 */
-.management-alert-text .management-normal {
-    font-weight: 400;
-}
-
-/* "자세히 보기" 버튼 - 우측 상단 */
+.management-alert-text .management-highlight { font-weight: 700; }
+.management-alert-text .management-normal { font-weight: 400; }
 .management-toggle-btn {
-    position: relative;
-    right: 715px;
-    background: transparent;
-    border: none;
-    color: #636ae8;
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 14px;
-    font-family: "Inter", sans-serif;
-    font-weight: 700;
-    line-height: 16px;
-    padding: 4px 8px;
-    transition: color 0.2s ease;
+    position: relative; right: 715px;
+    background: transparent; border: none;
+    color: #636ae8; cursor: pointer;
+    font-size: 14px; font-family: "Inter",sans-serif;
+    font-weight: 700; line-height: 16px;
+    padding: 4px 8px; transition: color .2s;
 }
+.management-toggle-btn:hover { color: #4f57c7; }
 
-.management-toggle-btn:hover {
-    color: #4f57c7;
-}
-
-/* 모달 오버레이 */
+/* 모달 */
 .management-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
+    position: fixed; top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.5);
+    display:flex; justify-content:center; align-items:center;
+    z-index:99999;
 }
-
-/* 모달 컨테이너 */
 .management-modal-container {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px 24px;
-    width: 400px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    position: relative;
+    background:#fff; border-radius:8px; padding:20px 24px;
+    width:400px; box-shadow:0 4px 12px rgba(0,0,0,0.25);
+    position:relative;
 }
-
-/* 모달 닫기 버튼 */
 .management-modal-close-btn {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: #ff4c4c;
-    border: none;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    z-index: 100000;
+    position:absolute; top:14px; right:14px;
+    background:#ff4c4c; border:none; color:#fff;
+    font-weight:bold; border-radius:50%;
+    width:30px; height:30px; cursor:pointer; z-index:100000;
 }
-
-/* 모달 제목 */
-.management-modal-title {
-    margin-bottom: 16px;
-    font-size: 1.3rem;
-    color: #333;
-}
-
-/* 상세 기능 목록 */
+.management-modal-title { margin-bottom:16px; font-size:1.3rem; color:#333; }
 .management-details-list {
-    list-style: disc;
-    padding-left: 20px;
-    color: #444;
-    font-size: 1rem;
-    margin-top: 8px;
+    list-style:disc; padding-left:20px; color:#444;
+    font-size:1rem; margin-top:8px;
+}
+.management-details-list li { margin-bottom:8px; }
+.management-tooltip { position:relative; cursor:default; }
+.management-tooltip-text {
+    display:none; position:absolute; top:0; left:110%;
+    min-width:180px; background:rgba(0,0,0,0.8); color:#fff;
+    font-size:0.85rem; line-height:1.4; padding:8px 10px;
+    border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    white-space:nowrap; z-index:9999;
+}
+.management-tooltip:hover .management-tooltip-text { display:block; }
+.management-tooltip-text::before {
+    content:""; position:absolute; top:50%; right:100%;
+    transform:translateY(-50%);
+    border:6px solid transparent;
+    border-right-color:rgba(0,0,0,0.8);
 }
 
-.management-details-list li {
-    margin-bottom: 8px;
-}
-
-.management-details-list .management-tooltip {
-    position: relative;
-    cursor: default;
-}
-
-/* 실제 툴팁 텍스트 박스 */
-.management-details-list .management-tooltip-text {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 110%;
-    min-width: 180px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    padding: 8px 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    white-space: nowrap;
-    z-index: 9999;
-}
-
-/* 호버 시 툴팁 표시 */
-.management-details-list .management-tooltip:hover .management-tooltip-text {
-    display: block;
-}
-
-.management-details-list .management-tooltip-text::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    transform: translateY(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
-}
+/* ──────────────────────────────────── */
+/* 공통 박스 스타일 & 가로 배치 */
 .team-application-section {
-    float: left;
-    width: 300px;
-    height: 600px;
+    width: 280px; height: 600px;
     margin: 40px 20px 40px 30px;
-    padding: 16px;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-    overflow-y: auto;
+    padding:16px; background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    box-sizing:border-box;
+    overflow-y:auto;
 }
 
+/* 박스 제목 */
 .section-title-manage {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: #333333;
-    border-left: 4px solid #636ae8;
-    padding-left: 12px;
+    font-size:1.25rem; font-weight:600;
+    margin-bottom:16px; color:#333;
+    border-left:4px solid #636ae8; padding-left:12px;
 }
+
 /* 휴지통 버튼 */
 .clear-list-btn {
-    background: #0000;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: color .2s;
-    position: relative;
-    left: 115px;
-    top: 2px;
-
+    background:transparent; border:none;
+    color:#888; cursor:pointer;
+    font-size:1rem; transition:color .2s;
+    position:relative; left:115px; top:2px;
 }
+.clear-list-btn:hover { color:#e74c3c; }
 
-.clear-list-btn:hover {
-    color: #e74c3c;
-}
-
-/* 신청이 없을 때 메시지 */
+/* 빈 상태 */
 .no-applications {
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
-    padding: 10px 0;
+    font-size:0.9rem; color:#666;
+    text-align:center; padding:10px 0;
 }
+
+/* 신청 리스트 */
 .application-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    display:flex; flex-direction:column; gap:16px;
+    margin:0; padding:0; list-style:none;
 }
-
 .application-item {
-    display: flex;
-    flex-direction: column;
-    background-color: #fafafa;
-    border: 1px solid #dde2e8;
-    border-radius: 6px;
-    padding: 16px 20px;
-    transition: box-shadow 0.2s ease, transform 0.1s ease;
+    display:flex; flex-direction:column;
+    background:#fafafa; border:1px solid #dde2e8;
+    border-radius:6px; padding:16px 20px;
+    transition:box-shadow .2s, transform .1s;
 }
-
 .application-item:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    transform:translateY(-2px);
 }
-
-/* 신청 정보 영역 */
-.application-info {
-    display: flex;
-    flex-direction: column;
-}
-
 .application-info span {
-    margin-bottom: 6px;
-    font-size: 0.95rem;
-    color: #4a4a4a;
+    margin-bottom:6px; font-size:0.95rem; color:#4a4a4a;
 }
-
 .application-info .applicant-name {
-    font-weight: 700;
-    color: #2a2e34;
-    font-size: 1rem;
+    font-weight:700; color:#2a2e34; font-size:1rem;
 }
 
 /* 상태 표시 */
-.application-info .application-status {
-    margin-top: 8px;
-    font-size: 0.85rem;
-    font-style: italic;
-    color: #888888;
-}
-
-.applicant-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #2a2e34;
-}
-
-.application-reason,
-.application-goal,
 .application-status {
-    font-size: 0.85rem;
-    color: #555;
-    margin-top: 2px;
+    margin-top:8px; font-size:0.85rem; font-style:italic;
 }
+.status-pending { color:#f1c40f; }
+.status-approved { color:#2ecc71; }
+.status-rejected { color:#e74c3c; }
 
-/* 액션 버튼 영역 */
-.application-actions {
+/* 액션 버튼 */
+.application-actions { display:flex; gap:8px; }
+.approve-btn, .reject-btn {
+    padding:4px 8px; font-size:0.85rem;
+    border:none; border-radius:4px; cursor:pointer;
+}
+.approve-btn { background:#1da55c; color:#fff; width:50px; }
+.approve-btn:hover { background:#169d4c; }
+.reject-btn { background:#ff4c4c; color:#fff; width:65px; }
+.reject-btn:hover { background:#e04343; }
+
+/* 5개 박스를 가로로 나열할 컨테이너 */
+.management-sections2 {
     display: flex;
-    position: relative;
-    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-start;
 }
-
-.approve-btn,
-.reject-btn {
-    padding: 4px 8px;
-    font-size: 0.85rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.approve-btn {
-    background-color: #1da55c;
-    color: #fff;
-    width: 50px;
-}
-
-.approve-btn:hover {
-    background-color: #169d4c;
-
-}
-
-.reject-btn {
-    background-color: #ff4c4c;
-    color: #fff;
-    width: 50px
-}
-
-.reject-btn:hover {
-    background-color: #e04343;
-}
-
-.management-actions{
-    position: relative;
-    top: 200px;
-}
-/* 상태 텍스트 기본 스타일 */
-.application-status {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-top: 8px;
-    display: block;
-}
-
-/* PENDING: 노란색 */
-.application-status.status-pending {
-    color: #f1c40f;
-}
-
-/* APPROVED: 초록색 */
-.application-status.status-approved {
-    color: #2ecc71;
-}
-
-/* REJECTED: 빨간색 */
-.application-status.status-rejected {
-    color: #e74c3c;
+/* 권한 없을 때 영역 전체를 불투명·비활성 처리 */
+.disabled-section {
+    opacity: 0.4;
+    pointer-events: none; /* 클릭 방지 */
 }
