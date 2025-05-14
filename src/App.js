@@ -26,6 +26,7 @@ import CommunityPage from "./components/community/CommunityPage";
 import CommunityBoardPage from "./components/community/CommunityBoardPage";
 import CommunityMyPage from "./components/community/CommunityMyPage";
 import CommunityDetailPage from "./components/community/CommunityDetailPage";
+import OAuth2RedirectHandler from "./Auth/OAuth2RedirectHandler";
 
 function PresenceManager() {
     const { auth, updatePresence } = useAuth();
@@ -92,6 +93,7 @@ const App = () => {
                         <Route path="/signup" component={Signup}/>
                         <Route path="/dashboard" component={Dashboard}/>
                         <Route path="/dasboard" component={Dashboard}/>
+                        <Route exact path="/oauth2/redirect" component={OAuth2RedirectHandler} />
 
                         {/*커뮤니티 관련*/}
                         <Route exact path="/community" component={CommunityPage}/>

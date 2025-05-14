@@ -82,6 +82,40 @@ export const AuthProvider = ({ children }) => {
         });
     };
 
+    // 5) 소셜 로그인 전용 세팅
+    const loginWithSocial = ({
+                                 token,
+                                 userName,
+                                 userId,
+                                 userRole,
+                                 profileImage,
+                                 activeBadge,
+                             }) => {
+        // 필드명을 똑같이 맞춰서 로컬스토리지에 저장
+        localStorage.setItem("token", token);
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("userRole", userRole);
+        localStorage.setItem("profileImage", profileImage);
+        localStorage.setItem(
+            "activeBadge",
+            activeBadge ? JSON.stringify(activeBadge) : "null"
+        );
+
+        // Context state 갱신
+        setAuth({
+            token,
+            userName,
+            userId,
+            userRole,
+            profileImage,
+            activeBadge,
+            teams: [],
+            presence: {},
+        });
+    };
+
+
     // 4) 로그아웃
     const logout = () => {
         localStorage.removeItem("token");
@@ -108,9 +142,10 @@ export const AuthProvider = ({ children }) => {
         setAuth((a) => ({ ...a, activeBadge: badge }));
     };
 
+
     return (
         <AuthContext.Provider
-            value={{ auth, login, logout, updateActiveBadge, updatePresence }}
+            value={{ auth, login, logout, updateActiveBadge, updatePresence,  loginWithSocial }}
         >
             {children}
         </AuthContext.Provider>

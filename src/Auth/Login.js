@@ -24,6 +24,10 @@ const Login = () => {
             setMessage("로그인 실패: " + error.message);
         }
     };
+    //  구글 OAuth2 버튼 클릭 핸들러
+    const handleGoogleLogin = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorize/google";
+    };
 
 
     return (
@@ -71,8 +75,14 @@ const Login = () => {
                     <div className="social-login-container">
                         <p>소셜 계정으로 로그인</p>
                         <div className="social-login-buttons">
-                            <button className="social-button">
-                                <img src={require('./css/img/google-btn.png')} alt="Google Login" />
+                            <button
+                                className="social-button"
+                                onClick={handleGoogleLogin}
+                            >
+                                <img
+                                    src={require("./css/img/google-btn.png")}
+                                    alt="Google Login"
+                                />
                             </button>
                             <button className="social-button">
                                 <img src={require('./css/img/naver-btn.png')} alt="Naver Login" />
