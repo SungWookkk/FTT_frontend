@@ -140,27 +140,7 @@ const SidebarFavorites = ({ teamId, myTeams: propMyTeams }) => {
                         />
                     )}
 
-                    <Link
-                        to="/todo/folder/create"
-                        className={
-                            location.pathname === "/todo/folder/create"
-                                ? "workspace-list-item active"
-                                : "workspace-list-item"
-                        }
-                    >
-                        작업 폴더 생성
-                    </Link>
 
-                    <Link
-                        to="/todo/folder/all"
-                        className={
-                            location.pathname === "/todo/folder/all"
-                                ? "workspace-list-item active"
-                                : "workspace-list-item"
-                        }
-                    >
-                        모든 작업 폴더
-                    </Link>
                 </div>
 
                 <div className="sidebar-workspace-container">
