@@ -167,6 +167,7 @@ function TeamManagementContentPage() {
     const isAdmin = myMember && myMember.role === "ADMIN";
     const canManageMembers = isLeader || isAdmin;
     const singleMember = members.length === 1;
+    const numericUserId = Number(userId);
 
     return (
         <div className="dashboard-content">
@@ -252,7 +253,7 @@ function TeamManagementContentPage() {
                     }
                 </div>
 
-                {/* -- 2. 멤버 추방 (권한 없으면 불투명) -- */}
+                {/* 2. 멤버 추방 */}
                 <div className={`team-application-section ${!canManageMembers ? 'disabled-section' : ''}`}>
                     <h3 className="section-title-manage">멤버 추방</h3>
                     {members.length === 0
@@ -261,10 +262,11 @@ function TeamManagementContentPage() {
                             {members.map(m => (
                                 <li key={m.id} className="application-item">
                                     <span>{m.username}</span>
-                                    <button
-                                        className="reject-btn"
-                                        onClick={() => handleKick(m.id)}
-                                    >추방</button>
+                                    {m.id !== numericUserId && (
+                                        <button className="reject-btn" onClick={()=>handleKick(m.id)}>
+                                            추방
+                                        </button>
+                                    )}
                                 </li>
                             ))}
                         </ul>
