@@ -1,7 +1,10 @@
-.dashboard-content {
+.dashboard-content2 {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 97vh;
+    top: 32px;
+    left: 261px;
+    position: relative;
 }
 .channel-detail-wrapper {
     display: flex;

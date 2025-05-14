@@ -132,7 +132,7 @@ function ChannelDetailContentPage() {
     };
 
     return (
-        <div className="dashboard-content">
+        <div className="dashboard-content2">
             <div className="dashboard-header">
                 <div className="dashboard-left">
                     <span className="title-text">팀 공간</span>
