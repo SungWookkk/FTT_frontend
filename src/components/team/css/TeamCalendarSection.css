@@ -64,7 +64,7 @@
     color: #2a2e34;
 }
 .sidebar-list {
-    max-height: 500px;
+    max-height: 389px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
