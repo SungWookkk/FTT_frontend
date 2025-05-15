@@ -28,6 +28,10 @@ const Login = () => {
     const handleGoogleLogin = () => {
         window.location.href = "http://localhost:8080/oauth2/authorize/google";
     };
+    const handleNaverLogin = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorize/naver";
+    };
+
 
 
     return (
@@ -84,11 +88,11 @@ const Login = () => {
                                     alt="Google Login"
                                 />
                             </button>
-                            <button className="social-button">
-                                <img src={require('./css/img/naver-btn.png')} alt="Naver Login" />
+                            <button className="social-button" onClick={handleNaverLogin}>
+                                <img src={require("./css/img/naver-btn.png")} alt="Naver Login"/>
                             </button>
                             <button className="social-button">
-                                <img src={require('./css/img/kakao-btn.png')} alt="Kakao Login" />
+                                <img src={require('./css/img/kakao-btn.png')} alt="Kakao Login"/>
                             </button>
                         </div>
                     </div>
