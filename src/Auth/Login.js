@@ -91,9 +91,6 @@ const Login = () => {
                             <button className="social-button" onClick={handleNaverLogin}>
                                 <img src={require("./css/img/naver-btn.png")} alt="Naver Login"/>
                             </button>
-                            <button className="social-button">
-                                <img src={require('./css/img/kakao-btn.png')} alt="Kakao Login"/>
-                            </button>
                         </div>
                     </div>
                     <div className="main-page-link">
