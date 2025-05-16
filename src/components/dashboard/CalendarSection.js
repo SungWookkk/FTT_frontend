@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../dashboard/css/CalendarSection.css";
+import AiPanel from "./AiPanel";
 
 /**
  * Task 엔티티 (백엔드)
@@ -272,12 +273,7 @@ function CalendarSection() {
                     </div>
                 </div>
 
-                <div className="ai-panel">
-                    <h3 className="ai-panel-title">AI 기능</h3>
-                    <div className="ai-panel-content">
-                        <p>AI 기능이 들어갈 영역입니다.</p>
-                    </div>
-                </div>
+                <AiPanel />
             </div>
 
             {/* "+N more" 모달 (날짜별 전체 Task) */}
