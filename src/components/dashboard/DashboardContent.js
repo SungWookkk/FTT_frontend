@@ -9,6 +9,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import CalendarSection from "./CalendarSection"; // 달력 컴포넌트
 import { useAuth } from "../../Auth/AuthContext";
+import BadgeProgress from "./BadgeProgress";
 
 const DashboardContent = () => {
     const { auth } = useAuth();
@@ -199,14 +200,7 @@ const DashboardContent = () => {
             </span>
                     </div>
                     <div className="progress-container">
-                        <div className="progress-bar">
-                            <div className="progress-fill"></div>
-                        </div>
-                        <div className="progress-labels">
-                            <span>25%</span>
-                            <span>50%</span>
-                            <span>75%</span>
-                        </div>
+                        <BadgeProgress/>
                     </div>
                 </div>
 
