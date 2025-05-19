@@ -24,29 +24,53 @@ const Signup = () => {
     };
 
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const err = validate();
+        if (err) {
+            setMessage(err);
+            return;
+        }
         try {
-            // 서버로 POST 요청
             const response = await fetch("http://localhost:8080/api/auth/signup", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData), // 폼 데이터를 JSON으로 변환
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
             });
-
             if (response.ok) {
-                setMessage("회원가입 성공! 로그인 해주세요.");
                 alert("회원가입 성공! 로그인 해주세요.");
-                history.push("/login"); // 로그인 페이지로 이동
+                history.push("/login");
             } else {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "회원가입 실패");
+                const { message } = await response.json();
+                throw new Error(message || "회원가입 실패");
             }
         } catch (error) {
             setMessage("회원가입 실패: " + error.message);
         }
+    };
+
+
+    const validate = () => {
+        const { userId, username, email, phoneNumber, birthDate, password } = formData;
+        // 1) 아이디/닉네임: 영숫자만 (3~20자)
+        const idRe = /^[A-Za-z0-9]{3,20}$/;
+        if (!idRe.test(userId))   return "아이디는 3~20자의 영문자, 숫자만 가능합니다.";
+        if (!idRe.test(username)) return "닉네임은 3~20자의 영문자, 숫자만 가능합니다.";
+        // 2) 이메일
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) return "올바른 이메일 주소를 입력해주세요.";
+        // 3) 휴대폰: 숫자만 10~11자리
+        const phoneRe = /^\d{10,11}$/;
+        if (!phoneRe.test(phoneNumber)) return "휴대폰 번호는 '-' 없이 10~11자리 숫자만 입력해주세요.";
+        // 4) 비밀번호: 최소 8자, 특수문자 1개 이상, 문자·숫자
+        const pwdRe = /^(?=.*[!@#$%^&*])(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+        if (!pwdRe.test(password)) return "비밀번호는 8자 이상, 문자·숫자·특수문자(!@#$%…)를 모두 포함해야 합니다.";
+        // 5) 생년월일: 만 7세 이상
+        const birth = new Date(birthDate);
+        const age = new Date().getFullYear() - birth.getFullYear() - ((new Date().getMonth() < birth.getMonth() || (new Date().getMonth() === birth.getMonth() && new Date().getDate() < birth.getDate())) ? 1 : 0);
+        if (age < 7) return "만 7세 이상만 가입할 수 있습니다.";
+        return "";
     };
 
 
