@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import "./css/Login.css";
 import { Link, useHistory } from "react-router-dom";
 import AuthContext from "./AuthContext";
+import axios from "axios";
 
 const Login = () => {
     const history = useHistory();
-    const { login } = useContext(AuthContext); // login 함수 가져오기
+    const { login,loginWithSocial} = useContext(AuthContext);
     const [formData, setFormData] = useState({ userId: "", password: "" });
     const [message, setMessage] = useState("");
 
@@ -33,6 +34,26 @@ const Login = () => {
     };
 
 
+    const handleDemoLogin = async () => {
+        try {
+            const res = await axios.get("/api/auth/demo");
+            const { token, userName, userId, userRole, profileImage, activeBadge } = res.data;
+
+            // 컨텍스트에 직접 로그인
+            loginWithSocial({
+                token,
+                userName,
+                userId,
+                userRole,
+                profileImage,
+                activeBadge,
+            });
+
+            history.push("/dashboard");
+        } catch (err) {
+            setMessage("체험판 로그인 실패: " + (err.response?.data || err.message));
+        }
+    };
 
     return (
         <div className="login-container">
@@ -94,12 +115,18 @@ const Login = () => {
                         </div>
                     </div>
                     <div className="main-page-link">
-                        <Link to="/">서비스를 체험하러 가보는건 어떠신가요?</Link>
-                    </div>
+                         <Link to="#" className="main-page-link" onClick={(e) => {
+                        e.preventDefault();
+                        handleDemoLogin();
+                    }}>
+                        서비스 체험판으로 바로 가기
+                    </Link>
                 </div>
             </div>
         </div>
-    );
+</div>
+)
+    ;
 };
 
 export default Login;
