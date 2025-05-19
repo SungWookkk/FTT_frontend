@@ -199,9 +199,7 @@ const DashboardContent = () => {
               {displayName ? displayName : "뱃지 없음"} 입니다.
             </span>
                     </div>
-                    <div className="progress-container">
                         <BadgeProgress/>
-                    </div>
                 </div>
 
                 {/* 우측 - 두 섹션 (마감 임박 / 남은 To Do) */}

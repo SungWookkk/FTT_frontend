@@ -1,28 +1,71 @@
 .progress-container {
     width: 100%;
-    padding: 12px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.labels {
-    display: flex; justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 14px;
+
+/* 상단: 두 개의 뱃지 블록을 좌우로 배치 */
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
-.progress-bar {
-    width: 100%; height: 12px;
-    background: #eee;
-    border-radius: 6px;
-    overflow: hidden;
+
+/* 각 뱃지 + 이름 + (다음 등급만) 퍼센트 */
+.badge-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 아이콘 크기 */
+.badge-icon1 {
+    width: 50px;
+    height: 50px;
     margin-bottom: 4px;
 }
+
+/* 뱃지 이름 */
+.badge-name1 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+
+/* 프로그래스바 아래의 퍼센트 라벨 */
+.until-label {
+    text-align: center;
+    font-size: 13px;
+    color: #4caf50;
+    margin-bottom: 8px;
+}
+
+/* 프로그래스 바 */
+.progress-bar {
+    width: 100%;
+    height: 14px;
+    background: #f0f0f0;
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* 채워지는 막대 */
 .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #636ae8, #8b78f6);
-    transition: width 0.5s;
+    width: 0%;
+    transition: width 0.8s ease;
 }
+
+/* 하단 숫자 레이블 */
 .progress-labels {
-    display: flex; justify-content: space-between;
-    font-size: 12px; color: #666;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+    padding: 0 4px;
 }
