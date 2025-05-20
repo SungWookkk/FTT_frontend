@@ -51,7 +51,6 @@
     justify-content: center;
     align-items: center;
     background: white;
-    box-shadow: -100px 0 40px rgba(0, 0, 0, 0.2);
     padding: 80px;
     border-radius: 80px 0 0 80px; /* 왼쪽 상단 및 하단 둥글게 */
     z-index: 1; /* 왼쪽 컨텐츠보다 뒤로 배치 */

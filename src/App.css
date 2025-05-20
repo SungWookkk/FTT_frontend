@@ -28,3 +28,7 @@ header {
 body {
   font-family: 'Inter', sans-serif;
 }
+.main-header-tool {
+  background-color: #ffffff;
+  height: 3.6rem;
+}
