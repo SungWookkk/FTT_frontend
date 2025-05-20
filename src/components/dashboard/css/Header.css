@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: space-between;
     background-color: #49475e;
-    height: 40px;
+    height: 46px;
     padding: 0 20px;
     position: fixed;
     width: 100%;
@@ -15,7 +15,7 @@
 
 /* 로고 스타일 */
 .header-logo img {
-    height: 30px;
+    height: 49px;
 }
 
 /* 검색창 스타일 */
